@@ -1,0 +1,50 @@
+[
+  {
+    "target": "jvmTest",
+    "test": "directRunnerStopsChildBeforeSecondModelCall[jvm]",
+    "failed": false,
+    "message": null
+  },
+  {
+    "target": "jvmTest",
+    "test": "agentToolStopsChildBeforeSecondModelCall[jvm]",
+    "failed": true,
+    "message": "java.lang.AssertionError: Expected an exception of class com.google.adk.kt.agents.LlmCallsLimitExceededException to be thrown, but was completed successfully."
+  },
+  {
+    "target": "jvmTest",
+    "test": "run_loadArtifactsBeforeAnotherTool_includesRequestedArtifactInNextModelRequest[jvm]",
+    "failed": false,
+    "message": null
+  },
+  {
+    "target": "jvmTest",
+    "test": "run_loadArtifactsAfterAnotherTool_includesRequestedArtifactInNextModelRequest[jvm]",
+    "failed": true,
+    "message": "java.lang.AssertionError: A successful load_artifacts response must supply the file to the answering model; loadArtifactsFirst=false"
+  },
+  {
+    "target": "testAndroidHostTest",
+    "test": "directRunnerStopsChildBeforeSecondModelCall",
+    "failed": false,
+    "message": null
+  },
+  {
+    "target": "testAndroidHostTest",
+    "test": "agentToolStopsChildBeforeSecondModelCall",
+    "failed": true,
+    "message": "java.lang.AssertionError: Expected an exception of class com.google.adk.kt.agents.LlmCallsLimitExceededException to be thrown, but was completed successfully."
+  },
+  {
+    "target": "testAndroidHostTest",
+    "test": "run_loadArtifactsBeforeAnotherTool_includesRequestedArtifactInNextModelRequest",
+    "failed": false,
+    "message": null
+  },
+  {
+    "target": "testAndroidHostTest",
+    "test": "run_loadArtifactsAfterAnotherTool_includesRequestedArtifactInNextModelRequest",
+    "failed": true,
+    "message": "java.lang.AssertionError: A successful load_artifacts response must supply the file to the answering model; loadArtifactsFirst=false"
+  }
+]

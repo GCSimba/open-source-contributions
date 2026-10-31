@@ -1,0 +1,68 @@
+{
+  "pr": 838,
+  "base": "2809a837752644f3720eaa759d2cb5144ba1a84e",
+  "commit": "5a24148a114f1736fae7ae12bcd5817e50e668ab",
+  "validation_date": "2026-10-31",
+  "environment": "Ubuntu24.04/WSL2, effective user root, JDK21",
+  "focused": {
+    "jvm": {
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "android_host": {
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "core_build": {
+    "status": "passed",
+    "seconds": 1271,
+    "jvm": {
+      "passed": 4877,
+      "skipped_xml_records": 6,
+      "failures": 0,
+      "errors": 0
+    },
+    "android_host": {
+      "passed": 4478,
+      "skipped_xml_records": 0,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "repository_build": {
+    "status": "passed",
+    "seconds": 1768,
+    "tasks": 500,
+    "executed": 437,
+    "up_to_date": 63,
+    "tests": 10549,
+    "passed": 10531,
+    "failures": 0,
+    "errors": 0,
+    "skipped_xml_records": 18,
+    "core_results_reused": true
+  },
+  "skipped_notes": "Raw XML records, not unique method counts. Two live Gemini methods appear three times each. Other skips require Firebase credentials or LiteRT models.",
+  "local_test_exclusions": [],
+  "integration_retries": "repository defaults",
+  "resource_overrides": {
+    "gradle_heap": "3g",
+    "metaspace": "1g",
+    "workers": 2,
+    "project_parallelism": false
+  },
+  "not_run": [
+    "Android device tests",
+    "real backend/model execution",
+    "JDK17/25 matrix",
+    "Dokka (KDoc unchanged)"
+  ],
+  "format": "passed on unchanged tested source",
+  "diff_check": "passed",
+  "patch_sha256": "50b4d2bc1b2a3e106cef5d8c3a9d41241265c55b4541ac5380a05229d3b49582"
+}

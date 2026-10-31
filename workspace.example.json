@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "google/adk-kotlin": {
+      "checkout": ".workspaces/google/adk-kotlin",
+      "evidence": ".cache/google/adk-kotlin",
+      "linux_checkout": null,
+      "linux_tools": null
+    }
+  }
+}

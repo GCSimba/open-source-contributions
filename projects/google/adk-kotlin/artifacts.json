@@ -1,0 +1,52 @@
+{
+  "source_repository": "https://github.com/google/adk-kotlin",
+  "research_baseline": "2809a837752644f3720eaa759d2cb5144ba1a84e",
+  "archive_date": "2026-10-31",
+  "artifacts": [
+    {
+      "path": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "prs/774-metadata-path/change.patch",
+      "bytes": 15276,
+      "sha256": "f8258d1cc12183023cd1bd57bf7c3939e5f00bf678e67a6ae35264905d966e74"
+    },
+    {
+      "path": "prs/837-parallel-artifacts/change.patch",
+      "bytes": 15766,
+      "sha256": "a5f814f024e97ede66f5bb2750628de6fb6efcc40b6029c2a9b25e147da366b7"
+    },
+    {
+      "path": "prs/838-agent-tool-config/change.patch",
+      "bytes": 12584,
+      "sha256": "50b4d2bc1b2a3e106cef5d8c3a9d41241265c55b4541ac5380a05229d3b49582"
+    },
+    {
+      "path": "research/repros/AgentToolRunConfigBugReproTest.kt",
+      "bytes": 2798,
+      "sha256": "4cc950512144eb716e040a56dc7df9da83cdb0c2b84b0cbea6bec535c9444182"
+    },
+    {
+      "path": "research/repros/GenaiPromptMediaTraceRegressionTest.kt",
+      "bytes": 2430,
+      "sha256": "c1ba2b5d8ed02a45cdc35dff61820de0885fbdfd27f738b40e59ec27443d2b75"
+    },
+    {
+      "path": "research/repros/GenaiPromptSeedRegressionTest.kt",
+      "bytes": 1499,
+      "sha256": "2f0308f6e1175b93212839343fd304a1e937ab85d987c3c41bb6e07ce0f10bfc"
+    },
+    {
+      "path": "research/repros/InstructionArtifactTextReproductionTest.kt",
+      "bytes": 2264,
+      "sha256": "269b2d4c9248fd15630d2c8b6ee71186520447e612c7cd1ef09adcb851c59e7f"
+    },
+    {
+      "path": "research/repros/LoadArtifactsParallelResponseBugReproTest.kt",
+      "bytes": 4363,
+      "sha256": "ac737d53379188366628ca5618e0f2590fc2acd011590024ce7e85cb0259e4dc"
+    }
+  ]
+}

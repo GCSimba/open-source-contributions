@@ -1,0 +1,29 @@
+{
+  "pr": 774,
+  "base": "ae938afc1b157db5184e2ed40f4fcb9f2de8afd9",
+  "commit": "2bd04807c64549190ba2d416d6b2ef056682164a",
+  "validation_date": "2026-10-28",
+  "environment": "Windows, JDK21",
+  "focused": {
+    "jvm": {
+      "tests": 44,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "android_host": {
+      "tests": 44,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "dokka": "passed",
+  "format": "passed",
+  "diff_check": "passed",
+  "repository_build": {
+    "status": "incomplete",
+    "reason": "Windows shell/symlink failures and timeout; no full-build pass claimed"
+  },
+  "patch_sha256": "f8258d1cc12183023cd1bd57bf7c3939e5f00bf678e67a6ae35264905d966e74"
+}

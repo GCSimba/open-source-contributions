@@ -1,0 +1,32 @@
+{
+  "pr": 837,
+  "base": "2809a837752644f3720eaa759d2cb5144ba1a84e",
+  "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
+  "validation_date": "2026-10-31",
+  "environment": "Windows, JDK21",
+  "focused": {
+    "jvm": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "android_host": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "format": "passed",
+  "diff_check": "passed",
+  "repository_build": {
+    "status": "incomplete",
+    "deadline_minutes": 20,
+    "local_exclusions": [
+      "LocalEnvironmentTest.execute_cancellation_killsProcessTree*"
+    ],
+    "notes": "External init only; no repository test exclusions. Other shell/symlink failures and MCP initialization timeouts remained visible. MCP root cause unconfirmed."
+  },
+  "patch_sha256": "a5f814f024e97ede66f5bb2750628de6fb6efcc40b6029c2a9b25e147da366b7"
+}

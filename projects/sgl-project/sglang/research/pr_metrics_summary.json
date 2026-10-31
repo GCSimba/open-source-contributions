@@ -1,0 +1,236 @@
+{
+  "vllm-project__vllm": {
+    "open_unique": 6911,
+    "drafts": 1586,
+    "ready": 5325,
+    "ready_external": 5047,
+    "merge_all": {
+      "n": 4864,
+      "median_days": 2.64,
+      "p75_days": 10.91,
+      "p90_days": 28.31,
+      "within_1_day_pct": 34.7,
+      "within_7_days_pct": 66.8,
+      "over_30_days_pct": 9.6
+    },
+    "merge_human": {
+      "n": 4864,
+      "median_days": 2.64,
+      "p75_days": 10.91,
+      "p90_days": 28.31,
+      "within_1_day_pct": 34.7,
+      "within_7_days_pct": 66.8,
+      "over_30_days_pct": 9.6
+    },
+    "merge_external_human": {
+      "n": 3256,
+      "median_days": 4.68,
+      "p75_days": 15.13,
+      "p90_days": 35.58,
+      "within_1_day_pct": 25.4,
+      "within_7_days_pct": 58.4,
+      "over_30_days_pct": 12.7
+    },
+    "merge_by_month_external": {
+      "2026-08": {
+        "n": 800,
+        "median_days": 4.13,
+        "p75_days": 13.06,
+        "p90_days": 29.36,
+        "within_1_day_pct": 27.0,
+        "within_7_days_pct": 61.9,
+        "over_30_days_pct": 10.0
+      },
+      "2026-09": {
+        "n": 1069,
+        "median_days": 5.13,
+        "p75_days": 16.26,
+        "p90_days": 40.91,
+        "within_1_day_pct": 23.8,
+        "within_7_days_pct": 57.6,
+        "over_30_days_pct": 14.1
+      },
+      "2026-10": {
+        "n": 1387,
+        "median_days": 4.74,
+        "p75_days": 15.95,
+        "p90_days": 35.47,
+        "within_1_day_pct": 25.7,
+        "within_7_days_pct": 57.0,
+        "over_30_days_pct": 13.3
+      }
+    },
+    "ready_history_truncated": 14,
+    "ready_truncated_no_maintainer": [],
+    "backlog": {
+      "7": {
+        "ready_older": 4719,
+        "no_other_human_confirmed": 2486,
+        "no_identified_maintainer_confirmed": 3755,
+        "external_older": 4520,
+        "external_no_other_human_confirmed": 2409,
+        "external_no_identified_maintainer_confirmed": 3635
+      },
+      "30": {
+        "ready_older": 3448,
+        "no_other_human_confirmed": 1814,
+        "no_identified_maintainer_confirmed": 2738,
+        "external_older": 3327,
+        "external_no_other_human_confirmed": 1766,
+        "external_no_identified_maintainer_confirmed": 2668
+      },
+      "90": {
+        "ready_older": 1394,
+        "no_other_human_confirmed": 670,
+        "no_identified_maintainer_confirmed": 1055,
+        "external_older": 1349,
+        "external_no_other_human_confirmed": 655,
+        "external_no_identified_maintainer_confirmed": 1030
+      }
+    },
+    "oldest_no_human_examples": [
+      {
+        "number": 34842,
+        "url": "https://github.com/vllm-project/vllm/pull/34842",
+        "age_days": 254.2
+      },
+      {
+        "number": 34930,
+        "url": "https://github.com/vllm-project/vllm/pull/34930",
+        "age_days": 253.0
+      },
+      {
+        "number": 36591,
+        "url": "https://github.com/vllm-project/vllm/pull/36591",
+        "age_days": 234.9
+      },
+      {
+        "number": 37679,
+        "url": "https://github.com/vllm-project/vllm/pull/37679",
+        "age_days": 224.6
+      },
+      {
+        "number": 37689,
+        "url": "https://github.com/vllm-project/vllm/pull/37689",
+        "age_days": 224.5
+      }
+    ]
+  },
+  "sgl-project__sglang": {
+    "open_unique": 5325,
+    "drafts": 636,
+    "ready": 4689,
+    "ready_external": 3940,
+    "merge_all": {
+      "n": 5722,
+      "median_days": 1.13,
+      "p75_days": 5.35,
+      "p90_days": 18.69,
+      "within_1_day_pct": 47.5,
+      "within_7_days_pct": 78.5,
+      "over_30_days_pct": 5.9
+    },
+    "merge_human": {
+      "n": 5722,
+      "median_days": 1.13,
+      "p75_days": 5.35,
+      "p90_days": 18.69,
+      "within_1_day_pct": 47.5,
+      "within_7_days_pct": 78.5,
+      "over_30_days_pct": 5.9
+    },
+    "merge_external_human": {
+      "n": 1973,
+      "median_days": 5.06,
+      "p75_days": 16.05,
+      "p90_days": 37.26,
+      "within_1_day_pct": 24.4,
+      "within_7_days_pct": 56.9,
+      "over_30_days_pct": 13.6
+    },
+    "merge_by_month_external": {
+      "2026-08": {
+        "n": 577,
+        "median_days": 4.16,
+        "p75_days": 13.83,
+        "p90_days": 32.67,
+        "within_1_day_pct": 29.8,
+        "within_7_days_pct": 61.2,
+        "over_30_days_pct": 10.9
+      },
+      "2026-09": {
+        "n": 606,
+        "median_days": 4.66,
+        "p75_days": 14.87,
+        "p90_days": 40.94,
+        "within_1_day_pct": 26.1,
+        "within_7_days_pct": 57.9,
+        "over_30_days_pct": 14.4
+      },
+      "2026-10": {
+        "n": 790,
+        "median_days": 6.1,
+        "p75_days": 18.78,
+        "p90_days": 39.94,
+        "within_1_day_pct": 19.2,
+        "within_7_days_pct": 52.9,
+        "over_30_days_pct": 15.1
+      }
+    },
+    "ready_history_truncated": 4,
+    "ready_truncated_no_maintainer": [],
+    "backlog": {
+      "7": {
+        "ready_older": 4044,
+        "no_other_human_confirmed": 2773,
+        "no_identified_maintainer_confirmed": 3220,
+        "external_older": 3415,
+        "external_no_other_human_confirmed": 2336,
+        "external_no_identified_maintainer_confirmed": 2755
+      },
+      "30": {
+        "ready_older": 2655,
+        "no_other_human_confirmed": 1719,
+        "no_identified_maintainer_confirmed": 2038,
+        "external_older": 2171,
+        "external_no_other_human_confirmed": 1399,
+        "external_no_identified_maintainer_confirmed": 1691
+      },
+      "90": {
+        "ready_older": 703,
+        "no_other_human_confirmed": 313,
+        "no_identified_maintainer_confirmed": 407,
+        "external_older": 437,
+        "external_no_other_human_confirmed": 145,
+        "external_no_identified_maintainer_confirmed": 223
+      }
+    },
+    "oldest_no_human_examples": [
+      {
+        "number": 18397,
+        "url": "https://github.com/sgl-project/sglang/pull/18397",
+        "age_days": 265.8
+      },
+      {
+        "number": 18589,
+        "url": "https://github.com/sgl-project/sglang/pull/18589",
+        "age_days": 261.9
+      },
+      {
+        "number": 21831,
+        "url": "https://github.com/sgl-project/sglang/pull/21831",
+        "age_days": 212.8
+      },
+      {
+        "number": 22191,
+        "url": "https://github.com/sgl-project/sglang/pull/22191",
+        "age_days": 207.6
+      },
+      {
+        "number": 22193,
+        "url": "https://github.com/sgl-project/sglang/pull/22193",
+        "age_days": 207.5
+      }
+    ]
+  }
+}

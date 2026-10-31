@@ -1,0 +1,76 @@
+{
+  "pr": 47649,
+  "base": "67bd749ada5bebf3f1ed9be16a814a3243f348bd",
+  "commit": "6d9731914faaae91dae901f27794ed3696a7c76a",
+  "pre_rebase_commit": "ab321a06d33bf9076b33e504617204bd1cf4e2ba",
+  "pre_rebase_base": "fb9846d3e2d66811b372b28c73229e9dbbf54288",
+  "rebase_patch_identical": true,
+  "validation_date": "2026-10-31",
+  "environment": "Ubuntu24.04/WSL2, Python3.12, CPU only, torch2.14.1+cpu, transformers5.19.0, tokenizers0.23.2",
+  "dependencies": "CPU subset of python/pyproject.toml pins; not the full python[dev] install",
+  "baseline": {
+    "commit": "fb9846d3e2d66811b372b28c73229e9dbbf54288",
+    "existing_scoring_tests": {
+      "passed": 60,
+      "subtests_passed": 25,
+      "failed": 0
+    },
+    "new_regression_tests_before_fix": {
+      "failed_subtests": 4,
+      "symptoms": [
+        "batched setwise token_logprobs == []",
+        "fused --enable-mis token_logprobs == None",
+        "_process_multi_item_extraction_results rejects return_token_logprobs"
+      ]
+    }
+  },
+  "focused": {
+    "files": [
+      "test/registered/unit/managers/test_setwise_score_mixin.py",
+      "test/registered/unit/test_token_scoring.py"
+    ],
+    "passed": 62,
+    "subtests_passed": 29,
+    "failed": 0,
+    "commits": [
+      "ab321a06d33bf9076b33e504617204bd1cf4e2ba",
+      "6d9731914faaae91dae901f27794ed3696a7c76a"
+    ]
+  },
+  "downstream": {
+    "files": [
+      "test/registered/unit/entrypoints/systemone/test_joint_schema.py",
+      "test/registered/unit/entrypoints/openai/test_serving_decisions.py",
+      "test/registered/unit/managers/test_embed_overrides.py"
+    ],
+    "passed": 75,
+    "subtests_passed": 109,
+    "failed": 0,
+    "commit": "ab321a06d33bf9076b33e504617204bd1cf4e2ba",
+    "note": "Run before the rebase; the rebased patch is byte-identical."
+  },
+  "lint": {
+    "status": "passed",
+    "tools": [
+      "isort 7.0.0",
+      "ruff 0.15.1 check --select=F401,F821,F823,UP037",
+      "ruff 0.15.1 format --check",
+      "codespell 2.4.1",
+      "scripts/lint/check_no_bare_pytest_main.py",
+      "scripts/lint/check_registered_tests.py",
+      "scripts/lint/check_no_registered_tests_in_package.py",
+      "trailing whitespace",
+      "py_compile"
+    ],
+    "scope": "changed files, versions pinned in .pre-commit-config.yaml",
+    "commit": "6d9731914faaae91dae901f27794ed3696a7c76a"
+  },
+  "not_run": [
+    "full pre-commit suite",
+    "full CPU unit suite (base-a-test-cpu)",
+    "end-to-end /v1/score against a real CausalLM",
+    "GPU CI"
+  ],
+  "official_ci": "pr-gate fails until a maintainer adds the run-ci label (checked 2026-10-31 23:46 Asia/Shanghai)",
+  "patch_sha256": "96005cdf4c86e504b06cf2c099e68ac133153de23a71fbfe127ef308e3d67c2f"
+}

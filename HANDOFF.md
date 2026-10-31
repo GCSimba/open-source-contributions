@@ -4,7 +4,7 @@
 
 ## 目标与已完成工作
 
-维护跨项目开源贡献档案，并继续处理 Google ADK Kotlin 的已提交 PR、审核意见及后续候选问题。档案仓库为 [GCSimba/open-source-contributions](https://github.com/GCSimba/open-source-contributions)，初始归档提交为 `f34357d8e81c63acf2725284ad901cbac959f28f`。
+维护跨项目开源贡献档案，并继续处理 Google ADK Kotlin 与 SGLang 的已提交 PR、审核意见及后续候选问题。档案仓库为 [GCSimba/open-source-contributions](https://github.com/GCSimba/open-source-contributions)，初始归档提交为 `f34357d8e81c63acf2725284ad901cbac959f28f`。
 
 已整理三个 PR 的问题、补丁、验证摘要、审核结果，以及五份有效历史复现草稿。链接、JSON、补丁来源、哈希和公开内容检查已通过。实际源码、工具和完整原始证据保留在独立目录，通过忽略的本地入口关联。
 
@@ -75,3 +75,17 @@ git -C $adkProject.checkout remote -v
 Linux 曾缺少 build-tools36.0.0，SDK自动下载也曾超时；补齐官方组件后 #838 两次完整构建通过。当前环境已有 Android platform37.0、build-tools36.0.0/37.0.0、JDK21和共享 Gradle 缓存。
 
 Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 workers并关闭项目并行；没有给成功的 Linux 检查加测试排除或禁用标志。Windows旧MCP全量超时根因未确认，不能统一归因为 Windows；独立探针和 Linux 本地 MCP 测试均通过。实际环境路径和命令见仅本地的交接记录。
+
+## SGLang
+
+2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-10-31 23:46（Asia/Shanghai）**：
+
+| PR | 状态 | 分支 / 修复提交 | 详细记录 |
+| --- | --- | --- | --- |
+| [#47649](https://github.com/sgl-project/sglang/pull/47649) | Open，等待审核；尚无人工评论 | `fix/setwise-token-logprobs` / `6d97319` | [setwise token_logprobs](projects/sgl-project/sglang/prs/47649-setwise-token-logprobs/README.md) |
+
+- 官方 CI 未运行：`pr-gate` 因缺少 `run-ci` 标签失败，需维护者添加；这不是代码失败。
+- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU，两个评分测试文件 62 通过，下游相关测试 75 通过，改动文件的格式与静态检查通过。完整 pre-commit、完整 CPU 套件、真实模型端到端和 GPU CI 未运行。
+- SGLang 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。测试必须在 Linux 中运行；Windows 本机缺少 `resource` 模块且 Python 版本不足。
+- 不要在 WSL 中对 Windows checkout 直接运行 `pre-commit run`：换行符差异会让 Git 把全仓库视为已修改。按 PR 记录，直接对改动文件运行同版本工具。
+- 下一步：刷新 #47649 的审核与 CI；需要维护者添加 `run-ci`。收到审核意见后在源码分支修改并推送到同一分支。

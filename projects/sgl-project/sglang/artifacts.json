@@ -1,0 +1,27 @@
+{
+  "source_repository": "https://github.com/sgl-project/sglang",
+  "research_baseline": "fb9846d3e2d66811b372b28c73229e9dbbf54288",
+  "archive_date": "2026-10-31",
+  "artifacts": [
+    {
+      "path": "LICENSE",
+      "bytes": 11346,
+      "sha256": "1495e1e757ef4d0925a2350563cf5754bb23c51701a8ec4fb3c5cdcbedae6747"
+    },
+    {
+      "path": "prs/47649-setwise-token-logprobs/change.patch",
+      "bytes": 16504,
+      "sha256": "96005cdf4c86e504b06cf2c099e68ac133153de23a71fbfe127ef308e3d67c2f"
+    },
+    {
+      "path": "research/repros/reproduce_setwise_logprobs.py",
+      "bytes": 4241,
+      "sha256": "6d9b23b3f288f85a8219c1e2561fd1c14626487f1f84c96f2badf99864dbc983"
+    },
+    {
+      "path": "research/pr_metrics_summary.json",
+      "bytes": 6373,
+      "sha256": "9f45e99526db44a4582a09fd1b5d34aab829eb82a1d3899db0a8e963d74bf7b8"
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 | 项目 | 上游 | 贡献记录 |
 | --- | --- | --- |
 | Google ADK Kotlin | [google/adk-kotlin](https://github.com/google/adk-kotlin) | [项目说明与 PR 索引](projects/google/adk-kotlin/README.md) |
+| SGLang | [sgl-project/sglang](https://github.com/sgl-project/sglang) | [项目说明与 PR 索引](projects/sgl-project/sglang/README.md) |
 
 ## 目录约定
 
@@ -25,7 +26,7 @@ templates/pr.md               新贡献记录模板
 
 ## 本地工作入口
 
-`.workspaces/` 保存独立源码仓库的本地入口，`.cache/` 保存工具和原始证据的本地入口；两者及 `workspace.local.json` 均被 Git 忽略。当前 ADK 入口连接到已有工作目录，原目录保持原位。执行构建时使用 `workspace.local.json` 中的实际目录。
+`.workspaces/` 保存独立源码仓库的本地入口，`.cache/` 保存工具和原始证据的本地入口；两者及 `workspace.local.json` 均被 Git 忽略。现有入口连接到已有工作目录，原目录保持原位。执行构建时使用 `workspace.local.json` 中的实际目录。
 
 新机器可参考 [workspace.example.json](workspace.example.json) 配置本地路径，并在 `.workspaces/` 中准备各项目的独立 checkout。SDK、依赖、完整日志、CLA 表单和账户配置保存在本地。
 

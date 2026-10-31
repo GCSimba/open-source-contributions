@@ -5,6 +5,12 @@
       "evidence": ".cache/google/adk-kotlin",
       "linux_checkout": null,
       "linux_tools": null
+    },
+    "sgl-project/sglang": {
+      "checkout": ".workspaces/sgl-project/sglang",
+      "evidence": ".cache/sgl-project/sglang",
+      "linux_venv": null,
+      "wsl_distribution": null
     }
   }
 }

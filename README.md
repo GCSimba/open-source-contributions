@@ -2,6 +2,8 @@
 
 跨项目的开源 PR 工作档案：记录问题复现、修复、验证、审核和上游链接。
 
+接手工作先读 [HANDOFF.md](HANDOFF.md)。本机另有忽略的 `HANDOFF.local.md` 和 `adk-contributions.local.code-workspace`，分别提供实际路径/命令和 VS Code 多目录入口。
+
 ## 项目
 
 | 项目 | 上游 | 贡献记录 |

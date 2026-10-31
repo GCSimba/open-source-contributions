@@ -1,6 +1,8 @@
 /.workspaces/
 /.cache/
 /workspace.local.json
+/HANDOFF.local.md
+/*.local.code-workspace
 .env
 .env.*
 !.env.example

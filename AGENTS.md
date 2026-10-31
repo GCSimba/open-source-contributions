@@ -1,6 +1,6 @@
 # AGENTS.md
 
-这是跨项目贡献档案。先定位 `projects/<owner>/<repository>/README.md`，再定位对应 PR 记录。
+这是跨项目贡献档案。接手先读 `HANDOFF.md`，本机存在 `HANDOFF.local.md` 时一并读取，再定位 `projects/<owner>/<repository>/README.md` 和对应 PR 记录。
 
 ## 源码与分支
 

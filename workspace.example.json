@@ -11,6 +11,13 @@
       "evidence": ".cache/sgl-project/sglang",
       "linux_venv": null,
       "wsl_distribution": null
+    },
+    "vllm-project/vllm": {
+      "checkout": ".workspaces/vllm-project/vllm",
+      "evidence": ".cache/vllm-project/vllm",
+      "linux_mirror": null,
+      "linux_venv": null,
+      "wsl_distribution": null
     }
   }
 }

@@ -1,0 +1,88 @@
+{
+  "pr": 64935,
+  "base": "564ac0de1b228568cafcbfbe8ccaccc82d6023eb",
+  "commit": "a36cacaf1209e9d69034bae92e52156b7903b3f6",
+  "pre_signoff_commit": "e52716617fbfbca396b4ec1873c899c2531358ca",
+  "pre_rebase_commit": "4784d89dccf0a8abf6684956c9375ec92f85bcdf",
+  "pre_rebase_base": "cfa9f96f5efbb45c5c02ab127b51eaf8b86bb4ca",
+  "rebase_patch_identical": true,
+  "patch_id": "566011db626bd7d8d46424725bdb9d619afb6208",
+  "upstream_changes_between_bases": "recipes/models/*.yaml only",
+  "validation_date": "2026-11-01",
+  "environment": "Ubuntu24.04/WSL2, Python3.12, CPU only (Intel i5-11300H, AVX-512), torch2.14.0+cpu, --enforce-eager",
+  "binary": "Compiled extensions from the vLLM CPU nightly wheel 0.33.0rc1.dev421+g2b009fc6d; Python sources from the branch, mirrored into the Linux filesystem",
+  "tested_blobs": {
+    "vllm/entrypoints/openai/chat_completion/batch_serving.py": "cfd0d1864f98adec988628877a9e733694366333",
+    "tests/entrypoints/openai/chat_completion/test_include_reasoning.py": "097d5540349a566b35c5b2b6b1c2c23ee07e9b35",
+    "tests/entrypoints/openai/chat_completion/test_batched_chat_completions.py": "5b5697f7a2696e1230c61fcf98ed45b0686f00bf"
+  },
+  "server": "Qwen/Qwen3-0.6B --reasoning-parser qwen3 --max-model-len 2048 --enforce-eager (module fixture via RemoteOpenAIServer)",
+  "before_fix": {
+    "batch_serving_blob": "43c07272270c9b2e62cc0535e4bda82fe15dfb82",
+    "command": "pytest tests/entrypoints/openai/chat_completion/test_include_reasoning.py -k test_batch_reasoning_tokens_in_usage",
+    "result": {
+      "failed": 1,
+      "deselected": 6
+    },
+    "failure": "test_include_reasoning.py:118 assert None is not None (usage.completion_tokens_details is null)",
+    "run_at": "2026-11-01 08:28 Asia/Shanghai"
+  },
+  "after_fix": {
+    "regression_test": {
+      "command": "pytest tests/entrypoints/openai/chat_completion/test_include_reasoning.py -k test_batch_reasoning_tokens_in_usage",
+      "passed": 1,
+      "deselected": 6,
+      "run_at": "2026-11-01 07:30 Asia/Shanghai"
+    },
+    "include_reasoning_file": {
+      "command": "pytest tests/entrypoints/openai/chat_completion/test_include_reasoning.py",
+      "passed": 7,
+      "failed": 0,
+      "run_at": "2026-11-01 08:38 Asia/Shanghai"
+    },
+    "batch_unit_tests": {
+      "command": "pytest tests/entrypoints/openai/chat_completion/test_batched_chat_completions.py -k \"echo or harmony or kv_transfer or parser_receives or reasoning_wiring\"",
+      "command_note": "Equivalent selection, verified with --collect-only to pick the same six tests that ran",
+      "passed": 6,
+      "deselected": 6,
+      "run_at": "2026-11-01 07:01 Asia/Shanghai"
+    },
+    "usage_probe": {
+      "script": "research/repros/batch_usage_probe.py",
+      "request": "max_tokens=64, temperature=0, include_reasoning=false",
+      "single": {
+        "completion_tokens": 64,
+        "reasoning_tokens": 63
+      },
+      "batch_of_two": {
+        "completion_tokens": 128,
+        "reasoning_tokens": 126
+      },
+      "run_at": "2026-11-01 07:32 Asia/Shanghai"
+    }
+  },
+  "earlier_test_draft": {
+    "difference": "No \"temperature\": 0 in the request; added at 07:26",
+    "before_fix": "1 failed, 6 deselected at test_include_reasoning.py:117 (06:58)",
+    "include_reasoning_file_after_fix": "7 passed (07:04)",
+    "note": "Superseded by the reruns of the final test above; the PR description line number was corrected to 118"
+  },
+  "pre_commit": {
+    "command": "SKIP=shellcheck pre-commit run --files <6 changed files>",
+    "passed_hooks": 18,
+    "failed_hooks": 0,
+    "skipped_no_files": 17,
+    "skipped": [
+      "shellcheck (binary download timed out locally; no shell files changed)"
+    ],
+    "run_at": "2026-11-01 08:00 Asia/Shanghai"
+  },
+  "not_run": [
+    "server tests in test_batched_chat_completions.py (Qwen/Qwen2.5-1.5B-Instruct, no reasoning parser)",
+    "GPU and ROCm CI",
+    "Rust frontend (new test deselected there; the endpoint is not supported)",
+    "model evaluation (outputs unchanged; only response usage changes)"
+  ],
+  "official_ci": "pre-run-check fails until a maintainer adds verified/ready (new contributor); Buildkite not started, needs /ci run (checked 2026-11-01 08:41 Asia/Shanghai)",
+  "patch_sha256": "5f824ce5f1a9b913ab442ded19d2c2331e4ffc68bdecab2d59ba53f7fadd1684"
+}

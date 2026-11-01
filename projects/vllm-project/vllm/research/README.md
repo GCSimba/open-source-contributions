@@ -1,0 +1,34 @@
+# vLLM 研究记录
+
+## 候选筛选
+
+筛选限定在本机没有 GPU、能在 CPU 上端到端验证的问题，主要检查 OpenAI 兼容服务入口（`vllm/entrypoints/openai/`）。vLLM 前端的热门缺陷常在报告后数小时内就有人提交 PR，动手前需要先搜索开放 PR 和 issue。
+
+| 候选 | 结论 | 依据 |
+| --- | --- | --- |
+| `/v1/chat/completions/batch` 不报告 `completion_tokens_details.reasoning_tokens` | 已确认并提交 [#64935](https://github.com/vllm-project/vllm/pull/64935) | [PR 记录](../prs/64935-batch-reasoning-tokens/README.md)、[usage 探针](repros/README.md) |
+| generative scoring 的参数与顺序问题 | 重复，不再提交 | 已有 [#64468](https://github.com/vllm-project/vllm/pull/64468)、[#63625](https://github.com/vllm-project/vllm/pull/63625) |
+| beam search 不遵守 stop 字符串 | 重复，不再提交 | 已有 [#52621](https://github.com/vllm-project/vllm/pull/52621) |
+| 在线服务中 beam search 与 structured outputs 组合 | 重复，不再提交 | 已有 [#36285](https://github.com/vllm-project/vllm/pull/36285) |
+| `/tokenize` 的 `mm_processor_kwargs` 处理 | 不是缺陷 | 核实后符合当前设计 |
+| Gemma4 参数被原地修改 | 未继续 | 影响面窄，不足以单独提交 |
+
+“没有同题 PR”只代表搜索时的公开记录，不能证明没有其他人在私下处理。
+
+## #64935 的相关 PR
+
+状态核验于 2026-11-01（Asia/Shanghai）。
+
+| PR | 状态 | 内容 | 与 #64935 的关系 |
+| --- | --- | --- | --- |
+| [#64757](https://github.com/vllm-project/vllm/pull/64757) | 10 月 31 日合并 | 同一端点报告 `prompt_tokens_details` | 先例，只处理 prompt 侧 |
+| [#64041](https://github.com/vllm-project/vllm/pull/64041) | Open | derender 接口报告 reasoning 与 cached tokens | 不同端点 |
+| [#58010](https://github.com/vllm-project/vllm/pull/58010) | Open | `include_reasoning=false` 时隐藏批量响应的 `logprobs`、`token_ids` | 不涉及 usage；与本 PR 修改同一函数的不同段落，后合并的一方可能需要变基 |
+| [#62727](https://github.com/vllm-project/vllm/pull/62727) | Open | 批量 chat completions 遵守 `X-Vllm-Priority` | 修改同一文件，不涉及 usage |
+| [#55432](https://github.com/vllm-project/vllm/pull/55432) | Open | reasoning effort 映射到 thinking budget | 修改同一文件，不涉及 usage |
+
+上游 `test_include_reasoning.py` 的模块说明要求隐藏推理内容时 reasoning tokens 仍体现在 usage 中，#64935 在批量接口沿用这一语义。
+
+## 贡献节奏参考
+
+vLLM 与 SGLang 的合并耗时和未回复积压对比见 [PR 节奏分析](../../../sgl-project/sglang/research/pr-latency-analysis.md)，数据范围与结论在该文中说明。

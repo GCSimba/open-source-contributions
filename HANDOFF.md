@@ -4,7 +4,7 @@
 
 ## 目标与已完成工作
 
-维护跨项目开源贡献档案，并继续处理 Google ADK Kotlin 与 SGLang 的已提交 PR、审核意见及后续候选问题。档案仓库为 [GCSimba/open-source-contributions](https://github.com/GCSimba/open-source-contributions)，初始归档提交为 `f34357d8e81c63acf2725284ad901cbac959f28f`。
+维护跨项目开源贡献档案，并继续处理 Google ADK Kotlin、SGLang 与 vLLM 的已提交 PR、审核意见及后续候选问题。档案仓库为 [GCSimba/open-source-contributions](https://github.com/GCSimba/open-source-contributions)，初始归档提交为 `f34357d8e81c63acf2725284ad901cbac959f28f`。
 
 已整理三个 PR 的问题、补丁、验证摘要、审核结果，以及五份有效历史复现草稿。链接、JSON、补丁来源、哈希和公开内容检查已通过。实际源码、工具和完整原始证据保留在独立目录，通过忽略的本地入口关联。
 
@@ -89,3 +89,17 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 - SGLang 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。测试必须在 Linux 中运行；Windows 本机缺少 `resource` 模块且 Python 版本不足。
 - 不要在 WSL 中对 Windows checkout 直接运行 `pre-commit run`：换行符差异会让 Git 把全仓库视为已修改。按 PR 记录，直接对改动文件运行同版本工具。
 - 下一步：刷新 #47649 的审核与 CI；需要维护者添加 `run-ci`。收到审核意见后在源码分支修改并推送到同一分支。
+
+## vLLM
+
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-01 08:41（Asia/Shanghai）**：
+
+| PR | 状态 | 分支 / 修复提交 | 详细记录 |
+| --- | --- | --- | --- |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | Open，等待审核；尚无人工评论 | `fix/batch-chat-reasoning-tokens` / `a36caca` | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+
+- DCO 通过。`pre-run-check` 失败，原因是新贡献者需要维护者添加 `verified`/`ready` 标签，不是代码问题；pre-commit 与文档预览因此未运行。门禁日志要求 AI agent 不要请求添加标签。Buildkite 完整 CI 需要审阅者评论 `/ci run`，触发前分支须与 main 相差 0 个提交。
+- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；`test_include_reasoning.py` 7 通过，批量单元测试 6 通过，改动文件的 pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未运行。
+- vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。
+- 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
+- 下一步：刷新 #64935 的审核与 CI。收到审核意见后在源码分支修改，带 `-s` 提交并推送到同一分支。

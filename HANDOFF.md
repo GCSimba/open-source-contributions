@@ -100,7 +100,7 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 | PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
-| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **已获 DarkLight1337 批准**，带 `ready` 标签；完整 CI（Buildkite #99182）运行中 | `fix/batch-chat-reasoning-tokens` / `2a40ba7`（机器人合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **已获 DarkLight1337 批准**，带 `ready` 标签；完整 CI（Buildkite #99182）已跑完：65 通过，AMD MI355 的 basic-models 分片失败，尚未确认是否与本 PR 有关 | `fix/batch-chat-reasoning-tokens` / `2a40ba7`（机器人合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
 
 - 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，回复后审阅者于 21:09 批准，并评论 `/ci run`。
 - 分支当时落后 main 50 个提交，机器人把 main 合入分支（合并提交 `2a40ba7`，作者 vllm-agent）后才启动 CI。本地分支已快进到 `2a40ba7`；以后推送前必须先拉取远端分支。
@@ -108,4 +108,5 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 - 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未在本地运行，由 Buildkite 覆盖。
 - vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
-- 下一步：查看 Buildkite #99182 的结果。若有失败，先判断是否与本 PR 有关（本 PR 只改 4 个文件）；相关的失败在源码分支修复，带 `-s` 提交并推送，回复和签名先经用户确认。CI 通过后等待有合并权限的维护者合并。
+- 下一步：查看 Buildkite #99182 中 AMD MI355 basic-models 分片的失败原因，判断是否与本 PR 有关（本 PR 只改 4 个文件，均在前端和测试）；如无关，等待有合并权限的维护者处理。相关的失败在源码分支修复，带 `-s` 提交并推送，回复和签名先经用户确认。
+- 11-02 第二轮找题暂停：找到的真实问题都已有 PR，详见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。`/v1/completions` 缺少 `created_cache_tokens` 可等 #58116 合并后再提。

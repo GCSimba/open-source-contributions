@@ -15,6 +15,26 @@
 
 “没有同题 PR”只代表搜索时的公开记录，不能证明没有其他人在私下处理。
 
+## 2026-11-02 第二轮筛选（暂停）
+
+基于 main `e8570ef`，本机仅 CPU。方法：
+
+- 检查近 10 天合并的 16 个前端 PR，看兄弟路径是否遗漏同样的修复；
+- 三轮差分探针，约 45 组对照：流式与非流式 usage，`/tokenize`、`count_tokens` 与实际生成的 prompt token 数，Responses、Anthropic、batch、completions 之间，prefix cache 命中，n=2，以及 Prometheus 指标增量与 usage；
+- 静态检查 batch 端点、run-batch、pooling（rerank/score）、Cohere 兼容接口、`developer` 角色处理。
+
+| 候选 | 结论 | 依据 |
+| --- | --- | --- |
+| `/v1/completions` 多 prompt 时 `cached_tokens` 只取一个 prompt（非流式取最后一个，流式取最先返回的） | 重复 | [#58116](https://github.com/vllm-project/vllm/pull/58116)，9 月起开放，需要 rebase |
+| 流式第一个 usage 块没有缓存拆分，导致 Anthropic `message_start` 报告 `input_tokens=256` 且没有 cache 字段 | 重复 | [#65036](https://github.com/vllm-project/vllm/pull/65036)，11-02 已批准 |
+| Anthropic `/v1/messages` 静默忽略 `min_tokens` | 重复 | issue [#65095](https://github.com/vllm-project/vllm/issues/65095)；[#65057](https://github.com/vllm-project/vllm/pull/65057)、[#47613](https://github.com/vllm-project/vllm/pull/47613) |
+| `/v1/completions` 从不报告 `created_cache_tokens`（chat、batch、Responses、Anthropic 都有） | 未被覆盖，但与 #58116 改的是同一段代码 | 等 #58116 合并后可作为后续 PR |
+| Cohere `/v2/embed` 的 `truncate=END` 没有明确指定方向，沿用 tokenizer 默认值 | 不提交 | 19 个主流 embedding 模型都默认从右截断，不会触发 |
+| run-batch 中一行请求非法会让整批失败 | 设计如此 | `test_completions_invalid_input` 要求返回码非 0 |
+| Prometheus 指标、pooling、batch 与单对话、`developer` 角色 | 一致，无问题 | 差分探针与源码 |
+
+结论：vLLM 前端有大量（含 AI 辅助的）贡献者在系统排查，新报告的 bug 往往几小时内就有 PR。探针脚本保存在本地工具目录，可在新功能合入后重跑。
+
 ## #64935 的相关 PR
 
 状态核验于 2026-11-01（Asia/Shanghai）。

@@ -2,9 +2,10 @@
   "pr": 837,
   "base": "2809a837752644f3720eaa759d2cb5144ba1a84e",
   "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
-  "validation_date": "2026-10-31",
-  "environment": "Windows, JDK21",
+  "validation_date": "2026-11-01",
   "focused": {
+    "environment": "Windows, JDK21",
+    "date": "2026-10-31",
     "jvm": {
       "tests": 17,
       "failures": 0,
@@ -21,12 +22,76 @@
   "format": "passed",
   "diff_check": "passed",
   "repository_build": {
+    "status": "passed",
+    "environment": "Ubuntu24.04/WSL2, effective user root, OpenJDK21.0.12.1, Gradle wrapper 9.8.0, Android platform 37.0, build-tools 36.0.0 and 37.0.0",
+    "date": "2026-11-01",
+    "command": "./gradlew -PjdkVersion=21 \"-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g\" -Dorg.gradle.parallel=false --max-workers=2 --no-daemon --console=plain --stacktrace --continue build",
+    "tasks": 500,
+    "executed": 500,
+    "up_to_date": 0,
+    "reported_duration": "10h 2m 16s",
+    "active_minutes_approx": 32,
+    "suspension": "Windows modern standby 12:43-22:13 Asia/Shanghai suspended WSL; no build output and no test suite fell inside that window",
+    "suites": 597,
+    "tests": 10547,
+    "passed": 10529,
+    "failures": 0,
+    "errors": 0,
+    "skipped_xml_records": 18,
+    "flaky_failures": 0,
+    "core": {
+      "jvm": {
+        "passed": 4876,
+        "skipped_xml_records": 6
+      },
+      "android_host": {
+        "passed": 4477,
+        "skipped_xml_records": 0
+      }
+    },
+    "load_artifacts_tool_test": {
+      "jvm": "17/17",
+      "android_host": "17/17"
+    },
+    "suites_that_failed_on_windows": {
+      "LocalEnvironmentTest": "58/58, includes execute_cancellation_killsProcessTree",
+      "SkillToolsetEnvironmentTest": "35/35",
+      "EnvironmentToolsetTest": "24/24",
+      "McpToolsetIntegrationTest": "22/22",
+      "McpResultSerializationIntegrationTest": "1/1",
+      "McpAgentIntegrationTest": "2 passed, 6 skipped records (no GOOGLE_API_KEY)"
+    },
+    "post_build": {
+      "working_tree_clean": true,
+      "patch_sha256_unchanged": true,
+      "ktfmt": "0.65 --google-style dry-run passed on both changed files"
+    }
+  },
+  "windows_repository_build": {
     "status": "incomplete",
+    "date": "2026-10-31",
     "deadline_minutes": 20,
     "local_exclusions": [
       "LocalEnvironmentTest.execute_cancellation_killsProcessTree*"
     ],
     "notes": "External init only; no repository test exclusions. Other shell/symlink failures and MCP initialization timeouts remained visible. MCP root cause unconfirmed."
   },
+  "skipped_notes": "Raw XML records, not unique method counts: 8 Firebase integration cases without credentials, 4 LiteRT-LM cases without a model, 2 live Gemini MCP methods recorded 3 times each. Same set as #838.",
+  "comparison_with_838": "10529 vs 10531 passed: both branches add their own tests to the same base (#838 +4 and #837 +3 per platform).",
+  "local_test_exclusions": [],
+  "integration_retries": "repository defaults",
+  "resource_overrides": {
+    "gradle_heap": "3g",
+    "metaspace": "1g",
+    "workers": 2,
+    "project_parallelism": false
+  },
+  "not_run": [
+    "Android device tests",
+    "real backend/model execution",
+    "JDK17/25 matrix",
+    "Dokka (KDoc unchanged)"
+  ],
+  "upstream_after_validation": "main moved 2 commits by 2026-11-02 (workflow and a2a files only); PR still mergeable, no rebase",
   "patch_sha256": "a5f814f024e97ede66f5bb2750628de6fb6efcc40b6029c2a9b25e147da366b7"
 }

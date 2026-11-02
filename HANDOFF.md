@@ -1,6 +1,6 @@
 # VS Code 工作交接
 
-交接日期：2026-10-31（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
+交接日期：2026-10-31，最近更新 2026-11-02（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
 
 ## 目标与已完成工作
 
@@ -33,15 +33,15 @@ git -C $adkProject.checkout remote -v
 
 ## PR 快照
 
-以下状态核验于 **2026-10-31 20:39（Asia/Shanghai）**。
+以下状态核验于 **2026-11-02 20:33（Asia/Shanghai）**。
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#774](https://github.com/google/adk-kotlin/pull/774) | 已于 10 月 29 日合并 | `codex/reject-metadata-artifact-filenames` / `2bd0480` | [保留路径校验](projects/google/adk-kotlin/prs/774-metadata-path/README.md) |
-| [#837](https://github.com/google/adk-kotlin/pull/837) | Open，暂无评论或审核 | `codex/fix-parallel-artifact-loading` / `433fbd2` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
-| [#838](https://github.com/google/adk-kotlin/pull/838) | Open，暂无评论或审核 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
+| [#837](https://github.com/google/adk-kotlin/pull/837) | Open，暂无评论或审核；PR 描述已补充 Linux 全量构建结果 | `codex/fix-parallel-artifact-loading` / `433fbd2` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
+| [#838](https://github.com/google/adk-kotlin/pull/838) | Open；评论者认为与 #825 部分重叠，已回复，等待回应 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
 
-两个开放 PR 的 CLA、`check-changes` 已通过，validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，无需因新 PR 重复签署。
+两个开放 PR 的 CLA、`check-changes` 已通过，validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，无需因新 PR 重复签署。main 已比两个分支的基线新增 2 个提交，不涉及两个 PR 的文件，未变基。
 
 读取时，实际 ADK checkout 位于 #838 分支、HEAD 为 `5a24148a114f1736fae7ae12bcd5817e50e668ab`，跟踪 `fork/codex/inherit-agent-tool-run-config`，工作区干净。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
 
@@ -50,15 +50,15 @@ git -C $adkProject.checkout remote -v
 ## 验证结论与限制
 
 - #774：最终 JVM44/44、Android host44/44、Dokka 和格式/差异检查通过；Windows 全仓库构建未完成。早期孤立 harness 的40项检查是另一组历史证据。
-- #837：JVM17/17、Android host17/17和格式检查通过；Windows 全量构建在20分钟后未完成，使用过只排除一个已知无限等待用例的本地 init 脚本。尚无本分支完整 Linux 构建通过记录。
+- #837：JVM17/17、Android host17/17和格式检查通过（Windows）。2026-11-01 在独立 Linux 副本完成全仓库构建：500 个任务全部执行，10529 通过、0 失败、18 条原始 XML 跳过记录；Windows 上失败或超时的环境与 MCP 套件在 Linux 均无失败。此前的 Windows 全量构建在 20 分钟后未完成。
 - #838：JVM/Android host 的 AgentToolTest 均31/31；Ubuntu24.04/WSL2、JDK21的完整 core 与仓库构建通过。完整仓库汇总10531通过、0失败、18条原始XML跳过记录，包含已完成 core 结果的复用。
 
-#838 的成功不能作为 #837 的通过证据。外部凭据/本地模型相关跳过、设备测试及 JDK17/25矩阵等未验证范围详见 [#838 验证记录](projects/google/adk-kotlin/prs/838-agent-tool-config/validation.json)。本地通过也不表示官方 CI 已运行。
+两个分支各有自己的 Linux 全量结果，不能互相替代。外部凭据/本地模型相关跳过、设备测试及 JDK17/25矩阵等未验证范围详见各 PR 的 validation.json。本地通过也不表示官方 CI 已运行。
 
 ## 下一步顺序
 
-1. 先刷新 #837、#838 的审核与 CI；目前没有待修的审核意见，也没有正在执行的本地构建。
-2. 一项有价值的独立后续工作是为 #837 补 Linux 完整验证：使用单独工作副本和该 PR 的实际提交，复用工具缓存，并按上游要求运行检查。现有 Linux 验证副本包含 #838 的改动，不能直接当成 #837 环境。
+1. 先刷新 #837、#838 的审核与 CI。#838 正在等待评论者对 #825 关系的回应；#837 没有待处理事项，也没有正在执行的本地构建。
+2. #838 的后续：若 #825 合入，在 #838 分支 amend 一个验证 `toolExecutionMode` 被继承的测试，重跑 `AgentToolTest` 及受影响检查；若评论者确认 #825 的内部版本已覆盖 `AgentTool`，按其意见关闭。回复和关闭都先经用户确认。
 3. 收到审核意见后，在对应源码分支修复，运行受影响检查，再按项目规则更新同一个 PR；ADK 要求一个提交，改历史使用 `--force-with-lease`，发现远端移动先停下来核对。
 4. 每次状态或验证变化更新目标 PR 的 README/验证摘要，再提交到档案仓库。
 
@@ -76,9 +76,11 @@ Linux 曾缺少 build-tools36.0.0，SDK自动下载也曾超时；补齐官方�
 
 Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 workers并关闭项目并行；没有给成功的 Linux 检查加测试排除或禁用标志。Windows旧MCP全量超时根因未确认，不能统一归因为 Windows；独立探针和 Linux 本地 MCP 测试均通过。实际环境路径和命令见仅本地的交接记录。
 
+长时间构建前关闭 Windows 睡眠和新型待机：待机时 WSL 虚拟机会被挂起。2026-11-01 的 #837 构建因此报告耗时 10 小时，实际只运行了约 32 分钟。判断构建是否卡住时，先看 Windows Kernel-Power 事件（506/507）和构建产物的修改时间。
+
 ## SGLang
 
-2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-10-31 23:46（Asia/Shanghai）**：
+2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-11-02 20:35（Asia/Shanghai）**，与 10-31 相比没有变化：
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
@@ -92,14 +94,15 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## vLLM
 
-2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-01 08:41（Asia/Shanghai）**：
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-02 20:52（Asia/Shanghai）**：
 
-| PR | 状态 | 分支 / 修复提交 | 详细记录 |
+| PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
-| [#64935](https://github.com/vllm-project/vllm/pull/64935) | Open，等待审核；尚无人工评论 | `fix/batch-chat-reasoning-tokens` / `a36caca` | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | Open；DarkLight1337 的 1 条审核意见已修改并回复，等待审阅者确认 | `fix/batch-chat-reasoning-tokens` / `f062ee2` | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
 
-- DCO 通过。`pre-run-check` 失败，原因是新贡献者需要维护者添加 `verified`/`ready` 标签，不是代码问题；pre-commit 与文档预览因此未运行。门禁日志要求 AI agent 不要请求添加标签。Buildkite 完整 CI 需要审阅者评论 `/ci run`，触发前分支须与 main 相差 0 个提交。
-- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；`test_include_reasoning.py` 7 通过，批量单元测试 6 通过，改动文件的 pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未运行。
+- 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，普通推送、未改写历史，在讨论下回复并更新了 PR 描述。
+- 两个提交的 DCO 均通过。`pre-run-check` 失败，原因是新贡献者需要维护者添加 `verified`/`ready` 标签，不是代码问题；pre-commit 与文档预览因此未运行。门禁日志要求 AI agent 不要请求添加标签。Buildkite 完整 CI 需要审阅者评论 `/ci run`；分支落后 main 时，机器人会在运行前自动合入 main。
+- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未运行。
 - vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
-- 下一步：刷新 #64935 的审核与 CI。收到审核意见后在源码分支修改，带 `-s` 提交并推送到同一分支。
+- 下一步：刷新 #64935 的审核与 CI。收到新意见后在源码分支修改，带 `-s` 提交并推送到同一分支；回复和签名先经用户确认。

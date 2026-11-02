@@ -2,6 +2,11 @@
   "pr": 64935,
   "base": "564ac0de1b228568cafcbfbe8ccaccc82d6023eb",
   "commit": "a36cacaf1209e9d69034bae92e52156b7903b3f6",
+  "head_commit": "f062ee20a68955beaf9022299d9dea955c82a7df",
+  "commits": [
+    "a36cacaf1209e9d69034bae92e52156b7903b3f6 fix",
+    "f062ee20a68955beaf9022299d9dea955c82a7df review: skip under VLLM_USE_RUST_FRONTEND, revert Buildkite YAML"
+  ],
   "pre_signoff_commit": "e52716617fbfbca396b4ec1873c899c2531358ca",
   "pre_rebase_commit": "4784d89dccf0a8abf6684956c9375ec92f85bcdf",
   "pre_rebase_base": "cfa9f96f5efbb45c5c02ab127b51eaf8b86bb4ca",
@@ -80,9 +85,37 @@
   "not_run": [
     "server tests in test_batched_chat_completions.py (Qwen/Qwen2.5-1.5B-Instruct, no reasoning parser)",
     "GPU and ROCm CI",
-    "Rust frontend (new test deselected there; the endpoint is not supported)",
+    "the Rust frontend server itself (the new test skips under VLLM_USE_RUST_FRONTEND; skip confirmed locally)",
     "model evaluation (outputs unchanged; only response usage changes)"
   ],
-  "official_ci": "pre-run-check fails until a maintainer adds verified/ready (new contributor); Buildkite not started, needs /ci run (checked 2026-11-01 08:41 Asia/Shanghai)",
-  "patch_sha256": "5f824ce5f1a9b913ab442ded19d2c2331e4ffc68bdecab2d59ba53f7fadd1684"
+  "official_ci": "pre-run-check fails until a maintainer adds verified/ready (new contributor); Buildkite not started, needs /ci run (checked 2026-11-02 20:52 Asia/Shanghai)",
+  "patch_sha256": "a8a658c2fc7b65da626df382cc394b5de79a06a3934b0067f6965a1a75365df4",
+  "review_round_1": {
+    "reviewer": "DarkLight1337",
+    "comment": "https://github.com/vllm-project/vllm/pull/64935#discussion_r4439453409",
+    "request": "skip the test with pytest.skip gated on VLLM_USE_RUST_FRONTEND instead of editing the Buildkite YAML",
+    "commit": "f062ee20a68955beaf9022299d9dea955c82a7df",
+    "rust_frontend_skip": {
+      "command": "VLLM_USE_RUST_FRONTEND=1 pytest tests/entrypoints/openai/chat_completion/test_include_reasoning.py -k test_batch_reasoning_tokens_in_usage -rs",
+      "skipped": 1,
+      "deselected": 6,
+      "seconds": 5.34,
+      "run_at": "2026-11-02 20:36 Asia/Shanghai"
+    },
+    "include_reasoning_file": {
+      "command": "pytest tests/entrypoints/openai/chat_completion/test_include_reasoning.py",
+      "passed": 7,
+      "failed": 0,
+      "run_at": "2026-11-02 20:41 Asia/Shanghai"
+    },
+    "pre_commit": {
+      "status": "passed",
+      "skipped": [
+        "shellcheck (SKIP)"
+      ],
+      "run_at": "2026-11-02 20:49 Asia/Shanghai"
+    },
+    "reply": "https://github.com/vllm-project/vllm/pull/64935#discussion_r4442587487"
+  },
+  "patch_range": "564ac0de1b228568cafcbfbe8ccaccc82d6023eb..f062ee20a68955beaf9022299d9dea955c82a7df"
 }

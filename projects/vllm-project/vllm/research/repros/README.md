@@ -4,7 +4,7 @@
 
 对同一个 reasoning 服务，分别通过 `/v1/chat/completions` 和 `/v1/chat/completions/batch` 发送同一对话，打印两者的 `usage`，用于 #64935 的前后对照。
 
-- 适用提交：修复提交 `a36cacaf1209e9d69034bae92e52156b7903b3f6`（实际运行于内容相同的变基前版本，基线 `cfa9f96f5efbb45c5c02ab127b51eaf8b86bb4ca`）。修复前的批量 usage 缺失由回归测试的失败输出证明，探针只在修复后运行过。
+- 适用提交：修复提交 `a36cacaf1209e9d69034bae92e52156b7903b3f6`（实际运行于内容相同的变基前版本，基线 `cfa9f96f5efbb45c5c02ab127b51eaf8b86bb4ca`）；审核修改 `f062ee2` 只改测试的跳过条件和 Buildkite 文件，没有改 `batch_serving.py`。修复前的批量 usage 缺失由回归测试的失败输出证明，探针只在修复后运行过。
 - 做法：用 vLLM 测试工具 `RemoteOpenAIServer` 启动 `Qwen/Qwen3-0.6B --reasoning-parser qwen3 --max-model-len 2048 --enforce-eager`，请求参数为 `max_tokens=64`、`temperature=0`、`include_reasoning=false`，批量请求包含同一对话两次。
 - 运行：从 vLLM 源码根目录、在已安装 vLLM 的 Linux 环境中执行，脚本需导入源码中的 `tests.utils`：
 

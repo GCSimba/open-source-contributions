@@ -10,8 +10,8 @@
     },
     {
       "path": "prs/64935-batch-reasoning-tokens/change.patch",
-      "bytes": 8981,
-      "sha256": "5f824ce5f1a9b913ab442ded19d2c2331e4ffc68bdecab2d59ba53f7fadd1684"
+      "bytes": 6824,
+      "sha256": "a8a658c2fc7b65da626df382cc394b5de79a06a3934b0067f6965a1a75365df4"
     },
     {
       "path": "research/repros/batch_usage_probe.py",

@@ -27,7 +27,7 @@ vLLM 是面向大语言模型的高吞吐推理与服务引擎，提供 OpenAI �
 
 [研究记录](research/README.md) 汇总候选筛选和已排除的重复选题；[复现目录](research/repros/README.md) 保存对比单对话与批量接口 usage 的探针脚本。vLLM 与 SGLang 的 PR 节奏对比见 [SGLang 研究目录中的分析](../../sgl-project/sglang/research/pr-latency-analysis.md)。
 
-各 PR 的 `change.patch` 来自修复提交与其父提交之间的 Git 差异；SHA、来源见记录及 [artifacts.json](artifacts.json)。最终源码和后续变化以对应上游 PR 为准。
+各 PR 的 `change.patch` 是 PR 基线到最新提交的累计 Git 差异（只有一个提交时即修复提交与其父提交之间的差异）；SHA、来源见记录及 [artifacts.json](artifacts.json)。最终源码和后续变化以对应上游 PR 为准。
 
 ## 本地工作位置
 

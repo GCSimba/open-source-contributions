@@ -17,7 +17,7 @@ ADK 是用于构建、运行和组合 AI agent 的开发工具包。这里记录
 | [#837](https://github.com/google/adk-kotlin/pull/837) | 加载同批并行工具响应中的全部 artifact | [问题、回归与验证](prs/837-parallel-artifacts/README.md) |
 | [#838](https://github.com/google/adk-kotlin/pull/838) | AgentTool 继承调用配置 | [问题、回归与验证](prs/838-agent-tool-config/README.md) |
 
-各 PR 记录自己的提交和验证结果。#837 与 #838 从相同基线创建独立分支，#838 的全量构建结果不用于证明 #837。
+各 PR 记录自己的提交和验证结果。#837 与 #838 从相同基线创建独立分支，各自在 Linux 完成了全量构建；一个分支的结果不用于证明另一个分支。
 
 ## 研究与复现
 

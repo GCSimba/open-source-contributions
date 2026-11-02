@@ -1,0 +1,137 @@
+{
+  "a2a/build/test-results/jvmTest": {
+    "suites": 5,
+    "tests": 76,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "core/build/test-results/jvmTest": {
+    "suites": 281,
+    "tests": 4882,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 6,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "core/build/test-results/testAndroidHostTest": {
+    "suites": 248,
+    "tests": 4477,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "examples/spring-boot/java/build/test-results/test": {
+    "suites": 1,
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "examples/spring-boot/kotlin/build/test-results/test": {
+    "suites": 1,
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "firebase/build/test-results/testDebugUnitTest": {
+    "suites": 7,
+    "tests": 110,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 8,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "integrations/anthropic/build/test-results/test": {
+    "suites": 2,
+    "tests": 64,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "integrations/bigquery/build/test-results/test": {
+    "suites": 6,
+    "tests": 171,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "integrations/openai/build/test-results/jvmTest": {
+    "suites": 2,
+    "tests": 84,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "integrations/spring/build/test-results/test": {
+    "suites": 4,
+    "tests": 62,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "litertlm/build/test-results/jvmTest": {
+    "suites": 2,
+    "tests": 53,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "mlkit/build/test-results/testDebugUnitTest": {
+    "suites": 3,
+    "tests": 51,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "processor/build/test-results/test": {
+    "suites": 1,
+    "tests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "testing/build/test-results/jvmTest": {
+    "suites": 1,
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  },
+  "webserver/build/test-results/test": {
+    "suites": 33,
+    "tests": 412,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyFailures": 0,
+    "failedCases": []
+  }
+}

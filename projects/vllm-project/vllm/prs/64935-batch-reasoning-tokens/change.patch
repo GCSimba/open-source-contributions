@@ -1,31 +1,3 @@
-diff --git a/.buildkite/test-amd.yaml b/.buildkite/test-amd.yaml
-index febef32..74d6fa8 100644
---- a/.buildkite/test-amd.yaml
-+++ b/.buildkite/test-amd.yaml
-@@ -1824,7 +1824,8 @@ steps:
-   - export VLLM_WORKER_MULTIPROC_METHOD=spawn
-   - pytest -v -s benchmarks/test_serve_cli.py -k "not insecure and not (test_bench_serve and not test_bench_serve_chat)"
-   - pytest -v -s entrypoints/openai/chat_completion/test_chat_completion.py -k "not test_invalid_json_schema and not test_invalid_regex and not test_kv_transfer_prompt_token_ids_round_trip and not test_kv_transfer_prompt_token_ids_streaming"
--  - pytest -v -s entrypoints/openai/chat_completion/test_include_reasoning.py
-+  # The Rust frontend does not serve /v1/chat/completions/batch.
-+  - pytest -v -s entrypoints/openai/chat_completion/test_include_reasoning.py -k "not test_batch_reasoning_tokens_in_usage"
-   - pytest -v -s entrypoints/openai/chat_completion/test_chat_logit_bias_validation.py -k "not multiple"
-   - pytest -v -s entrypoints/openai/chat_completion/test_serving_chat.py -k "test_chat_per_request_metrics_follow_server_flag or test_streaming_reasoning_usage_counts_across_deltas or test_completion_tokens_details"
-   - pytest -v -s entrypoints/launchers/test_shutdown.py -k "not engine_failure and not test_abort_timeout_exits_quickly"
-diff --git a/.buildkite/test_areas/rust_frontend.yaml b/.buildkite/test_areas/rust_frontend.yaml
-index 4e978d6..f0e66e8 100644
---- a/.buildkite/test_areas/rust_frontend.yaml
-+++ b/.buildkite/test_areas/rust_frontend.yaml
-@@ -39,7 +39,8 @@ steps:
-   - pytest -v -s benchmarks/test_serve_cli.py
-   # The Rust frontend re-renders messages instead of reusing kv_transfer_params["prompt_token_ids"].
-   - pytest -v -s entrypoints/openai/chat_completion/test_chat_completion.py -k "not test_kv_transfer_prompt_token_ids_round_trip and not test_kv_transfer_prompt_token_ids_streaming"
--  - pytest -v -s entrypoints/openai/chat_completion/test_include_reasoning.py
-+  # The Rust frontend does not serve /v1/chat/completions/batch.
-+  - pytest -v -s entrypoints/openai/chat_completion/test_include_reasoning.py -k "not test_batch_reasoning_tokens_in_usage"
-   - pytest -v -s entrypoints/openai/chat_completion/test_chat_logit_bias_validation.py
-   - pytest -v -s entrypoints/openai/chat_completion/test_chat_echo.py
-   - pytest -v -s entrypoints/openai/chat_completion/test_logprob_token_ids.py
 diff --git a/docs/serving/online_serving/openai_compatible_server.md b/docs/serving/online_serving/openai_compatible_server.md
 index b879034..ce6fddd 100644
 --- a/docs/serving/online_serving/openai_compatible_server.md
@@ -75,10 +47,10 @@ index 8fc9122..5b5697f 100644
      serving.chat_template_content_format = "auto"  # type: ignore[misc]  # Final attr
      serving.default_chat_template_kwargs = {}
 diff --git a/tests/entrypoints/openai/chat_completion/test_include_reasoning.py b/tests/entrypoints/openai/chat_completion/test_include_reasoning.py
-index 5eeca43..097d554 100644
+index 5eeca43..9c00212 100644
 --- a/tests/entrypoints/openai/chat_completion/test_include_reasoning.py
 +++ b/tests/entrypoints/openai/chat_completion/test_include_reasoning.py
-@@ -8,6 +8,7 @@ when ``include_reasoning=False``, for both streaming and non-streaming
+@@ -8,10 +8,12 @@ when ``include_reasoning=False``, for both streaming and non-streaming
  Chat Completions, while reasoning tokens remain represented in usage.
  """
  
@@ -86,11 +58,20 @@ index 5eeca43..097d554 100644
  import openai
  import pytest
  import pytest_asyncio
-@@ -95,6 +96,29 @@ async def test_reasoning_tokens_in_usage(client: openai.AsyncOpenAI):
+ 
++import vllm.envs as envs
+ from tests.utils import RemoteOpenAIServer
+ 
+ MODEL_NAME = "Qwen/Qwen3-0.6B"
+@@ -95,6 +97,33 @@ async def test_reasoning_tokens_in_usage(client: openai.AsyncOpenAI):
      assert details.reasoning_tokens > 0
  
  
 +@pytest.mark.asyncio
++@pytest.mark.skipif(
++    envs.VLLM_USE_RUST_FRONTEND,
++    reason="the Rust frontend does not serve /v1/chat/completions/batch",
++)
 +async def test_batch_reasoning_tokens_in_usage(server: RemoteOpenAIServer):
 +    """The batch endpoint reports hidden reasoning in usage like single chats."""
 +    async with httpx.AsyncClient() as http_client:

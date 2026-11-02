@@ -88,7 +88,7 @@
     "the Rust frontend server itself (the new test skips under VLLM_USE_RUST_FRONTEND; skip confirmed locally)",
     "model evaluation (outputs unchanged; only response usage changes)"
   ],
-  "official_ci": "pre-run-check fails until a maintainer adds verified/ready (new contributor); Buildkite not started, needs /ci run (checked 2026-11-02 20:52 Asia/Shanghai)",
+  "official_ci": "Approved by DarkLight1337 and labeled ready on 2026-11-02 21:09; pre-run-check, pre-commit, Check format and DCO pass. Buildkite #99182 running on bot merge commit 2a40ba7d5f566fc3cd420d79789f9dcda6177bf2 (main merged in, branch was 50 commits behind). Read the Docs fails on 11 mkdocs --strict cross-reference warnings from docstrings added on main by #63440 and #64029, unrelated to this PR (checked 2026-11-02 21:30 Asia/Shanghai)",
   "patch_sha256": "a8a658c2fc7b65da626df382cc394b5de79a06a3934b0067f6965a1a75365df4",
   "review_round_1": {
     "reviewer": "DarkLight1337",
@@ -115,7 +115,9 @@
       ],
       "run_at": "2026-11-02 20:49 Asia/Shanghai"
     },
-    "reply": "https://github.com/vllm-project/vllm/pull/64935#discussion_r4442587487"
+    "reply": "https://github.com/vllm-project/vllm/pull/64935#discussion_r4442587487",
+    "outcome": "approved 2026-11-02 21:09, /ci run triggered Buildkite #99182"
   },
-  "patch_range": "564ac0de1b228568cafcbfbe8ccaccc82d6023eb..f062ee20a68955beaf9022299d9dea955c82a7df"
+  "patch_range": "564ac0de1b228568cafcbfbe8ccaccc82d6023eb..f062ee20a68955beaf9022299d9dea955c82a7df",
+  "bot_merge_commit": "2a40ba7d5f566fc3cd420d79789f9dcda6177bf2"
 }

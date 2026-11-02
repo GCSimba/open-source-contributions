@@ -33,19 +33,19 @@ git -C $adkProject.checkout remote -v
 
 ## PR 快照
 
-以下状态核验于 **2026-11-02 20:33（Asia/Shanghai）**。
+以下状态核验于 **2026-11-02 21:26（Asia/Shanghai）**。
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#774](https://github.com/google/adk-kotlin/pull/774) | 已于 10 月 29 日合并 | `codex/reject-metadata-artifact-filenames` / `2bd0480` | [保留路径校验](projects/google/adk-kotlin/prs/774-metadata-path/README.md) |
 | [#837](https://github.com/google/adk-kotlin/pull/837) | Open，暂无评论或审核；PR 描述已补充 Linux 全量构建结果 | `codex/fix-parallel-artifact-loading` / `433fbd2` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
-| [#838](https://github.com/google/adk-kotlin/pull/838) | Open；评论者认为与 #825 部分重叠，已回复，等待回应 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
+| [#838](https://github.com/google/adk-kotlin/pull/838) | 11-02 已关闭，未合并：Google 内部的 #825 包含相同修复 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
 
-两个开放 PR 的 CLA、`check-changes` 已通过，validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，无需因新 PR 重复签署。main 已比两个分支的基线新增 2 个提交，不涉及两个 PR 的文件，未变基。
+开放的 #837 已通过 CLA 和 `check-changes`；validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，无需因新 PR 重复签署。main 已比基线新增 2 个提交，不涉及 #837 的文件，未变基。
 
 读取时，实际 ADK checkout 位于 #838 分支、HEAD 为 `5a24148a114f1736fae7ae12bcd5817e50e668ab`，跟踪 `fork/codex/inherit-agent-tool-run-config`，工作区干净。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
 
-#838 已经按用户后续确认推送并创建独立 PR，不要重复创建。#837 与 #838 的共同基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`，两个分支互不包含对方补丁。
+#838 已关闭，不要重新打开或重复提交同一修复。#837 与 #838 的共同基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`，两个分支互不包含对方补丁。Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后；选题和查重时要检查这些 PR 的最新版本。
 
 ## 验证结论与限制
 
@@ -57,8 +57,8 @@ git -C $adkProject.checkout remote -v
 
 ## 下一步顺序
 
-1. 先刷新 #837、#838 的审核与 CI。#838 正在等待评论者对 #825 关系的回应；#837 没有待处理事项，也没有正在执行的本地构建。
-2. #838 的后续：若 #825 合入，在 #838 分支 amend 一个验证 `toolExecutionMode` 被继承的测试，重跑 `AgentToolTest` 及受影响检查；若评论者确认 #825 的内部版本已覆盖 `AgentTool`，按其意见关闭。回复和关闭都先经用户确认。
+1. 先刷新 #837 的审核与 CI；目前没有待处理事项，也没有正在执行的本地构建。
+2. #838 已关闭，无后续操作。若 #825 合入后仍想补“空配置仍为空”“子运行独立计数”两个测试，先征求用户意见，作为新的只含测试的 PR。
 3. 收到审核意见后，在对应源码分支修复，运行受影响检查，再按项目规则更新同一个 PR；ADK 要求一个提交，改历史使用 `--force-with-lease`，发现远端移动先停下来核对。
 4. 每次状态或验证变化更新目标 PR 的 README/验证摘要，再提交到档案仓库。
 
@@ -94,15 +94,16 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## vLLM
 
-2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-02 20:52（Asia/Shanghai）**：
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-02 21:30（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
-| [#64935](https://github.com/vllm-project/vllm/pull/64935) | Open；DarkLight1337 的 1 条审核意见已修改并回复，等待审阅者确认 | `fix/batch-chat-reasoning-tokens` / `f062ee2` | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **已获 DarkLight1337 批准**，带 `ready` 标签；完整 CI（Buildkite #99182）运行中 | `fix/batch-chat-reasoning-tokens` / `2a40ba7`（机器人合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
 
-- 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，普通推送、未改写历史，在讨论下回复并更新了 PR 描述。
-- 两个提交的 DCO 均通过。`pre-run-check` 失败，原因是新贡献者需要维护者添加 `verified`/`ready` 标签，不是代码问题；pre-commit 与文档预览因此未运行。门禁日志要求 AI agent 不要请求添加标签。Buildkite 完整 CI 需要审阅者评论 `/ci run`；分支落后 main 时，机器人会在运行前自动合入 main。
-- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未运行。
+- 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，回复后审阅者于 21:09 批准，并评论 `/ci run`。
+- 分支当时落后 main 50 个提交，机器人把 main 合入分支（合并提交 `2a40ba7`，作者 vllm-agent）后才启动 CI。本地分支已快进到 `2a40ba7`；以后推送前必须先拉取远端分支。
+- 加上 `ready` 标签后，pre-run-check、pre-commit、Check format 均通过；DCO 通过。Read the Docs 失败，原因是 main 上 #63440、#64029 新增的 ROCm kernel docstring 在 `mkdocs --strict` 下产生 11 条交叉引用警告，与本 PR 无关。
+- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未在本地运行，由 Buildkite 覆盖。
 - vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
-- 下一步：刷新 #64935 的审核与 CI。收到新意见后在源码分支修改，带 `-s` 提交并推送到同一分支；回复和签名先经用户确认。
+- 下一步：查看 Buildkite #99182 的结果。若有失败，先判断是否与本 PR 有关（本 PR 只改 4 个文件）；相关的失败在源码分支修复，带 `-s` 提交并推送，回复和签名先经用户确认。CI 通过后等待有合并权限的维护者合并。

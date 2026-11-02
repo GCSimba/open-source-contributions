@@ -15,9 +15,11 @@ ADK 是用于构建、运行和组合 AI agent 的开发工具包。这里记录
 | --- | --- | --- |
 | [#774](https://github.com/google/adk-kotlin/pull/774) | 防止保留的 artifact 路径覆盖内部数据 | [问题、审核与验证](prs/774-metadata-path/README.md) |
 | [#837](https://github.com/google/adk-kotlin/pull/837) | 加载同批并行工具响应中的全部 artifact | [问题、回归与验证](prs/837-parallel-artifacts/README.md) |
-| [#838](https://github.com/google/adk-kotlin/pull/838) | AgentTool 继承调用配置 | [问题、回归与验证](prs/838-agent-tool-config/README.md) |
+| [#838](https://github.com/google/adk-kotlin/pull/838) | AgentTool 继承调用配置（已关闭：Google 内部的 #825 包含相同修复） | [问题、回归与验证](prs/838-agent-tool-config/README.md) |
 
 各 PR 记录自己的提交和验证结果。#837 与 #838 从相同基线创建独立分支，各自在 Linux 完成了全量构建；一个分支的结果不用于证明另一个分支。
+
+Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后于内部版本。选题和查重时要检查这些 PR 的最新版本；#838 就是因此与 #825 重复。
 
 ## 研究与复现
 

@@ -14,6 +14,7 @@ SGLang 是面向大语言模型和多模态模型的高性能推理与服务框�
 - 修改需附单元测试；CPU 测试放在 `test/registered/unit/` 并调用 `register_cpu_ci`，不启动服务、不加载模型权重。
 - 外部贡献者不能自行触发 CI，需要有权限的人添加 `run-ci` 标签；PR 作者可对自己的 PR 使用 `/rerun-failed-ci`。
 - 合并需要 Codeowner 审批和 CI 通过，由 Merge Oncall 或有写权限的人合并。
+- 找推动人：先查 `.github/CODEOWNERS` 中改动文件的负责人，再对照 `.github/CI_PERMISSIONS.json` 看谁能加 `run-ci`；功能原作者通常最合适。流程中“机器人分配 Merge Oncall”并不总会发生。
 
 ## PR 记录
 

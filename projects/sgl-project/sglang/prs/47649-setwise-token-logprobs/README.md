@@ -3,9 +3,9 @@
 ## 状态与来源
 
 - [上游 PR #47649](https://github.com/sgl-project/sglang/pull/47649)：Open、非草稿；GitHub 自动加上 `documentation` 标签。
-- 状态核验：2026-10-31 23:46（Asia/Shanghai）。审核状态为 `REVIEW_REQUIRED`，已自动请求 sundar24295s、JustinTong0323、wisclmy0611、zijiexia、sogalin 审核；暂无人工评论或审核意见。
+- 状态核验：2026-11-02 21:34（Asia/Shanghai）。审核状态为 `REVIEW_REQUIRED`，已自动请求 sundar24295s、JustinTong0323、wisclmy0611、zijiexia、sogalin 审核；没有分配 Merge Oncall（assignees 为空）。暂无人工回复，11-02 已 @ 评分模块负责人，见“审核与后续”。
 - `claude[bot]` 提示 fork PR 不自动审查，需要维护者评论 `@claude review`；`mintlify[bot]` 提示文档预览需维护者批准。
-- 官方 CI：`pr-gate` / `call-gate` 失败，原因是缺少 `run-ci` 标签，不是代码问题。外部贡献者需要有权限的人添加标签后 CI 才会运行，见[贡献指南](https://github.com/sgl-project/sglang/blob/main/docs/docs/developer_guide/contribution_guide.mdx)。
+- 官方 CI：未运行。17 个失败都是门禁：11 个 `pr-gate`/`call-gate`，日志为 “Missing required label 'run-ci'”；另有 6 个 `*-finish` 汇总任务因门禁失败而失败。88 个测试任务被跳过，22 个检查（lint、标题、变更检测等）通过。外部贡献者需要 `CI_PERMISSIONS.json` 中的人添加标签后 CI 才会运行，见[贡献指南](https://github.com/sgl-project/sglang/blob/main/docs/docs/developer_guide/contribution_guide.mdx)。
 - 基线：`67bd749ada5bebf3f1ed9be16a814a3243f348bd`（发布前从 `fb9846d3` 变基，变基前提交 `ab321a06`）。
 - 修复提交：[6d9731914faaae91dae901f27794ed3696a7c76a](https://github.com/GCSimba/sglang/commit/6d9731914faaae91dae901f27794ed3696a7c76a)。
 - 分支：`fix/setwise-token-logprobs`。
@@ -74,5 +74,7 @@ PYTHONPATH=python python -m pytest -q -p no:cacheprovider \
 
 ## 审核与后续
 
-- 下一步：请有权限的维护者添加 `run-ci` 标签或评论 `/tag-and-rerun-ci`，并按 [MAINTAINER.md](https://github.com/sgl-project/sglang/blob/main/.github/MAINTAINER.md) 联系 Merge Oncall；也可在 SGLang Slack `#pull-request` 频道询问。
+- 谁能推动：评分相关文件（`engine_score_mixin.py`、`tokenizer_manager_score_mixin.py`、`serving_score.py`）在 CODEOWNERS 中归 sundar24295s、chanh、fortunecookiee。sundar24295s 是 setwise 评分原始 PR [#41188](https://github.com/sgl-project/sglang/pull/41188) 的作者，已被自动请求审阅，并且在 `CI_PERMISSIONS.json` 中可以添加 `run-ci` 标签。外部贡献者不能自己添加审阅者或标签；作者可用的 `/rerun-failed-ci` 在没有标签时仍会被门禁拦下。
+- 2026-11-02 21:34 经用户确认，[评论 @sundar24295s](https://github.com/sgl-project/sglang/pull/47649#issuecomment-6578518664)，说明本 PR 修复 #41188 的 setwise 路径，请他审阅并添加 `run-ci` 标签。PR 于周六（10-31）提交，评论发在美国周一早上。
+- 下一步：等待回应。若 11-05 前仍无回应，可 @ [MAINTAINER.md](https://github.com/sgl-project/sglang/blob/main/.github/MAINTAINER.md) 中相关模块的 Merge Oncall（Router/API：slin1237；Scheduler：merrymercy、hnyls2002、cctry），或由用户本人在 SGLang Slack `#pull-request` 频道询问；发言先经用户确认。
 - 收到审核意见后在源码分支修改，运行受影响测试，再推送到 `fork/fix/setwise-token-logprobs`。

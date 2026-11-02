@@ -1,0 +1,121 @@
+diff --git a/firebase/src/main/kotlin/com/google/adk/firebase/utils/Conversions.kt b/firebase/src/main/kotlin/com/google/adk/firebase/utils/Conversions.kt
+index 0484721..e8fec77 100644
+--- a/firebase/src/main/kotlin/com/google/adk/firebase/utils/Conversions.kt
++++ b/firebase/src/main/kotlin/com/google/adk/firebase/utils/Conversions.kt
+@@ -619,6 +619,16 @@ internal class Conversions {
+       )
+     }
+ 
++  /**
++   * Converts an agent's output schema for the generation config's `responseSchema`.
++   *
++   * Returns `null` for an object that declares no properties: [toFirebaseSchema] turns that into a
++   * string carrying JSON, which suits a tool argument but would make the model answer with a quoted
++   * string. Without a schema, the JSON response MIME type still asks for an object.
++   */
++  fun toFirebaseResponseSchema(schema: Schema): FirebaseSchema? =
++    if (schema.convertsToFreeFormObject()) null else toFirebaseSchema(schema)
++
+   fun toFirebaseSchema(schema: Schema): FirebaseSchema =
+     with(schema) {
+       // Firebase models a union as a schema that carries only `anyOf`, so a typed schema cannot
+@@ -773,6 +783,12 @@ internal class Conversions {
+       else -> FirebaseBranch.TYPED
+     }
+ 
++  /** Whether [toFirebaseSchema] converts this schema with [freeFormObject]. */
++  private fun Schema.convertsToFreeFormObject(): Boolean =
++    firebaseBranch() == FirebaseBranch.TYPED &&
++      (type == Type.OBJECT || type == Type.TYPE_UNSPECIFIED || type == null) &&
++      properties.isNullOrEmpty()
++
+   /**
+    * Whether Firebase drops this schema's `anyOf` because a type is declared beside it.
+    *
+@@ -874,9 +890,12 @@ internal class Conversions {
+           maxOutputTokens = config.maxOutputTokens
+           topP = config.topP
+           topK = config.topK
++          presencePenalty = config.presencePenalty
++          frequencyPenalty = config.frequencyPenalty
+           stopSequences = config.stopSequences
+           candidateCount = config.candidateCount
+           responseMimeType = config.responseMimeType
++          responseSchema = config.responseSchema?.let { toFirebaseResponseSchema(it) }
+           responseModalities =
+             config.responseModalities
+               ?.mapNotNull { toFirebaseResponseModality(it) }
+diff --git a/firebase/src/test/kotlin/com/google/adk/firebase/utils/ConversionsTest.kt b/firebase/src/test/kotlin/com/google/adk/firebase/utils/ConversionsTest.kt
+index c488bd0..3b728b6 100644
+--- a/firebase/src/test/kotlin/com/google/adk/firebase/utils/ConversionsTest.kt
++++ b/firebase/src/test/kotlin/com/google/adk/firebase/utils/ConversionsTest.kt
+@@ -753,6 +753,8 @@ class ConversionsTest {
+             stopSequences = listOf("foo", "bar"),
+             candidateCount = 42,
+             responseMimeType = "example/response",
++            presencePenalty = 0.6f,
++            frequencyPenalty = 0.7f,
+           )
+       )
+ 
+@@ -766,9 +768,60 @@ class ConversionsTest {
+       assertThat(stopSequences).containsExactly("foo", "bar")
+       assertThat(candidateCount).isEqualTo(42)
+       assertThat(responseMimeType).isEqualTo("example/response")
++      assertThat(presencePenalty).isEqualTo(0.6f)
++      assertThat(frequencyPenalty).isEqualTo(0.7f)
+     }
+   }
+ 
++  @Test
++  fun requestConverter_generationConfigBuilder_mapsResponseSchema() {
++    // An agent's output schema arrives as the response schema. Without it the request keeps only
++    // the JSON MIME type, so the model may answer with any JSON shape.
++    val request =
++      LlmRequest(
++        config =
++          GenerateContentConfig(
++            responseMimeType = "application/json",
++            responseSchema =
++              Schema(
++                type = Type.OBJECT,
++                properties =
++                  mapOf(
++                    "city" to Schema(type = Type.STRING),
++                    "population" to Schema(type = Type.INTEGER),
++                  ),
++                required = listOf("city"),
++              ),
++          )
++      )
++
++    val schema = Conversions().forRequest(request).generationConfigBuilder().responseSchema
++
++    assertThat(schema?.type).isEqualTo("OBJECT")
++    assertThat(schema?.properties?.mapValues { it.value.type })
++      .containsExactly("city", "STRING", "population", "INTEGER")
++    assertThat(schema?.required).containsExactly("city")
++  }
++
++  @Test
++  fun requestConverter_generationConfigBuilder_freeFormResponseSchema_isLeftOut() {
++    // A tool argument with no properties becomes a string carrying JSON, but a response with that
++    // schema would be a quoted string. The JSON MIME type alone still asks for an object.
++    val request =
++      LlmRequest(
++        config =
++          GenerateContentConfig(
++            responseMimeType = "application/json",
++            responseSchema = Schema(type = Type.OBJECT),
++          )
++      )
++
++    val builder = Conversions().forRequest(request).generationConfigBuilder()
++
++    assertThat(builder.responseSchema).isNull()
++    assertThat(builder.responseMimeType).isEqualTo("application/json")
++  }
++
+   @Test
+   fun requestConverter_generationConfigBuilder_mapsResponseModalities() {
+     val request =

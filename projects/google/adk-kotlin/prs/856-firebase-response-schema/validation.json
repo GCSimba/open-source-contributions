@@ -1,0 +1,59 @@
+{
+  "pr": 856,
+  "base": "db97db5e3992ed531f3fa41b0be8ef4880191ca7",
+  "commit": "a1cdb25b99615aa6c3a394774d7b8d9fa544e6c7",
+  "pre_amend_commit": "8e5e303d2dc42ecf90ad12ea5e1e08bbec0aeda9",
+  "amend_note": "Removed the Co-authored-by: Copilot trailer that failed the Google CLA check; tree unchanged",
+  "validation_date": "2026-11-02",
+  "environment": "Ubuntu24.04/WSL2, effective user root, OpenJDK21.0.12.1, Gradle wrapper 9.8.0, Android platform 37.0, build-tools 36.0.0 and 37.0.0",
+  "firebase_ai": "18.0.0 (BOM 35.0.2); GenerationConfig.Builder has presencePenalty, frequencyPenalty, responseSchema (javap)",
+  "before_fix": {
+    "patch": "test-only",
+    "command": ":google-adk-kotlin-firebase:testDebugUnitTest --tests com.google.adk.firebase.utils.ConversionsTest",
+    "tests": 77,
+    "failures": 2,
+    "failed": [
+      "requestConverter_generationConfigBuilder_mapsResponseSchema: expected OBJECT but was null",
+      "requestConverter_generationConfigBuilder_returnsBuilder: expected 0.6 but was null"
+    ]
+  },
+  "after_fix": {
+    "tests": 77,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "module_build": {
+    "status": "passed",
+    "tasks": [
+      ":google-adk-kotlin-firebase:build",
+      ":google-adk-kotlin-examples-android:build"
+    ],
+    "duration": "22m 9s",
+    "firebase_unit_tests": {
+      "tests": 112,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8
+    },
+    "skipped_notes": "FirebaseIntegrationTest and FirebaseRoomSessionIntegrationTest need Firebase credentials",
+    "working_tree_clean_after_build": true
+  },
+  "ktfmt": "0.65 --google-style: base files already differ (trailing commas); new main-source lines unchanged; two test hunks would only gain trailing commas like 43 existing places, kept in file style",
+  "diff_check": "passed",
+  "local_test_exclusions": [],
+  "resource_overrides": {
+    "gradle_heap": "3g",
+    "metaspace": "1g",
+    "workers": 2,
+    "project_parallelism": false
+  },
+  "not_run": [
+    "live Firebase requests",
+    "Android device tests",
+    "JDK17/25 matrix",
+    "Dokka (Conversions is internal; no public KDoc changed)"
+  ],
+  "official_ci": "CLA and check-changes pass; validation/title/commit/security workflows action_required (checked 2026-11-02 23:20 Asia/Shanghai)",
+  "patch_sha256": "ee136a65baef2fa082ec48f024b9ba28bb306ac1b3f5dae8f9839dc40eb81b02"
+}

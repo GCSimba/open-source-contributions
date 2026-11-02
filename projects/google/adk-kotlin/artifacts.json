@@ -24,6 +24,11 @@
       "sha256": "50b4d2bc1b2a3e106cef5d8c3a9d41241265c55b4541ac5380a05229d3b49582"
     },
     {
+      "path": "prs/856-firebase-response-schema/change.patch",
+      "bytes": 5179,
+      "sha256": "ee136a65baef2fa082ec48f024b9ba28bb306ac1b3f5dae8f9839dc40eb81b02"
+    },
+    {
       "path": "research/repros/AgentToolRunConfigBugReproTest.kt",
       "bytes": 2798,
       "sha256": "4cc950512144eb716e040a56dc7df9da83cdb0c2b84b0cbea6bec535c9444182"

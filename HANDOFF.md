@@ -33,17 +33,18 @@ git -C $adkProject.checkout remote -v
 
 ## PR 快照
 
-以下状态核验于 **2026-11-02 21:26（Asia/Shanghai）**。
+以下状态核验于 **2026-11-02 23:20（Asia/Shanghai）**。
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#774](https://github.com/google/adk-kotlin/pull/774) | 已于 10 月 29 日合并 | `codex/reject-metadata-artifact-filenames` / `2bd0480` | [保留路径校验](projects/google/adk-kotlin/prs/774-metadata-path/README.md) |
 | [#837](https://github.com/google/adk-kotlin/pull/837) | Open，暂无评论或审核；PR 描述已补充 Linux 全量构建结果 | `codex/fix-parallel-artifact-loading` / `433fbd2` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
 | [#838](https://github.com/google/adk-kotlin/pull/838) | 11-02 已关闭，未合并：Google 内部的 #825 包含相同修复 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
+| [#856](https://github.com/google/adk-kotlin/pull/856) | 11-02 23:11 创建，Open；CLA 通过，等待维护者批准工作流 | `fix/firebase-response-schema` / `a1cdb25` | [Firebase response schema](projects/google/adk-kotlin/prs/856-firebase-response-schema/README.md) |
 
-开放的 #837 已通过 CLA 和 `check-changes`；validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，无需因新 PR 重复签署。main 已比基线新增 2 个提交，不涉及 #837 的文件，未变基。
+开放的 #837 与 #856 都已通过 CLA 和 `check-changes`；validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，但 CLA 检查覆盖所有共同作者：ADK 提交不要加 `Co-authored-by` trailer（#856 首次推送因此失败，amend 去掉后通过），AI 辅助写在 PR 描述里。
 
-读取时，实际 ADK checkout 位于 #838 分支、HEAD 为 `5a24148a114f1736fae7ae12bcd5817e50e668ab`，跟踪 `fork/codex/inherit-agent-tool-run-config`，工作区干净。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
+读取时，实际 ADK checkout 位于 #856 分支 `fix/firebase-response-schema`、HEAD 为 `a1cdb25b99615aa6c3a394774d7b8d9fa544e6c7`，跟踪 `fork/fix/firebase-response-schema`，工作区干净。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
 
 #838 已关闭，不要重新打开或重复提交同一修复。#837 与 #838 的共同基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`，两个分支互不包含对方补丁。Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后；选题和查重时要检查这些 PR 的最新版本。
 
@@ -52,13 +53,14 @@ git -C $adkProject.checkout remote -v
 - #774：最终 JVM44/44、Android host44/44、Dokka 和格式/差异检查通过；Windows 全仓库构建未完成。早期孤立 harness 的40项检查是另一组历史证据。
 - #837：JVM17/17、Android host17/17和格式检查通过（Windows）。2026-11-01 在独立 Linux 副本完成全仓库构建：500 个任务全部执行，10529 通过、0 失败、18 条原始 XML 跳过记录；Windows 上失败或超时的环境与 MCP 套件在 Linux 均无失败。此前的 Windows 全量构建在 20 分钟后未完成。
 - #838：JVM/Android host 的 AgentToolTest 均31/31；Ubuntu24.04/WSL2、JDK21的完整 core 与仓库构建通过。完整仓库汇总10531通过、0失败、18条原始XML跳过记录，包含已完成 core 结果的复用。
+- #856：独立 Linux 副本中，`ConversionsTest` 修复前 77 个中 2 个失败（schema、penalty 为 null），修复后 77/77；`firebase` 与唯一依赖它的 `examples-android` 模块构建通过（Firebase 单元测试 112 个、0 失败，8 个集成测试缺少凭据而跳过）。
 
 两个分支各有自己的 Linux 全量结果，不能互相替代。外部凭据/本地模型相关跳过、设备测试及 JDK17/25矩阵等未验证范围详见各 PR 的 validation.json。本地通过也不表示官方 CI 已运行。
 
 ## 下一步顺序
 
-1. 先刷新 #837 的审核与 CI；目前没有待处理事项，也没有正在执行的本地构建。若约 11-05 仍无人跟进，经用户确认后 @damianmomotgoogle（#774 的审阅者）。
-2. #838 已关闭，无后续操作。若 #825 合入后仍想补“空配置仍为空”“子运行独立计数”两个测试，先征求用户意见，作为新的只含测试的 PR。
+1. 先刷新 #837、#856 的审核与 CI；目前没有待处理事项，也没有正在执行的本地构建。若约 11-05 仍无人跟进，经用户确认后 @damianmomotgoogle（#774 的审阅者）。
+2. #838 已关闭，无后续操作。若 #825 合入后仍想补“空配置仍为空”“子运行独立计数”两个测试，先征求用户意见，作为新的只含测试的 PR。下一个候选是 ML Kit seed（一行修复），见[研究记录](projects/google/adk-kotlin/research/README.md)。
 3. 收到审核意见后，在对应源码分支修复，运行受影响检查，再按项目规则更新同一个 PR；ADK 要求一个提交，改历史使用 `--force-with-lease`，发现远端移动先停下来核对。
 4. 每次状态或验证变化更新目标 PR 的 README/验证摘要，再提交到档案仓库。
 

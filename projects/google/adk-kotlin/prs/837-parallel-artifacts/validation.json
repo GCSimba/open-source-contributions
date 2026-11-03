@@ -1,60 +1,105 @@
 {
   "pr": 837,
-  "base": "2809a837752644f3720eaa759d2cb5144ba1a84e",
-  "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
-  "validation_date": "2026-11-01",
+  "base": "b961c9e4aa50c79dbf4c17d870ab5629424a5e49",
+  "commit": "b4d321ba988a4348bcbdee75728b475d9d4a99bb",
+  "commit_history": [
+    {
+      "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
+      "base": "2809a837752644f3720eaa759d2cb5144ba1a84e",
+      "note": "Initial submission"
+    },
+    {
+      "commit": "b4d321ba988a4348bcbdee75728b475d9d4a99bb",
+      "base": "b961c9e4aa50c79dbf4c17d870ab5629424a5e49",
+      "note": "Review round 1: rebased onto main, unrelated formatting reverted, exact last-content assertion, user:-scoped cross-session batched cases"
+    }
+  ],
+  "review_round_1": {
+    "reviewer": "aravindmurali22",
+    "state": "CHANGES_REQUESTED",
+    "submitted": "2026-11-02T23:56:33Z",
+    "requests": [
+      "Revert the declaration() rewrap and the trailing-comma edits on untouched tests (lines 97-386)",
+      "Assert nextRequest.contents.last() equals Content(USER, [\"Artifact $filename is:\", payload]) and add a user:-scoped cross-session artifact in a batched response",
+      "Rebase onto the latest main"
+    ],
+    "pushed": "2026-11-03T06:08:32Z",
+    "replies": [
+      "https://github.com/google/adk-kotlin/pull/837#discussion_r4451439769",
+      "https://github.com/google/adk-kotlin/pull/837#discussion_r4451440069"
+    ],
+    "top_level_comment": "https://github.com/google/adk-kotlin/pull/837#issuecomment-6596767371",
+    "pr_description_updated": "after the repository build; also added the AI-assistance note that the original description lacked",
+    "re_request_review": "Not permitted for an external contributor (REST requested_reviewers 404, GraphQL requestReviews FORBIDDEN)"
+  },
+  "validation_date": "2026-11-03",
+  "environment": "Ubuntu24.04/WSL2, effective user root, OpenJDK21.0.12.1, Gradle wrapper 9.8.0, Android platform 37.0, build-tools 36.0.0 and 37.0.0",
+  "checkout": "Fresh Linux clone of the local repository, detached at the commit; parent verified to be the base",
+  "validated_diff_sha256": "f294a37e87e6c080b9e104e8b168be18f20462244ac18da21e3686850ba2241b",
+  "validated_diff_note": "sha256 of git diff --binary base commit with the default abbreviation; change.patch is the same diff with --abbrev=7",
   "focused": {
-    "environment": "Windows, JDK21",
-    "date": "2026-10-31",
+    "command": ":google-adk-kotlin-core:jvmTest --tests com.google.adk.kt.tools.LoadArtifactsToolTest :google-adk-kotlin-core:testAndroidHostTest --tests com.google.adk.kt.tools.LoadArtifactsToolTest",
+    "duration": "14m 30s",
     "jvm": {
-      "tests": 17,
+      "tests": 19,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     },
     "android_host": {
-      "tests": 17,
+      "tests": 19,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     }
   },
-  "format": "passed",
-  "diff_check": "passed",
+  "negative_control": {
+    "change": "LoadArtifactsTool.kt taken from the base; tests from the commit",
+    "platform": "jvm",
+    "tests": 19,
+    "failures": 4,
+    "failed": [
+      "run_loadArtifactsAfterAnotherTool_includesRequestedArtifactInNextModelRequest",
+      "run_userPrefixedArtifactFromAnotherSessionAfterAnotherTool_includesItInNextModelRequest",
+      "run_unprefixedNameOfUserArtifactAfterAnotherTool_includesItInNextModelRequest",
+      "processLlmRequest_multipleLoadResponses_loadsExistingArtifactsInResponseOrder"
+    ],
+    "passed_as_expected": "run_loadArtifactsBeforeAnotherTool_includesRequestedArtifactInNextModelRequest (the old loader read the first response part)",
+    "working_tree_clean_after_restore": true
+  },
   "repository_build": {
     "status": "passed",
-    "environment": "Ubuntu24.04/WSL2, effective user root, OpenJDK21.0.12.1, Gradle wrapper 9.8.0, Android platform 37.0, build-tools 36.0.0 and 37.0.0",
-    "date": "2026-11-01",
+    "date": "2026-11-03",
     "command": "./gradlew -PjdkVersion=21 \"-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g\" -Dorg.gradle.parallel=false --max-workers=2 --no-daemon --console=plain --stacktrace --continue build",
     "tasks": 500,
-    "executed": 500,
-    "up_to_date": 0,
-    "reported_duration": "10h 2m 16s",
-    "active_minutes_approx": 32,
-    "suspension": "Windows modern standby 12:43-22:13 Asia/Shanghai suspended WSL; no build output and no test suite fell inside that window",
-    "suites": 597,
-    "tests": 10547,
-    "passed": 10529,
+    "executed": 458,
+    "up_to_date": 42,
+    "up_to_date_note": "Reused from the focused and negative-control runs in the same checkout; the tree was verified clean and HEAD verified before the build",
+    "duration": "35m 40s",
+    "suspension": "none; Windows sleep was blocked with SetThreadExecutionState",
+    "suites": 598,
+    "tests": 10602,
+    "passed": 10584,
     "failures": 0,
     "errors": 0,
     "skipped_xml_records": 18,
     "flaky_failures": 0,
     "core": {
       "jvm": {
-        "passed": 4876,
+        "passed": 4902,
         "skipped_xml_records": 6
       },
       "android_host": {
-        "passed": 4477,
+        "passed": 4502,
         "skipped_xml_records": 0
       }
     },
     "load_artifacts_tool_test": {
-      "jvm": "17/17",
-      "android_host": "17/17"
+      "jvm": "19/19",
+      "android_host": "19/19"
     },
     "suites_that_failed_on_windows": {
-      "LocalEnvironmentTest": "58/58, includes execute_cancellation_killsProcessTree",
+      "LocalEnvironmentTest": "58/58",
       "SkillToolsetEnvironmentTest": "35/35",
       "EnvironmentToolsetTest": "24/24",
       "McpToolsetIntegrationTest": "22/22",
@@ -63,21 +108,32 @@
     },
     "post_build": {
       "working_tree_clean": true,
-      "patch_sha256_unchanged": true,
-      "ktfmt": "0.65 --google-style dry-run passed on both changed files"
+      "diff_sha256_unchanged": true,
+      "leftover_gradle_processes": 0
     }
   },
-  "windows_repository_build": {
-    "status": "incomplete",
-    "date": "2026-10-31",
-    "deadline_minutes": 20,
-    "local_exclusions": [
-      "LocalEnvironmentTest.execute_cancellation_killsProcessTree*"
-    ],
-    "notes": "External init only; no repository test exclusions. Other shell/symlink failures and MCP initialization timeouts remained visible. MCP root cause unconfirmed."
+  "ktfmt": {
+    "version": "0.65 --google-style",
+    "method": "Differences inside the added lines after ignoring a trailing comma before a closing bracket; the upstream formatter leaves a multi-line last argument without one, ktfmt 0.65 adds it",
+    "added_lines": {
+      "LoadArtifactsTool.kt": "1 raw region, 0 ignoring trailing commas",
+      "LoadArtifactsToolTest.kt": "5 raw regions, 0 ignoring trailing commas"
+    },
+    "base_calibration": {
+      "LoadArtifactsTool.kt": "2 raw regions, 1 ignoring trailing commas (an existing 101-column line)",
+      "LoadArtifactsToolTest.kt": "19 raw regions, 0 ignoring trailing commas"
+    }
   },
-  "skipped_notes": "Raw XML records, not unique method counts: 8 Firebase integration cases without credentials, 4 LiteRT-LM cases without a model, 2 live Gemini MCP methods recorded 3 times each. Same set as #838.",
-  "comparison_with_838": "10529 vs 10531 passed: both branches add their own tests to the same base (#838 +4 and #837 +3 per platform).",
+  "diff_check": "passed",
+  "skipped_notes": "Raw XML records, not unique method counts: 8 Firebase integration cases without credentials, 4 LiteRT-LM cases without a model, 2 live Gemini MCP methods recorded 3 times each.",
+  "initial_validation": {
+    "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
+    "base": "2809a837752644f3720eaa759d2cb5144ba1a84e",
+    "focused": "Windows, JDK21, 2026-10-31: JVM 17/17, Android host 17/17",
+    "repository_build": "Linux, 2026-11-01: passed, 500 tasks executed, 10529 passed, 0 failures, 18 skipped records; Gradle reported 10h 2m 16s because Windows modern standby (12:43-22:13) suspended WSL, about 32 active minutes",
+    "windows_repository_build": "2026-10-31: incomplete after a 20-minute deadline; LocalEnvironmentTest.execute_cancellation_killsProcessTree* excluded locally; MCP timeouts on that host unexplained",
+    "patch_sha256": "a5f814f024e97ede66f5bb2750628de6fb6efcc40b6029c2a9b25e147da366b7"
+  },
   "local_test_exclusions": [],
   "integration_retries": "repository defaults",
   "resource_overrides": {
@@ -92,6 +148,6 @@
     "JDK17/25 matrix",
     "Dokka (KDoc unchanged)"
   ],
-  "upstream_after_validation": "main moved 2 commits by 2026-11-02 (workflow and a2a files only); PR still mergeable, no rebase",
-  "patch_sha256": "a5f814f024e97ede66f5bb2750628de6fb6efcc40b6029c2a9b25e147da366b7"
+  "official_ci": "CLA and check-changes pass; validation/title/commit/security workflows action_required (checked 2026-11-03 14:50 Asia/Shanghai)",
+  "patch_sha256": "e6bb27c3171698f8ec48b0267f944c970d3b055d4363db18c877c043f888faf0"
 }

@@ -10,7 +10,7 @@
   },
   "core/build/test-results/jvmTest": {
     "suites": 281,
-    "tests": 4882,
+    "tests": 4908,
     "failures": 0,
     "errors": 0,
     "skipped": 6,
@@ -19,7 +19,7 @@
   },
   "core/build/test-results/testAndroidHostTest": {
     "suites": 248,
-    "tests": 4477,
+    "tests": 4502,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
@@ -36,8 +36,8 @@
     "failedCases": []
   },
   "examples/spring-boot/kotlin/build/test-results/test": {
-    "suites": 1,
-    "tests": 18,
+    "suites": 2,
+    "tests": 20,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
@@ -73,7 +73,7 @@
   },
   "integrations/openai/build/test-results/jvmTest": {
     "suites": 2,
-    "tests": 84,
+    "tests": 82,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
@@ -127,7 +127,7 @@
   },
   "webserver/build/test-results/test": {
     "suites": 33,
-    "tests": 412,
+    "tests": 416,
     "failures": 0,
     "errors": 0,
     "skipped": 0,

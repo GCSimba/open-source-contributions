@@ -1,6 +1,6 @@
 # VS Code 工作交接
 
-交接日期：2026-10-31，最近更新 2026-11-02（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
+交接日期：2026-10-31，最近更新 2026-11-03（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
 
 ## 目标与已完成工作
 
@@ -33,33 +33,34 @@ git -C $adkProject.checkout remote -v
 
 ## PR 快照
 
-以下状态核验于 **2026-11-02 23:20（Asia/Shanghai）**。
+以下状态核验于 **2026-11-03 14:50（Asia/Shanghai）**。
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#774](https://github.com/google/adk-kotlin/pull/774) | 已于 10 月 29 日合并 | `codex/reject-metadata-artifact-filenames` / `2bd0480` | [保留路径校验](projects/google/adk-kotlin/prs/774-metadata-path/README.md) |
-| [#837](https://github.com/google/adk-kotlin/pull/837) | Open，暂无评论或审核；PR 描述已补充 Linux 全量构建结果 | `codex/fix-parallel-artifact-loading` / `433fbd2` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
+| [#837](https://github.com/google/adk-kotlin/pull/837) | Open；aravindmurali22 第 1 轮 CHANGES_REQUESTED 已处理（变基、撤回格式改动、收紧断言、补 `user:` 用例），已回复，等待复审 | `codex/fix-parallel-artifact-loading` / `b4d321b` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
 | [#838](https://github.com/google/adk-kotlin/pull/838) | 11-02 已关闭，未合并：Google 内部的 #825 包含相同修复 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
-| [#856](https://github.com/google/adk-kotlin/pull/856) | 11-02 23:11 创建，Open；CLA 通过，等待维护者批准工作流 | `fix/firebase-response-schema` / `a1cdb25` | [Firebase response schema](projects/google/adk-kotlin/prs/856-firebase-response-schema/README.md) |
+| [#856](https://github.com/google/adk-kotlin/pull/856) | Open；aravindmurali22 第 1 轮 CHANGES_REQUESTED 已处理（变基、复用 `convertsToFreeFormObject()`、补测试），已回复，等待复审 | `fix/firebase-response-schema` / `5ddf267` | [Firebase response schema](projects/google/adk-kotlin/prs/856-firebase-response-schema/README.md) |
 
-开放的 #837 与 #856 都已通过 CLA 和 `check-changes`；validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。个人 CLA 已完成，但 CLA 检查覆盖所有共同作者：ADK 提交不要加 `Co-authored-by` trailer（#856 首次推送因此失败，amend 去掉后通过），AI 辅助写在 PR 描述里。
+开放的 #837 与 #856 在新提交上都已通过 CLA 和 `check-changes`；validation、标题、提交和安全工作流显示 `action_required`，等待维护者操作。两个 PR 仍带维护者手动加的 `waiting on author` 标签。个人 CLA 已完成，但 CLA 检查覆盖所有共同作者：ADK 提交不要加 `Co-authored-by` trailer（#856 首次推送因此失败，amend 去掉后通过），AI 辅助写在 PR 描述里（两个 PR 都已写明）。外部贡献者不能重新请求审阅（REST 404、GraphQL FORBIDDEN），处理完意见后在讨论串逐条回复，并发一条顶层评论说明。
 
-读取时，实际 ADK checkout 位于 #856 分支 `fix/firebase-response-schema`、HEAD 为 `a1cdb25b99615aa6c3a394774d7b8d9fa544e6c7`，跟踪 `fork/fix/firebase-response-schema`，工作区干净。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
+读取时，实际 ADK checkout 位于 #837 分支 `codex/fix-parallel-artifact-loading`、HEAD 为 `b4d321ba988a4348bcbdee75728b475d9d4a99bb`，跟踪 `fork/codex/fix-parallel-artifact-loading`，工作区干净；#856 分支 `fix/firebase-response-schema` 与 fork 同步于 `5ddf2670`。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
 
-#838 已关闭，不要重新打开或重复提交同一修复。#837 与 #838 的共同基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`，两个分支互不包含对方补丁。Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后；选题和查重时要检查这些 PR 的最新版本。
+#838 已关闭，不要重新打开或重复提交同一修复。#838 的基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`；#837、#856 已按审阅要求变基到 `b961c9e4aa50c79dbf4c17d870ab5629424a5e49`，各分支互不包含对方补丁。Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后；选题和查重时要检查这些 PR 的最新版本。
 
 ## 验证结论与限制
 
 - #774：最终 JVM44/44、Android host44/44、Dokka 和格式/差异检查通过；Windows 全仓库构建未完成。早期孤立 harness 的40项检查是另一组历史证据。
-- #837：JVM17/17、Android host17/17和格式检查通过（Windows）。2026-11-01 在独立 Linux 副本完成全仓库构建：500 个任务全部执行，10529 通过、0 失败、18 条原始 XML 跳过记录；Windows 上失败或超时的环境与 MCP 套件在 Linux 均无失败。此前的 Windows 全量构建在 20 分钟后未完成。
+- #837：第 1 轮审阅后（`b4d321b`），独立 Linux 副本中 LoadArtifactsToolTest JVM 19/19、Android host 19/19；把 `LoadArtifactsTool.kt` 换回 main 版本后 4 个新/旧回归失败、首位场景仍通过。全仓库构建通过：500 个任务，458 个执行、42 个复用同一副本定向测试的结果，10584 通过、0 失败、18 条原始 XML 跳过记录。首次提交 `433fbd2` 的 Linux 全量结果（10529 通过）见 PR 记录。
 - #838：JVM/Android host 的 AgentToolTest 均31/31；Ubuntu24.04/WSL2、JDK21的完整 core 与仓库构建通过。完整仓库汇总10531通过、0失败、18条原始XML跳过记录，包含已完成 core 结果的复用。
-- #856：独立 Linux 副本中，`ConversionsTest` 修复前 77 个中 2 个失败（schema、penalty 为 null），修复后 77/77；`firebase` 与唯一依赖它的 `examples-android` 模块构建通过（Firebase 单元测试 112 个、0 失败，8 个集成测试缺少凭据而跳过）。
+- #856：第 1 轮审阅后（`5ddf267`），独立 Linux 副本中 `ConversionsTest` 78/78；把 `Conversions.kt` 换回 main 版本后 3 个失败（schema、penalty、union/enum）。`firebase` 与唯一依赖它的 `examples-android` 模块构建通过（Firebase 单元测试 113 个、0 失败，8 个集成测试缺少凭据而跳过）。
+- 格式：上游格式化器不给“单个多行参数”加尾逗号，ktfmt 0.65 会加，基线文件本身就不通过 ktfmt 0.65。两个 PR 都按“忽略右括号前尾逗号后，新增行无差异”核对，并先用基线文件校准；不要让本地 ktfmt 改动无关的行（这正是 #837 第 1 轮意见之一）。
 
 两个分支各有自己的 Linux 全量结果，不能互相替代。外部凭据/本地模型相关跳过、设备测试及 JDK17/25矩阵等未验证范围详见各 PR 的 validation.json。本地通过也不表示官方 CI 已运行。
 
 ## 下一步顺序
 
-1. 先刷新 #837、#856 的审核与 CI；目前没有待处理事项，也没有正在执行的本地构建。若约 11-05 仍无人跟进，经用户确认后 @damianmomotgoogle（#774 的审阅者）。
+1. 先刷新 #837、#856 的审核与 CI，等待 aravindmurali22 复审；目前没有正在执行的本地构建。原定 11-05 @damianmomotgoogle 的计划已不需要。
 2. #838 已关闭，无后续操作。若 #825 合入后仍想补“空配置仍为空”“子运行独立计数”两个测试，先征求用户意见，作为新的只含测试的 PR。下一个候选是 ML Kit seed（一行修复），见[研究记录](projects/google/adk-kotlin/research/README.md)。
 3. 收到审核意见后，在对应源码分支修复，运行受影响检查，再按项目规则更新同一个 PR；ADK 要求一个提交，改历史使用 `--force-with-lease`，发现远端移动先停下来核对。
 4. 每次状态或验证变化更新目标 PR 的 README/验证摘要，再提交到档案仓库。
@@ -82,7 +83,7 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## SGLang
 
-2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-11-02 21:34（Asia/Shanghai）**：
+2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-11-03 13:40（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
@@ -96,11 +97,11 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## vLLM
 
-2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-02 21:30（Asia/Shanghai）**：
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-03 13:40（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
-| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **已获 DarkLight1337 批准**，带 `ready` 标签；完整 CI（Buildkite #99182）已跑完：65 通过，AMD MI355 的 basic-models 分片失败，尚未确认是否与本 PR 有关 | `fix/batch-chat-reasoning-tokens` / `2a40ba7`（机器人合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **已获 DarkLight1337 批准**，带 `ready` 标签；完整 CI（Buildkite #99182）只有 AMD MI355 basic-models 分片失败，26 个失败都在无关的 `test_muse_spark_rocm_mono.py`；等待维护者合并 | `fix/batch-chat-reasoning-tokens` / `2a40ba7`（机器人合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
 
 - 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，回复后审阅者于 21:09 批准，并评论 `/ci run`。
 - 分支当时落后 main 50 个提交，机器人把 main 合入分支（合并提交 `2a40ba7`，作者 vllm-agent）后才启动 CI。本地分支已快进到 `2a40ba7`；以后推送前必须先拉取远端分支。
@@ -108,5 +109,5 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 - 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未在本地运行，由 Buildkite 覆盖。
 - vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
-- 下一步：查看 Buildkite #99182 中 AMD MI355 basic-models 分片的失败原因，判断是否与本 PR 有关（本 PR 只改 4 个文件，均在前端和测试）；如无关，等待有合并权限的维护者处理。相关的失败在源码分支修复，带 `-s` 提交并推送，回复和签名先经用户确认。
+- 11-03 已查明 Buildkite #99182 的失败：只有 `amd-mi355-basic-models-other-shard-2-slash-2` 失败（26 failed、597 passed），26 个失败全是 `models/test_muse_spark_rocm_mono.py` 中同一个 HIP kernel 错误（`cos_sin_cache must be a contiguous 2-D CUDA tensor`），与本 PR 的 4 个前端/测试文件无关。下一步：等待有合并权限的维护者处理；如需推动，经用户确认后在 PR 下简短说明这两个失败与本 PR 无关。相关的失败在源码分支修复，带 `-s` 提交并推送，回复和签名先经用户确认。
 - 11-02 第二轮找题暂停：找到的真实问题都已有 PR，详见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。`/v1/completions` 缺少 `created_cache_tokens` 可等 #58116 合并后再提。

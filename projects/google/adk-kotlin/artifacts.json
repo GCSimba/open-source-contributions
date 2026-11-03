@@ -15,8 +15,8 @@
     },
     {
       "path": "prs/837-parallel-artifacts/change.patch",
-      "bytes": 15766,
-      "sha256": "a5f814f024e97ede66f5bb2750628de6fb6efcc40b6029c2a9b25e147da366b7"
+      "bytes": 9863,
+      "sha256": "e6bb27c3171698f8ec48b0267f944c970d3b055d4363db18c877c043f888faf0"
     },
     {
       "path": "prs/838-agent-tool-config/change.patch",
@@ -25,8 +25,8 @@
     },
     {
       "path": "prs/856-firebase-response-schema/change.patch",
-      "bytes": 5179,
-      "sha256": "ee136a65baef2fa082ec48f024b9ba28bb306ac1b3f5dae8f9839dc40eb81b02"
+      "bytes": 7561,
+      "sha256": "e6b7b846d64303048f7962e6a361a8555f3454584ae508f4e98abc2616500a9f"
     },
     {
       "path": "research/repros/AgentToolRunConfigBugReproTest.kt",

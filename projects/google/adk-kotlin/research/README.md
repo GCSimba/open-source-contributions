@@ -7,9 +7,9 @@
 | 问题 | 结果 | 证据 |
 | --- | --- | --- |
 | artifact 内部路径冲突 | [PR #774](../prs/774-metadata-path/README.md)，已合并 | 最终项目任务 44+44 项通过 |
-| 并行工具响应中的 artifact 未加载 | [PR #837](../prs/837-parallel-artifacts/README.md)，独立分支 | 两种排列顺序的对照；定向测试 17+17 项通过 |
+| 并行工具响应中的 artifact 未加载 | [PR #837](../prs/837-parallel-artifacts/README.md)，独立分支，11-03 第 1 轮审阅已处理 | 两种排列顺序的对照；第 1 轮审阅后定向测试 19+19 项通过，全仓库构建通过 |
 | AgentTool 遗漏 RunConfig | [PR #838](../prs/838-agent-tool-config/README.md)，11-02 关闭 | Google 内部 #825 的最新版本包含相同修复，见下文 |
-| Firebase 后端丢弃 response schema 与 penalty | [PR #856](../prs/856-firebase-response-schema/README.md) | 修复前 2 个断言失败；修复后 77/77，firebase 与 examples-android 构建通过 |
+| Firebase 后端丢弃 response schema 与 penalty | [PR #856](../prs/856-firebase-response-schema/README.md)，11-03 第 1 轮审阅已处理 | 第 1 轮审阅后 78/78，不含修复时 3 个失败；firebase 与 examples-android 构建通过 |
 
 后两项选定问题的复现基线是 `2809a837752644f3720eaa759d2cb5144ba1a84e`。当时针对现有及历史 PR/issue 搜索了 AgentTool、RunConfig、maxLlmCalls、load_artifacts 等关键词，未发现匹配修复；这不排除未公开工作。
 

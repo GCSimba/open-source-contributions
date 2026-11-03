@@ -1,27 +1,67 @@
 {
   "pr": 856,
-  "base": "db97db5e3992ed531f3fa41b0be8ef4880191ca7",
-  "commit": "a1cdb25b99615aa6c3a394774d7b8d9fa544e6c7",
-  "pre_amend_commit": "8e5e303d2dc42ecf90ad12ea5e1e08bbec0aeda9",
-  "amend_note": "Removed the Co-authored-by: Copilot trailer that failed the Google CLA check; tree unchanged",
-  "validation_date": "2026-11-02",
-  "environment": "Ubuntu24.04/WSL2, effective user root, OpenJDK21.0.12.1, Gradle wrapper 9.8.0, Android platform 37.0, build-tools 36.0.0 and 37.0.0",
-  "firebase_ai": "18.0.0 (BOM 35.0.2); GenerationConfig.Builder has presencePenalty, frequencyPenalty, responseSchema (javap)",
-  "before_fix": {
-    "patch": "test-only",
-    "command": ":google-adk-kotlin-firebase:testDebugUnitTest --tests com.google.adk.firebase.utils.ConversionsTest",
-    "tests": 77,
-    "failures": 2,
-    "failed": [
-      "requestConverter_generationConfigBuilder_mapsResponseSchema: expected OBJECT but was null",
-      "requestConverter_generationConfigBuilder_returnsBuilder: expected 0.6 but was null"
-    ]
+  "base": "b961c9e4aa50c79dbf4c17d870ab5629424a5e49",
+  "commit": "5ddf2670a9760715b4ce5d8802338e834770401b",
+  "commit_history": [
+    {
+      "commit": "8e5e303d2dc42ecf90ad12ea5e1e08bbec0aeda9",
+      "base": "db97db5e3992ed531f3fa41b0be8ef4880191ca7",
+      "note": "First push; its Co-authored-by: Copilot trailer failed the Google CLA check"
+    },
+    {
+      "commit": "a1cdb25b99615aa6c3a394774d7b8d9fa544e6c7",
+      "base": "db97db5e3992ed531f3fa41b0be8ef4880191ca7",
+      "note": "Trailer removed; tree unchanged"
+    },
+    {
+      "commit": "5ddf2670a9760715b4ce5d8802338e834770401b",
+      "base": "b961c9e4aa50c79dbf4c17d870ab5629424a5e49",
+      "note": "Review round 1: rebased onto main, convertsToFreeFormObject() reused in toFirebaseSchema, free-form/union/enum test coverage added"
+    }
+  ],
+  "review_round_1": {
+    "reviewer": "aravindmurali22",
+    "state": "CHANGES_REQUESTED",
+    "submitted": "2026-11-02T23:52:28Z",
+    "requests": [
+      "Reuse convertsToFreeFormObject() in toFirebaseSchema's OBJECT/TYPE_UNSPECIFIED/null branch",
+      "Test that OBJECT with empty properties and TYPE_UNSPECIFIED are omitted, and that an untyped anyOf union or enum is kept",
+      "Rebase onto the latest main"
+    ],
+    "pushed": "2026-11-03T05:51:01Z",
+    "replies": [
+      "https://github.com/google/adk-kotlin/pull/856#discussion_r4451337559",
+      "https://github.com/google/adk-kotlin/pull/856#discussion_r4451337948"
+    ],
+    "top_level_comment": "https://github.com/google/adk-kotlin/pull/856#issuecomment-6596543959",
+    "pr_description_updated": true,
+    "re_request_review": "Not permitted for an external contributor (REST requested_reviewers 404, GraphQL requestReviews FORBIDDEN)"
   },
-  "after_fix": {
-    "tests": 77,
+  "validation_date": "2026-11-03",
+  "environment": "Ubuntu24.04/WSL2, effective user root, OpenJDK21.0.12.1, Gradle wrapper 9.8.0, Android platform 37.0, build-tools 36.0.0 and 37.0.0",
+  "checkout": "Fresh Linux clone of the local repository, detached at the commit; parent verified to be the base",
+  "validated_diff_sha256": "1003e9f22316ad23b2ebd2ca430f264c6375ccd6480d5752eb3d47a8676e7ff5",
+  "validated_diff_note": "sha256 of git diff --binary base commit with the default abbreviation; change.patch is the same diff with --abbrev=7",
+  "firebase_ai": "18.0.0 (BOM 35.0.2); GenerationConfig.Builder has presencePenalty, frequencyPenalty, responseSchema (javap)",
+  "conversions_test": {
+    "command": ":google-adk-kotlin-firebase:testDebugUnitTest --tests com.google.adk.firebase.utils.ConversionsTest",
+    "tests": 78,
     "failures": 0,
     "errors": 0,
-    "skipped": 0
+    "skipped": 0,
+    "duration": "14m 35s"
+  },
+  "negative_control": {
+    "change": "Conversions.kt taken from the base; tests from the commit",
+    "tests": 78,
+    "failures": 3,
+    "failed": [
+      "requestConverter_generationConfigBuilder_mapsResponseSchema: expected OBJECT",
+      "requestConverter_generationConfigBuilder_returnsBuilder: expected 0.6",
+      "requestConverter_generationConfigBuilder_untypedUnionAndEnumResponseSchemas_areKept: expected [STRING, INTEGER]"
+    ],
+    "note": "freeFormResponseSchema_isLeftOut passes without the fix because no response schema was ever set",
+    "working_tree_clean_after_restore": true
   },
   "module_build": {
     "status": "passed",
@@ -29,18 +69,61 @@
       ":google-adk-kotlin-firebase:build",
       ":google-adk-kotlin-examples-android:build"
     ],
-    "duration": "22m 9s",
+    "duration": "19m 44s",
     "firebase_unit_tests": {
-      "tests": 112,
+      "tests": 113,
       "failures": 0,
       "errors": 0,
       "skipped": 8
     },
     "skipped_notes": "FirebaseIntegrationTest and FirebaseRoomSessionIntegrationTest need Firebase credentials",
-    "working_tree_clean_after_build": true
+    "working_tree_clean_after_build": true,
+    "leftover_gradle_processes": 0
   },
-  "ktfmt": "0.65 --google-style: base files already differ (trailing commas); new main-source lines unchanged; two test hunks would only gain trailing commas like 43 existing places, kept in file style",
+  "ktfmt": {
+    "version": "0.65 --google-style",
+    "method": "Differences inside the added lines after ignoring a trailing comma before a closing bracket; the upstream formatter leaves a multi-line last argument without one, ktfmt 0.65 adds it",
+    "added_lines": {
+      "raw_regions": 4,
+      "regions_ignoring_trailing_commas": 0
+    },
+    "base_calibration": {
+      "Conversions.kt": "4 raw regions, 0 ignoring trailing commas",
+      "ConversionsTest.kt": "43 raw regions, 2 ignoring trailing commas (existing lines ktfmt would rewrap)"
+    }
+  },
   "diff_check": "passed",
+  "initial_validation": {
+    "commit": "a1cdb25b99615aa6c3a394774d7b8d9fa544e6c7",
+    "base": "db97db5e3992ed531f3fa41b0be8ef4880191ca7",
+    "date": "2026-11-02",
+    "before_fix": {
+      "patch": "test-only",
+      "tests": 77,
+      "failures": 2,
+      "failed": [
+        "requestConverter_generationConfigBuilder_mapsResponseSchema: expected OBJECT but was null",
+        "requestConverter_generationConfigBuilder_returnsBuilder: expected 0.6 but was null"
+      ]
+    },
+    "after_fix": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "module_build": {
+      "status": "passed",
+      "duration": "22m 9s",
+      "firebase_unit_tests": {
+        "tests": 112,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8
+      }
+    },
+    "patch_sha256": "ee136a65baef2fa082ec48f024b9ba28bb306ac1b3f5dae8f9839dc40eb81b02"
+  },
   "local_test_exclusions": [],
   "resource_overrides": {
     "gradle_heap": "3g",
@@ -54,6 +137,6 @@
     "JDK17/25 matrix",
     "Dokka (Conversions is internal; no public KDoc changed)"
   ],
-  "official_ci": "CLA and check-changes pass; validation/title/commit/security workflows action_required (checked 2026-11-02 23:20 Asia/Shanghai)",
-  "patch_sha256": "ee136a65baef2fa082ec48f024b9ba28bb306ac1b3f5dae8f9839dc40eb81b02"
+  "official_ci": "CLA and check-changes pass; validation/title/commit/security workflows action_required (checked 2026-11-03 14:10 Asia/Shanghai)",
+  "patch_sha256": "e6b7b846d64303048f7962e6a361a8555f3454584ae508f4e98abc2616500a9f"
 }

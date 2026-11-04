@@ -1,7 +1,7 @@
 {
   "pr": 856,
-  "base": "b961c9e4aa50c79dbf4c17d870ab5629424a5e49",
-  "commit": "5ddf2670a9760715b4ce5d8802338e834770401b",
+  "base": "e863facc7faa6ec0b91b2d9080e68bd5d22fda2f",
+  "commit": "fc2216574ea7b1a9e5732992fb65a251986dd0be",
   "commit_history": [
     {
       "commit": "8e5e303d2dc42ecf90ad12ea5e1e08bbec0aeda9",
@@ -17,8 +17,41 @@
       "commit": "5ddf2670a9760715b4ce5d8802338e834770401b",
       "base": "b961c9e4aa50c79dbf4c17d870ab5629424a5e49",
       "note": "Review round 1: rebased onto main, convertsToFreeFormObject() reused in toFirebaseSchema, free-form/union/enum test coverage added"
+    },
+    {
+      "commit": "fc2216574ea7b1a9e5732992fb65a251986dd0be",
+      "base": "e863facc7faa6ec0b91b2d9080e68bd5d22fda2f",
+      "note": "Rebased again at the reviewer's request; diff byte-identical to 5ddf267"
     }
   ],
+  "rebase_2026_11_04": {
+    "request": "https://github.com/google/adk-kotlin/pull/856#issuecomment-6612909000",
+    "requested": "2026-11-03T19:03:16Z",
+    "label_change": "waiting on author -> google support (Escalated to Google internal support or engineering team)",
+    "upstream_commits": 13,
+    "overlap_with_pr_files": false,
+    "upstream_firebase_changes": "11d6139 changed FirebaseIntegrationTest.kt and FirebaseRoomSessionIntegrationTest.kt (compiled by the re-run)",
+    "conflicts": false,
+    "diff_sha256": "1003e9f22316ad23b2ebd2ca430f264c6375ccd6480d5752eb3d47a8676e7ff5",
+    "diff_identical_to_previous": true,
+    "checkout": "Review-round-1 Linux checkout, detached at the new commit; clean tree and parent verified; test task forced with --rerun",
+    "conversions_test": {
+      "tests": 78,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration": "7m 57s",
+      "compiled": "compileDebugKotlin and compileDebugUnitTestKotlin re-ran"
+    },
+    "diff_check": "passed",
+    "working_tree_clean_after_run": true,
+    "not_re_run": "module build and negative control; the diff and Conversions.kt are unchanged, results at 5ddf267 on b961c9e",
+    "pushed": "2026-11-04T03:39:49Z",
+    "pr_description_updated": true,
+    "comment": "https://github.com/google/adk-kotlin/pull/856#issuecomment-6621904397"
+  },
+  "round_1_validation_commit": "5ddf2670a9760715b4ce5d8802338e834770401b",
+  "round_1_validation_note": "The blocks below (conversions_test, negative_control, module_build, ktfmt) ran at 5ddf267 on b961c9e",
   "review_round_1": {
     "reviewer": "aravindmurali22",
     "state": "CHANGES_REQUESTED",
@@ -137,6 +170,6 @@
     "JDK17/25 matrix",
     "Dokka (Conversions is internal; no public KDoc changed)"
   ],
-  "official_ci": "CLA and check-changes pass; validation/title/commit/security workflows action_required (checked 2026-11-03 14:10 Asia/Shanghai)",
+  "official_ci": "CLA and check-changes pass on fc22165; validation/title/commit/security workflows action_required (checked 2026-11-04 11:45 Asia/Shanghai)",
   "patch_sha256": "e6b7b846d64303048f7962e6a361a8555f3454584ae508f4e98abc2616500a9f"
 }

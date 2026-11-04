@@ -3,10 +3,10 @@
 ## 状态与来源
 
 - [上游 PR #837](https://github.com/google/adk-kotlin/pull/837)：Open、非草稿、无冲突。
-- 状态核验：2026-11-03 14:50（Asia/Shanghai）。第 1 轮审阅意见已处理并推送，等待复审；`waiting on author` 标签由维护者手动切换，目前仍在。
-- CLA 与 `check-changes` 通过；validation、标题、提交和安全工作流显示 `action_required`，等待维护者批准运行。
-- 基线：`b961c9e4aa50c79dbf4c17d870ab5629424a5e49`，即 11-03 时最新的 main（按审阅要求变基；首次提交基于 `2809a83`）。
-- 修复提交：[b4d321ba988a4348bcbdee75728b475d9d4a99bb](https://github.com/GCSimba/adk-kotlin/commit/b4d321ba988a4348bcbdee75728b475d9d4a99bb)。首次提交为 `433fbd2`。
+- 状态核验：2026-11-04 11:35（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
+- CLA 与 `check-changes` 在新提交上通过；validation、标题、提交和安全工作流显示 `action_required`，等待维护者批准运行。
+- 基线：`e863facc7faa6ec0b91b2d9080e68bd5d22fda2f`，即 11-04 时最新的 main。按审阅要求变基过两次：首次提交基于 `2809a83`，第 1 轮审阅后基于 `b961c9e`。
+- 修复提交：[54a710809ac0aefb11aae3246caaaecdd2744f42](https://github.com/GCSimba/adk-kotlin/commit/54a710809ac0aefb11aae3246caaaecdd2744f42)。此前依次为 `433fbd2`（首次提交）、`b4d321b`（第 1 轮审阅后）；`b4d321b` 与 `54a7108` 的 diff 逐字节相同。
 - 分支：`codex/fix-parallel-artifact-loading`。
 - 行为参考：[Python LoadArtifactsTool](https://github.com/google/adk-python/blob/e9e8f6156fb73cdfe799af0a0a57786e807732df/src/google/adk/tools/load_artifacts_tool.py#L530-L539)。
 - [修复补丁](change.patch) · [验证摘要](validation.json) · [Linux 全量测试计数](test-results.json) · [基线复现](../../research/repros/README.md)。
@@ -42,8 +42,22 @@ Runner 场景断言下一次模型请求的最后一条内容正好是 `Content(
 - 2026-11-03 14:08 用 `--force-with-lease` 推送 `b4d321b`（远端旧值 `433fbd2`），随后在两个讨论串回复（[回复 1](https://github.com/google/adk-kotlin/pull/837#discussion_r4451439769)、[回复 2](https://github.com/google/adk-kotlin/pull/837#discussion_r4451440069)）并发了[顶层评论](https://github.com/google/adk-kotlin/pull/837#issuecomment-6596767371)。
 - 14:44 全量构建完成后，更新了 PR 描述的测试与验证部分，并补上此前遗漏的 AI 辅助说明（与 #856 一致）。
 - 外部贡献者不能重新请求审阅：REST 返回 404，GraphQL 返回 FORBIDDEN。
+- 2026-11-04 03:01（Asia/Shanghai），aravindmurali22 [请求再次变基到最新 main](https://github.com/google/adk-kotlin/pull/837#issuecomment-6612882270)，并把 `waiting on author` 换成 `google support`。main 新增 13 个提交（e863fac），都不涉及本 PR 的两个文件，变基没有冲突。
+- 经用户确认，11:33 用 `--force-with-lease` 推送 `54a7108`（远端旧值 `b4d321b`），在 PR 描述的验证部分补了一段变基后的重跑结果，并发了[回复](https://github.com/google/adk-kotlin/pull/837#issuecomment-6621822896)。
 
 ## 验证
+
+### 第 2 次变基后（`54a7108`，基线 `e863fac`）
+
+diff 与 `b4d321b` 逐字节相同（SHA-256 一致），所以只在新基线上重跑定向测试和反证。上游这次改了 core 的 agents、tools、workflow，反证用来确认 bug 在新 main 上仍然存在。复用第 1 轮的 Linux 副本，检出新提交并确认工作区干净、父提交为 `e863fac`，测试用 `--rerun` 强制重跑。
+
+| 检查 | 结果 |
+| --- | --- |
+| LoadArtifactsToolTest 定向测试 | JVM 19/19、Android host 19/19，无跳过 |
+| 反证：`LoadArtifactsTool.kt` 换回新 main 的版本 | 结果与第 1 轮相同：19 个测试 4 个失败，排在首位的场景仍通过。还原后工作区干净 |
+| `git diff --check` | 通过 |
+
+全仓库构建没有重跑：本 PR 的 diff 没有变化，上一次全仓库构建在 `b4d321b`（基线 `b961c9e`）上通过。
 
 ### 第 1 轮审阅后（`b4d321b`）
 
@@ -78,5 +92,6 @@ Runner 场景断言下一次模型请求的最后一条内容正好是 `Content(
 
 ## 审核与后续
 
-- 等待 aravindmurali22 复审，以及维护者批准工作流。原计划的“11-05 @damianmomotgoogle”已不需要。
+- 等待 Google 内部处理（`google support`）和 aravindmurali22 复审，以及维护者批准工作流。原计划的“11-05 @damianmomotgoogle”已不需要。
+- 维护者可能在导入前再次要求变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑定向测试。
 - 后续修改仍保持单提交（amend + `--force-with-lease`），**不要加 `Co-authored-by` trailer**。只改与审阅相关的行，不要让本地 ktfmt 改动无关的行。

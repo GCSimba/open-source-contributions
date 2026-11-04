@@ -1,6 +1,6 @@
 # VS Code 工作交接
 
-交接日期：2026-10-31，最近更新 2026-11-04（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
+交接日期：2026-10-31，最近更新 2026-11-05（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
 
 ## 目标与已完成工作
 
@@ -97,11 +97,12 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## vLLM
 
-2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-04 23:06（Asia/Shanghai）**：
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-05 00:46（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#64935](https://github.com/vllm-project/vllm/pull/64935) | **2026-11-04 22:58 已合并**：DarkLight1337 批准、开启自动合并，squash 进 main 的提交为 `e4991c1`，内容与档案补丁一致 | `fix/batch-chat-reasoning-tokens` / `b068fa3`（维护者合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+| [#65697](https://github.com/vllm-project/vllm/pull/65697) | 2026-11-05 00:43 创建，Open；DCO 通过，`pre-run-check` 卡在新贡献者门禁（需维护者加 `ready`/`verified`，不要请求）；自动请求 mgoin、njhill、chaunceyjiang、DarkLight1337 审阅 | `fix/anthropic-count-tokens-over-limit` / `981c6d6` | [count_tokens 超长计数](projects/vllm-project/vllm/prs/65697-count-tokens-over-limit/README.md) |
 
 - 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，回复后审阅者于 21:09 批准，并评论 `/ci run`。
 - 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 由 Buildkite 覆盖。
@@ -109,5 +110,6 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
 - CI 卡住与合并经过：第一次完整 CI（Buildkite #99182）只有一个 AMD MI355 分片失败，原因是 main 上的测试缓存泄漏，在机器人同步我们分支 8 分钟后由 #65140 修复；Read the Docs 的警告也在同一时段由 #65157 修复。自动合并只差 `buildkite/ci/pr` 变绿，而作者不能在同一提交上重跑 CI，自己推送又会让 GitHub 关闭自动合并。11-04 22:02 经用户确认评论说明原因；22:26 DarkLight1337 更新分支并 `/ci retry`，Buildkite #99937 通过后于 22:58 自动合并。经验已写进 [vLLM 项目档案](projects/vllm-project/vllm/README.md) 的贡献要点。
 - 后续：#64935 没有待办。fork 上的分支可在用户确认后删除。
+- 11-04 第三轮筛选后提交 #65697（Anthropic `count_tokens` 对超过 `max_model_len` 的提示词返回 400，现改为与 `/tokenize` 一样计数）。下一步：等维护者加 `ready` 标签和审阅；收到意见后在 `fix/anthropic-count-tokens-over-limit` 修改，提交带 `-s`，推送和回复先经用户确认。筛选记录见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。
 - 11-02 第二轮找题暂停：找到的真实问题都已有 PR，详见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。`/v1/completions` 缺少 `created_cache_tokens` 可等 #58116 合并后再提。
 - 11-03 另一位贡献者的 [#65383](https://github.com/vllm-project/vllm/pull/65383) 引用了本 PR：它给 `/inference/v1/generate` 的 derender 模式补 `reasoning_tokens`，是不同接口的同类修复，不冲突。

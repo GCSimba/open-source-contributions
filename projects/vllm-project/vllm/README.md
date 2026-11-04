@@ -23,6 +23,7 @@ vLLM 是面向大语言模型的高吞吐推理与服务引擎，提供 OpenAI �
 | PR | 主题 | 状态 | 档案 |
 | --- | --- | --- | --- |
 | [#64935](https://github.com/vllm-project/vllm/pull/64935) | 批量 chat completions 报告 reasoning tokens | 2026-11-04 已合并（[e4991c1](https://github.com/vllm-project/vllm/commit/e4991c1feb8ce6a11c3fa7e9d63974ee3fe25968)） | [问题、修复与验证](prs/64935-batch-reasoning-tokens/README.md) |
+| [#65697](https://github.com/vllm-project/vllm/pull/65697) | Anthropic count_tokens 计数超过 max_model_len 的提示词 | 2026-11-05 创建，等待审阅 | [问题、修复与验证](prs/65697-count-tokens-over-limit/README.md) |
 
 ## 研究与复现
 

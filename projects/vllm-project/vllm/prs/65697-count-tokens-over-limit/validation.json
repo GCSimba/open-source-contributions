@@ -1,0 +1,52 @@
+{
+  "pr": 65697,
+  "title": "[Bugfix][Frontend] Count prompts over max_model_len in Anthropic count_tokens",
+  "base": "7663a8c524c056493e4924fdd851025de84ac91e",
+  "commit": "981c6d6dab32ee01857afc02c5f7aced18d53b4c",
+  "branch": "fix/anthropic-count-tokens-over-limit",
+  "created": "2026-11-04T16:43:10Z",
+  "files": {
+    "vllm/entrypoints/anthropic/serving.py": "+9/-1",
+    "vllm/entrypoints/openai/chat_completion/serving.py": "+4/-1",
+    "vllm/renderers/online_renderer.py": "+5/-1",
+    "tests/entrypoints/anthropic/test_messages.py": "+27/-0"
+  },
+  "root_cause": "count_tokens renders through render_chat_request with ChatCompletionRequest.build_tok_params (max_total_tokens=max_model_len): tokenization stops at max_model_len + 1 tokens and _token_len_check raises a 400, while /tokenize renders with max_total_tokens=None",
+  "fix": "Optional tok_params on render_chat_request / OnlineRenderer.render_chat / OnlineRenderer.preprocess_chat; count_tokens passes the chat request's params with max_total_tokens=None. Generation keeps the check; Harmony chat rendering never applied tok params",
+  "environment": "Ubuntu 24.04 / WSL2, Python 3.12, CPU only (Intel i5-11300H), --enforce-eager; Python sources from the branch, compiled CPU extensions from nightly CPU wheel 0.33.0rc1.dev711+gdd4e40142 (31 commits before the base, no CPU kernel or custom-op changes in between)",
+  "regression_test": {
+    "test": "tests/entrypoints/anthropic/test_messages.py::test_count_tokens_over_max_model_len",
+    "server": "Qwen/Qwen3-0.6B --max-model-len 2048 (module fixture, RemoteOpenAIServer)",
+    "before_fix": "1 failed: anthropic.BadRequestError 400, 'at least 2049 input tokens' (three source files from the base, new test kept)",
+    "after_fix": "1 passed",
+    "ci_step": "existing entrypoints/anthropic step in .buildkite/test_areas/entrypoints.yaml; the Rust frontend steps do not run this directory"
+  },
+  "http_probe": {
+    "server": "Qwen/Qwen3-0.6B --max-model-len 2048 --enforce-eager",
+    "rows": [
+      {"words": 300, "tokenize": 309, "count_tokens_before": 309, "count_tokens_after": 309},
+      {"words": 1900, "tokenize": 1909, "count_tokens_before": 1909, "count_tokens_after": 1909},
+      {"words": 2100, "tokenize": 2109, "count_tokens_before": "400", "count_tokens_after": 2109},
+      {"words": 4000, "tokenize": 4009, "count_tokens_before": "400", "count_tokens_after": 4009}
+    ],
+    "generation_with_2100_words": "/v1/messages and /v1/chat/completions return 400 before and after"
+  },
+  "other_checks": {
+    "test_messages.py": "10 passed",
+    "unit_tests": "test_anthropic_messages_conversion.py, test_error_type_mapping.py, openai/chat_completion/test_chat_error.py, openai/test_render_parity.py: 198 passed, 3 failed (TestDetectMergeInlineSystem::test_probes_non_jinja_renderer[deepseek-ai/*] need DeepSeek configs from the Hugging Face Hub, unreachable here; same failures on the base)",
+    "cohere_api_router": "tests/entrypoints/cohere/test_api_router.py: 33 passed",
+    "pre_commit": "passed on the changed files (shellcheck skipped)"
+  },
+  "not_run": [
+    "GPU CI",
+    "model evaluation (generation unchanged)"
+  ],
+  "duplicate_search": "Titles containing count_tokens (#63573, #61063, #59180, #52896, #47753, #44725, #35588) and searches for count_tokens max_model_len / maximum context length / count tokens context length; #59616/#59617 change /v1/messages overflow errors, not counting",
+  "related": {
+    "61063": "open; also adds a keyword argument to render_chat_request / render_chat (skip tool-parser validation when counting); independent, trivial rebase for whichever lands second",
+    "64050": "open; new OpenAI Responses input_tokens endpoint that mirrors the generation request's validation"
+  },
+  "official_ci": "DCO passed; pre-run-check failed on the new-contributor gate (needs the ready or verified label, or 4 merged PRs; author has 1), so pre-commit and Buildkite have not run (checked 2026-11-05 00:46 Asia/Shanghai)",
+  "requested_reviewers": ["mgoin", "njhill", "chaunceyjiang", "DarkLight1337"],
+  "patch_sha256": "9327e292dc8703e396aef43dc926da304ff3d3a63ef780c91d787dfce87c3567"
+}

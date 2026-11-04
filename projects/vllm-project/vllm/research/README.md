@@ -35,6 +35,28 @@
 
 结论：vLLM 前端有大量（含 AI 辅助的）贡献者在系统排查，新报告的 bug 往往几小时内就有 PR。探针脚本保存在本地工具目录，可在新功能合入后重跑。
 
+## 2026-11-04 第三轮筛选
+
+基于 main `11558e3`（提交时变基到 `7663a8c`），本机仅 CPU，CPU wheel 升级到 dd4e401 的 nightly。方法：
+
+- 后台研究代理检查了 9/20 以来 209 个开放 bug 中的 109 个，约 95% 已有 PR，往往在报告后数小时内；
+- 约 120 个边界与非法请求探针，覆盖 chat、completions、batch、Responses、Anthropic、tokenize；没有 5xx；
+- 对照最近合并的修复，检查兄弟路径；
+- 阅读 Robert Shaw 的 Anthropic 加固 RFC [#58647](https://github.com/vllm-project/vllm/issues/58647)。
+
+| 候选 | 结论 | 依据 |
+| --- | --- | --- |
+| `/v1/messages/count_tokens` 对超过 `max_model_len` 的提示词返回 400，`/tokenize` 能计数 | 未被覆盖，已提交 [#65697](https://github.com/vllm-project/vllm/pull/65697) | 见 [PR 记录](../prs/65697-count-tokens-over-limit/README.md) |
+| DeepSeek V4.1 DSML 工具调用解析的 5 种失败（issue [#62051](https://github.com/vllm-project/vllm/issues/62051)） | 已认领 | 有人在 issue 中认领，并开了 [#62517](https://github.com/vllm-project/vllm/pull/62517)、[#62259](https://github.com/vllm-project/vllm/pull/62259) |
+| 用户文本中的 `<\|image_pad\|>` 被当成图片占位符（issue [#57740](https://github.com/vllm-project/vllm/issues/57740)） | 不提交 | DarkLight1337 认为应由客户端处理，并担心全量扫描的性能开销 |
+| RFC #58647 中“无人处理”的条目（tool_result 图片、is_error、系统块拼接、长 prefill 的 ping） | 已认领 | 评论认领，或已有 #58700、#58682、#61356 等 PR |
+| `/v1/messages/count_tokens` 带工具时要求 `--tool-call-parser`（issue [#63573](https://github.com/vllm-project/vllm/issues/63573)） | 已认领 | [#61063](https://github.com/vllm-project/vllm/pull/61063) |
+| batch 端点静默忽略 `stream: true` 和 `tools` | 价值低，未提交 | 端点小众，文档已说明不支持 |
+| Responses `tools: []` 加 `tool_choice: required` 返回 400，chat 已改为按 `none` 处理（[#65547](https://github.com/vllm-project/vllm/pull/65547)） | 未提交 | OpenAI Responses 的行为不确定 |
+| `/detokenize` 遇到超出词表的 token id 返回空字符串和 200 | 价值低，未提交 | — |
+
+注意：RFC #58647 的作者在 10-04 明确表示不欢迎未经人工审查的 AI 生成 PR。在 Anthropic 接口方向提交时，正文需要写清人工审阅和验证。
+
 ## #64935 的相关 PR
 
 状态核验于 2026-11-01（Asia/Shanghai）。

@@ -1,0 +1,138 @@
+diff --git a/tests/entrypoints/anthropic/test_messages.py b/tests/entrypoints/anthropic/test_messages.py
+index 937d922..7b7444e 100644
+--- a/tests/entrypoints/anthropic/test_messages.py
++++ b/tests/entrypoints/anthropic/test_messages.py
+@@ -6,6 +6,7 @@ import json
+ import anthropic
+ import pytest
+ import pytest_asyncio
++import requests
+ 
+ from tests.utils import RemoteOpenAIServer
+ 
+@@ -283,3 +284,29 @@ async def test_min_tokens_delays_stop_sequence(client: anthropic.AsyncAnthropic)
+         **kwargs, extra_body={"temperature": 0.0, "min_tokens": 16}
+     )
+     assert resp.usage.output_tokens >= 16
++
++
++@pytest.mark.asyncio
++async def test_count_tokens_over_max_model_len(
++    server: RemoteOpenAIServer, client: anthropic.AsyncAnthropic
++):
++    """Clients count tokens to learn whether a prompt fits, so a prompt longer
++    than max_model_len is counted like /tokenize does, not rejected."""
++    messages = [{"role": "user", "content": "word " * 3000}]
++    response = requests.post(
++        server.url_for("tokenize"),
++        json={"model": "claude-3-7-sonnet-latest", "messages": messages},
++    )
++    response.raise_for_status()
++    tokenized = response.json()
++    assert tokenized["count"] > tokenized["max_model_len"]
++
++    count = await client.messages.count_tokens(
++        model="claude-3-7-sonnet-latest", messages=messages
++    )
++    assert count.input_tokens == tokenized["count"]
++
++    with pytest.raises(anthropic.BadRequestError):
++        await client.messages.create(
++            model="claude-3-7-sonnet-latest", max_tokens=16, messages=messages
++        )
+diff --git a/vllm/entrypoints/anthropic/serving.py b/vllm/entrypoints/anthropic/serving.py
+index a9ba6df..bd132e3 100644
+--- a/vllm/entrypoints/anthropic/serving.py
++++ b/vllm/entrypoints/anthropic/serving.py
+@@ -10,6 +10,7 @@ import logging
+ import time
+ import uuid
+ from collections.abc import AsyncGenerator
++from dataclasses import replace
+ from typing import Any, Literal, get_args
+ 
+ import jinja2
+@@ -1321,7 +1322,14 @@ class AnthropicServingMessages(OpenAIServingChat):
+             merge_inline_system=self._merge_inline_system,
+             disabled_thinking_effort=disabled_thinking_effort,
+         )
+-        result = await self.render_chat_request(chat_req)
++        # Count prompts longer than max_model_len instead of rejecting them,
++        # as /tokenize does.
++        result = await self.render_chat_request(
++            chat_req,
++            tok_params=replace(
++                chat_req.build_tok_params(self.model_config), max_total_tokens=None
++            ),
++        )
+         if isinstance(result, ErrorResponse):
+             return result
+ 
+diff --git a/vllm/entrypoints/openai/chat_completion/serving.py b/vllm/entrypoints/openai/chat_completion/serving.py
+index 90f5af4..8007027 100644
+--- a/vllm/entrypoints/openai/chat_completion/serving.py
++++ b/vllm/entrypoints/openai/chat_completion/serving.py
+@@ -67,6 +67,7 @@ from vllm.renderers.chat_utils import (
+     ConversationMessage,
+ )
+ from vllm.renderers.online_renderer import OnlineRenderer
++from vllm.renderers.params import TokenizeParams
+ from vllm.sampling_params import BeamSearchParams, SamplingParams
+ from vllm.tokenizers import TokenizerLike
+ from vllm.utils.collection_utils import as_list
+@@ -265,6 +266,8 @@ class OpenAIServingChat(GenerateBaseServing):
+     async def render_chat_request(
+         self,
+         request: ChatCompletionRequest,
++        *,
++        tok_params: TokenizeParams | None = None,
+     ) -> tuple[list[ConversationMessage], list[EngineInput]] | ErrorResponse:
+         """Validate the model and preprocess a chat completion request.
+ 
+@@ -283,7 +286,7 @@ class OpenAIServingChat(GenerateBaseServing):
+ 
+         self._preflight(request.n or 1)
+ 
+-        return await self.online_renderer.render_chat(request)
++        return await self.online_renderer.render_chat(request, tok_params=tok_params)
+ 
+     async def create_chat_completion(
+         self,
+diff --git a/vllm/renderers/online_renderer.py b/vllm/renderers/online_renderer.py
+index ad8c841..3f3d12e 100644
+--- a/vllm/renderers/online_renderer.py
++++ b/vllm/renderers/online_renderer.py
+@@ -237,6 +237,7 @@ class OnlineRenderer:
+         request: ChatCompletionRequest,
+         *,
+         skip_mm_cache: bool = False,
++        tok_params: TokenizeParams | None = None,
+     ) -> tuple[list[ConversationMessage], list[EngineInput]] | ErrorResponse:
+         """Core preprocessing logic for chat requests (no model/engine check).
+ 
+@@ -317,6 +318,7 @@ class OnlineRenderer:
+                 tool_dicts=tool_dicts,
+                 parser=self.parser,
+                 skip_mm_cache=skip_mm_cache,
++                tok_params=tok_params,
+             )
+         else:
+             # For GPT-OSS.
+@@ -787,6 +789,7 @@ class OnlineRenderer:
+         parser: type[Parser] | None = None,
+         *,
+         skip_mm_cache: bool = False,
++        tok_params: TokenizeParams | None = None,
+     ) -> tuple[list[ConversationMessage], list[EngineInput]]:
+         """Copied from GenerateBaseServing._preprocess_chat."""
+         renderer = self.renderer
+@@ -808,7 +811,8 @@ class OnlineRenderer:
+             ),
+         )
+ 
+-        tok_params = request.build_tok_params(self.model_config)
++        if tok_params is None:
++            tok_params = request.build_tok_params(self.model_config)
+         build_kwargs: dict[str, Any] = {}
+         if isinstance(request, (ChatCompletionRequest, ResponsesRequest)):
+             build_kwargs["reasoning_effort_map"] = self.reasoning_effort_map

@@ -97,19 +97,17 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## vLLM
 
-2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-04 22:03（Asia/Shanghai）**：
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-04 23:06（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
-| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **已获 DarkLight1337 批准**，带 `ready` 标签，并已开启自动合并（squash）；唯一失败的必需检查 `buildkite/ci/pr` 来自 AMD 分片，原因在 main 上已由 #65140 修复；11-04 已评论请他再 `/ci run` | `fix/batch-chat-reasoning-tokens` / `2a40ba7`（机器人合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | **2026-11-04 22:58 已合并**：DarkLight1337 批准、开启自动合并，squash 进 main 的提交为 `e4991c1`，内容与档案补丁一致 | `fix/batch-chat-reasoning-tokens` / `b068fa3`（维护者合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
 
 - 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，回复后审阅者于 21:09 批准，并评论 `/ci run`。
-- 分支当时落后 main 50 个提交，机器人把 main 合入分支（合并提交 `2a40ba7`，作者 vllm-agent）后才启动 CI。本地分支已快进到 `2a40ba7`；以后推送前必须先拉取远端分支。
-- 加上 `ready` 标签后，pre-run-check、pre-commit、Check format 均通过；DCO 通过。Read the Docs 失败，原因是 main 上 #63440、#64029 新增的 ROCm kernel docstring 在 `mkdocs --strict` 下产生 11 条交叉引用警告，与本 PR 无关。
-- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 和需要 Qwen2.5-1.5B 的服务测试未在本地运行，由 Buildkite 覆盖。
-- vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。
+- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 由 Buildkite 覆盖。
+- vLLM 要求每个提交带 DCO `Signed-off-by`，并在 PR 与提交 trailer 中声明 AI 辅助；签名须由用户本人确认。PR 机器人要求 AI agent 依据 AGENTS.md 复核 PR 价值，发布后已复核并保留。合并后的 squash 提交保留了这两个 trailer。
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
-- 11-03 已查明 Buildkite #99182 的失败：只有 `amd-mi355-basic-models-other-shard-2-slash-2` 失败（26 failed、597 passed），26 个失败全是 `models/test_muse_spark_rocm_mono.py` 中同一个 HIP kernel 错误（`cos_sin_cache must be a contiguous 2-D CUDA tensor`），与本 PR 的 4 个前端/测试文件无关。11-04 进一步查明，这是测试间的缓存泄漏，main 上已由 #65140 修复（在机器人同步我们分支 8 分钟后合入）。
-- 卡住的原因与处理（11-04）：自动合并已开启，只差 `buildkite/ci/pr` 变绿。作者在同一提交上不能再 `/ci run`，`/ci retry` 会在旧快照上再次失败，自己推送又会让 GitHub 关掉自动合并。因此经用户确认，评论请 DarkLight1337 再 `/ci run`。下一步：等他重跑；机器人会先合入最新 main，CI 通过后自动合并。若需要在源码分支修改，带 `-s` 提交，先拉取机器人的合并提交，推送和回复先经用户确认。
+- CI 卡住与合并经过：第一次完整 CI（Buildkite #99182）只有一个 AMD MI355 分片失败，原因是 main 上的测试缓存泄漏，在机器人同步我们分支 8 分钟后由 #65140 修复；Read the Docs 的警告也在同一时段由 #65157 修复。自动合并只差 `buildkite/ci/pr` 变绿，而作者不能在同一提交上重跑 CI，自己推送又会让 GitHub 关闭自动合并。11-04 22:02 经用户确认评论说明原因；22:26 DarkLight1337 更新分支并 `/ci retry`，Buildkite #99937 通过后于 22:58 自动合并。经验已写进 [vLLM 项目档案](projects/vllm-project/vllm/README.md) 的贡献要点。
+- 后续：#64935 没有待办。fork 上的分支可在用户确认后删除。
 - 11-02 第二轮找题暂停：找到的真实问题都已有 PR，详见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。`/v1/completions` 缺少 `created_cache_tokens` 可等 #58116 合并后再提。
-- 11-03 用户决定暂不在 PR 下说明 CI 失败；11-04 查清原因后改为评论请求重跑（见上）。同日另一位贡献者的 [#65383](https://github.com/vllm-project/vllm/pull/65383) 引用了本 PR：它给 `/inference/v1/generate` 的 derender 模式补 `reasoning_tokens`，是不同接口的同类修复，不冲突。
+- 11-03 另一位贡献者的 [#65383](https://github.com/vllm-project/vllm/pull/65383) 引用了本 PR：它给 `/inference/v1/generate` 的 derender 模式补 `reasoning_tokens`，是不同接口的同类修复，不冲突。

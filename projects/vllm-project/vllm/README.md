@@ -15,13 +15,14 @@ vLLM 是面向大语言模型的高吞吐推理与服务引擎，提供 OpenAI �
 - 回归测试遵守 `tests/AGENTS.md`：优先通过 `RemoteOpenAIServer`、`LLM` 等公开接口断言可观察结果；PR 中展示修复前失败、修复后通过的输出；确认 Buildkite 会选中新测试。
 - 新贡献者的 PR 有 `pre-run-check` 门禁：维护者添加 `verified`、`ready` 或 `ready-run-all-tests` 标签，或作者已有 4 个合并 PR 后，pre-commit 与文档预览才会运行。门禁日志要求 AI agent 不要请求添加标签。
 - 完整 CI（Buildkite）默认不运行，由有写权限的审阅者评论 `/ci run`；PR 获批或带 `ready` 标签后，作者可用 `/ci run`、`/ci retry`、`/ci cancel`。触发前分支必须与目标分支相差 0 个提交，fork PR 需开启 “Allow edits by maintainers”。
+- 作者在已经跑过 CI 的提交上不能再 `/ci run`，`/ci retry` 只重试同一提交上失败的 job。维护者开启自动合并后，作者不要往分支推送：没有写权限的人推送会让 GitHub 关闭自动合并。CI 因 main 上已修复的问题失败时，请维护者更新分支后重跑（#64935 的做法）。
 - 无写权限的贡献者最多同时有 6 个开放 PR。
 
 ## PR 记录
 
-| PR | 主题 | 档案 |
-| --- | --- | --- |
-| [#64935](https://github.com/vllm-project/vllm/pull/64935) | 批量 chat completions 报告 reasoning tokens | [问题、修复与验证](prs/64935-batch-reasoning-tokens/README.md) |
+| PR | 主题 | 状态 | 档案 |
+| --- | --- | --- | --- |
+| [#64935](https://github.com/vllm-project/vllm/pull/64935) | 批量 chat completions 报告 reasoning tokens | 2026-11-04 已合并（[e4991c1](https://github.com/vllm-project/vllm/commit/e4991c1feb8ce6a11c3fa7e9d63974ee3fe25968)） | [问题、修复与验证](prs/64935-batch-reasoning-tokens/README.md) |
 
 ## 研究与复现
 

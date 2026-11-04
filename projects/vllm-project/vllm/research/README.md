@@ -6,7 +6,7 @@
 
 | 候选 | 结论 | 依据 |
 | --- | --- | --- |
-| `/v1/chat/completions/batch` 不报告 `completion_tokens_details.reasoning_tokens` | 已确认并提交 [#64935](https://github.com/vllm-project/vllm/pull/64935) | [PR 记录](../prs/64935-batch-reasoning-tokens/README.md)、[usage 探针](repros/README.md) |
+| `/v1/chat/completions/batch` 不报告 `completion_tokens_details.reasoning_tokens` | 已确认并提交 [#64935](https://github.com/vllm-project/vllm/pull/64935)，2026-11-04 合并 | [PR 记录](../prs/64935-batch-reasoning-tokens/README.md)、[usage 探针](repros/README.md) |
 | generative scoring 的参数与顺序问题 | 重复，不再提交 | 已有 [#64468](https://github.com/vllm-project/vllm/pull/64468)、[#63625](https://github.com/vllm-project/vllm/pull/63625) |
 | beam search 不遵守 stop 字符串 | 重复，不再提交 | 已有 [#52621](https://github.com/vllm-project/vllm/pull/52621) |
 | 在线服务中 beam search 与 structured outputs 组合 | 重复，不再提交 | 已有 [#36285](https://github.com/vllm-project/vllm/pull/36285) |
@@ -46,6 +46,8 @@
 | [#58010](https://github.com/vllm-project/vllm/pull/58010) | Open | `include_reasoning=false` 时隐藏批量响应的 `logprobs`、`token_ids` | 不涉及 usage；与本 PR 修改同一函数的不同段落，后合并的一方可能需要变基 |
 | [#62727](https://github.com/vllm-project/vllm/pull/62727) | Open | 批量 chat completions 遵守 `X-Vllm-Priority` | 修改同一文件，不涉及 usage |
 | [#55432](https://github.com/vllm-project/vllm/pull/55432) | Open | reasoning effort 映射到 thinking budget | 修改同一文件，不涉及 usage |
+
+#64935 已于 2026-11-04 先合并；上表其余 PR 的状态此后未再核验。
 
 上游 `test_include_reasoning.py` 的模块说明要求隐藏推理内容时 reasoning tokens 仍体现在 usage 中，#64935 在批量接口沿用这一语义。
 

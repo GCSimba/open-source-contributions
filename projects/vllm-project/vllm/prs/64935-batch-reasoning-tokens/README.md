@@ -2,11 +2,11 @@
 
 ## 状态与来源
 
-- [上游 PR #64935](https://github.com/vllm-project/vllm/pull/64935)：`[Bugfix][Frontend] Report reasoning tokens in batched chat completions`，Open、非草稿，**已获 DarkLight1337 批准**；标签 `bug`、`documentation`、`frontend`、`ready`、`ci/build`、`rust`。`ci/build`、`rust` 是首次提交改了 Buildkite YAML 时自动加的，撤回 YAML 后仍保留。
-- 状态核验：2026-11-04 22:03（Asia/Shanghai）。DarkLight1337 在 11-02 14:22 提出 1 条行内审核意见，修改并回复后，于 21:09 批准、回复 “Thanks!” 并评论 `/ci run`，同时开启了自动合并（squash），见“审核与后续”。11-04 22:02 经用户确认，评论请他再 `/ci run` 一次。
-- 检查：加上 `ready` 标签后，pre-run-check、pre-commit、Check format、DCO（含机器人合并提交）、Mergify Summary 均通过。必需检查是 pre-run-check、pre-commit、DCO 和 Buildkite 汇总状态 `buildkite/ci/pr`，只有最后一个失败：完整 CI [Buildkite #99182](https://buildkite.com/vllm/ci/builds/99182) 在合并提交 `2a40ba7` 上只有一个 AMD MI355 模型分片失败，失败用例与本 PR 无关（见“审核与后续”）。Read the Docs（非必需）失败，原因是 main 上 #63440、#64029 新增的 ROCm kernel docstring 在 `mkdocs --strict` 下产生 11 条交叉引用警告，与本 PR 改动的文件无关。PR 的 mergeable_state 因此为 `blocked`。
+- [上游 PR #64935](https://github.com/vllm-project/vllm/pull/64935)：`[Bugfix][Frontend] Report reasoning tokens in batched chat completions`，**2026-11-04 22:58（Asia/Shanghai）已合并**：DarkLight1337 批准并开启自动合并后，以 squash 方式合入 main，提交 [e4991c1](https://github.com/vllm-project/vllm/commit/e4991c1feb8ce6a11c3fa7e9d63974ee3fe25968)。合入内容与本档案的[累计补丁](change.patch)逐行一致（4 个文件，+47 行）。标签 `bug`、`documentation`、`frontend`、`ready`、`ci/build`、`rust`；`ci/build`、`rust` 是首次提交改了 Buildkite YAML 时自动加的，撤回 YAML 后仍保留。
+- 状态核验：2026-11-04 23:06（Asia/Shanghai）。DarkLight1337 在 11-02 14:22 提出 1 条行内审核意见，修改并回复后，于 21:09 批准、回复 “Thanks!” 并评论 `/ci run`，同时开启了自动合并（squash）。CI 被 main 上一个已修复的测试泄漏卡住两天；11-04 22:02 经用户确认评论说明原因后，他在 22:26 更新分支并 `/ci retry`，CI 通过后自动合并，见“审核与后续”。
+- 检查：pre-run-check、pre-commit、Check format、DCO（含合并提交）、Mergify Summary 均通过。必需检查是 pre-run-check、pre-commit、DCO 和 Buildkite 汇总状态 `buildkite/ci/pr`。第一次完整 CI [Buildkite #99182](https://buildkite.com/vllm/ci/builds/99182)（合并提交 `2a40ba7`）只有一个 AMD MI355 模型分片失败，失败用例与本 PR 无关；Read the Docs（非必需）也因 main 上无关的 docstring 警告失败。维护者把最新 main 合入分支（`b068fa3`）后，[Buildkite #99937](https://buildkite.com/vllm/ci/builds/99937) 只重跑之前失败的步骤，24 分 18 秒通过（AMD 分片已拆成 3 个，全部通过），Read the Docs 也通过。
 - 基线：`564ac0de1b228568cafcbfbe8ccaccc82d6023eb`。发布前从 `cfa9f96f5efbb45c5c02ab127b51eaf8b86bb4ca` 变基，两者之间的上游提交只修改 `recipes/models/*.yaml`；变基前提交 `4784d89d`，patch-id 相同。
-- 提交：修复提交 [a36cacaf1209e9d69034bae92e52156b7903b3f6](https://github.com/GCSimba/vllm/commit/a36cacaf1209e9d69034bae92e52156b7903b3f6)；审核修改 [f062ee20a68955beaf9022299d9dea955c82a7df](https://github.com/GCSimba/vllm/commit/f062ee20a68955beaf9022299d9dea955c82a7df)。两个提交都含 `Co-authored-by: Copilot` 和 `Signed-off-by: GCSimba`，DCO 签名均经用户确认后添加。`/ci run` 时机器人把 main 合入分支，生成合并提交 `2a40ba7d5f566fc3cd420d79789f9dcda6177bf2`（作者 vllm-agent）；本地分支已快进到该提交，以后推送前必须先拉取。
+- 提交：修复提交 [a36cacaf1209e9d69034bae92e52156b7903b3f6](https://github.com/GCSimba/vllm/commit/a36cacaf1209e9d69034bae92e52156b7903b3f6)；审核修改 [f062ee20a68955beaf9022299d9dea955c82a7df](https://github.com/GCSimba/vllm/commit/f062ee20a68955beaf9022299d9dea955c82a7df)。两个提交都含 `Co-authored-by: Copilot` 和 `Signed-off-by: GCSimba`，DCO 签名均经用户确认后添加。分支上另有两个合并 main 的提交：`/ci run` 时机器人生成的 `2a40ba7d5f566fc3cd420d79789f9dcda6177bf2`（作者 vllm-agent），以及 11-04 维护者更新分支生成的 `b068fa37c053c2d8049e5a63ebb5f60a86da69b3`（作者 Cyrus Leung）。合并到 main 的 squash 提交 `e4991c1` 作者为 GCSimba，保留了 `Signed-off-by` 和 `Co-authored-by: Copilot` 两个 trailer。
 - 分支：`fix/batch-chat-reasoning-tokens`。
 - 先例：[#64757](https://github.com/vllm-project/vllm/pull/64757) 于 10 月 31 日合并，为同一端点报告 `prompt_tokens_details`，未处理 completion 侧。
 - 重复搜索：发布前搜索开放与已关闭的 PR、issue：`batch reasoning tokens`、`completions/batch usage`、`batched chat completions usage`、`reasoning_tokens`、`completion_tokens_details`、`OpenAIServingChatBatch`、`batch_serving`，没有同题 PR。相关 PR 及关系见[研究记录](../../research/README.md)。
@@ -52,7 +52,7 @@ Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU（Intel i5-11300H，AVX-512）、`--
 | 审核修改后（11-02，`f062ee2` 内容），`VLLM_USE_RUST_FRONTEND=1` 只运行新测试 | 1 skipped、6 deselected，未启动服务，5 秒 | 11-02 20:36 |
 | 审核修改后，不设置该变量运行整个文件 | 7 passed | 11-02 20:41 |
 | 审核修改后，pre-commit | 全部通过（含“Check new tests are wired into Buildkite CI”）；shellcheck 以 `SKIP` 跳过 | 11-02 20:49 |
-| 官方 CI | `ready` 标签后 pre-commit、Check format 通过；Buildkite #99182 失败的只有 AMD MI355 basic-models 分片（26 个失败都在无关的 `test_muse_spark_rocm_mono.py`，main 上已由 #65140 修复）；Read the Docs 因 main 上无关的 docstring 警告失败（已由 #65157 修复） | 11-04 22:03 |
+| 官方 CI | Buildkite #99182 只有 AMD MI355 basic-models 分片失败（main 上已由 #65140 修复的测试泄漏），Read the Docs 因 main 上无关的 docstring 警告失败（已由 #65157 修复）；维护者合入最新 main 后，Buildkite #99937 重跑失败步骤通过，Read the Docs 通过，PR 自动合并 | 11-04 22:58 |
 
 回归测试在 07:26 加入 `"temperature": 0`。在此之前的草稿曾在修复前失败于第 117 行（06:58），修复后整文件 7 passed（07:04）。表中修复前和整文件的结果是最终版本的重跑，PR 描述中的行号已据此更正为 118。
 
@@ -87,12 +87,15 @@ SKIP=shellcheck pre-commit run --files <改动文件>
 - 2026-11-02 21:09，DarkLight1337 [批准](https://github.com/vllm-project/vllm/pull/64935#pullrequestreview-5737022364)，回复 “Thanks!”，并评论 `/ci run`；PR 获得 `ready` 标签。21:10 机器人报告分支落后 main 50 个提交，先把 main 合入分支（`2a40ba7`），再启动 [Buildkite #99182](https://buildkite.com/vllm/ci/builds/99182)。
 - Read the Docs 在 `2a40ba7` 上失败：`mkdocs build --strict` 有 11 条警告，全部来自 main 上 [#63440](https://github.com/vllm-project/vllm/pull/63440)（11-01）和 [#64029](https://github.com/vllm-project/vllm/pull/64029)（11-02）新增的 `vllm/models/muse_spark/amd/...`、`vllm/models/kimi_k3/amd/...` 中的 docstring 方括号交叉引用，与本 PR 的 4 个文件无关，未在 PR 中评论。11-03 重新读取构建日志确认：11 条 WARNING 分别来自 `muse_spark/amd/mono/kernels/attn_frag`（6 条）和 `kimi_k3/amd/specialized_decode/mono` 下的 3 个文件（5 条），没有一条涉及本 PR 的文档。
 - Buildkite #99182（11-02 22:01 结束）只有 `amd-mi355-basic-models-other-shard-2-slash-2` 失败，汇总状态因此显示失败。该分片 26 failed、597 passed，26 个失败全部是 `models/test_muse_spark_rocm_mono.py::test_mono_step_matches_the_stock_loop` 的参数组合，错误相同：HIP kernel `fused_muse_spark_qknorm_rope_kv_insert` 报 `cos_sin_cache must be a contiguous 2-D CUDA tensor`。这是 AMD 上的模型 kernel 测试，与本 PR 的前端批量接口无关（11-03 13:40 核验）。
-- 下一步：等 DarkLight1337 再次 `/ci run`。机器人会先把最新 main 合入分支，再启动 Buildkite；必需检查通过后，11-02 开启的自动合并会自动 squash 合并。推送新提交前必须先拉取机器人的合并提交。
 - 2026-11-03 19:28，ldkhang1201 的 [#65383](https://github.com/vllm-project/vllm/pull/65383) 引用了本 PR：它给 `/inference/v1/generate` 的 derender 模式补 `usage.completion_tokens_details.reasoning_tokens`（叠在 #64041 上），是不同接口的同类修复，不冲突。
 - 2026-11-04 查明卡住的原因：
   - DarkLight1337 在 11-02 21:09 批准时开启了自动合并（squash），评审已满足（reviewDecision `APPROVED`）。必需检查中只有 `buildkite/ci/pr` 失败，AMD 分片和 Read the Docs 本身都不是必需检查。
   - 两个失败在 main 上都已修复，只是我们的 CI 正好落在修复前的几分钟：机器人在 21:10 把 main 合入分支（`2a40ba7`）；21:18 合入的 [#65140](https://github.com/vllm-project/vllm/pull/65140) 修掉的正是这 26 个 `test_muse_spark_rocm_mono.py` 失败（`test_muse_spark_rocm_shared_rope.py` 把 CPU 上的 RoPE 留在 `get_rope` 的全局缓存里，同一 pytest 进程中的 mono 测试拿到它）；21:24 合入的 [#65157](https://github.com/vllm-project/vllm/pull/65157) 修掉了 Read the Docs 的 11 条警告。11-04 合并的 13 个 PR 上，该 AMD 分片（现已拆成 3 个）全部通过。
   - 作者自己无法解开：`/ci run` 在已经跑过 CI 的提交上只允许有写权限的人重跑；`/ci retry` 只会在 `2a40ba7` 这个旧快照上重试，测试泄漏还在，会再次失败；作者自己推送合并 main 虽然可以再发 `/ci run`，但 GitHub 会在没有写权限的人推送时自动关闭自动合并，之后仍要维护者手动合并。mergify 的自动同步规则要求没有失败检查，所以也不会自动更新分支。
   - 2026-11-04 22:02，经用户确认[评论](https://github.com/vllm-project/vllm/pull/64935#issuecomment-6632638523)请 DarkLight1337 再 `/ci run` 一次，说明了以上原因。
-- 收到审核意见后在 `fix/batch-chat-reasoning-tokens` 修改，运行受影响测试，每个提交用 `-s` 签名后推送到 `fork`；改写历史用 `--force-with-lease`。触发 CI 前分支需与 main 相差 0 个提交，审阅者用 `/ci run` 时机器人会自动合入 main。
-- 若 [#58010](https://github.com/vllm-project/vllm/pull/58010) 先合并，本分支可能需要变基并重跑回归测试。
+- 2026-11-04 22:26，DarkLight1337 用 GitHub 的更新分支把最新 main 合入分支（`b068fa3`），并评论 `/ci retry`。新提交上还没有 CI 构建，机器人按规则新建 [Buildkite #99937](https://buildkite.com/vllm/ci/builds/99937)，只运行 #99182 中失败的 1 个步骤；因为是有写权限的人更新的分支，自动合并没有被关闭。22:57 构建通过（AMD 分片现已拆成 3 个，全部通过），Read the Docs 也通过。
+- **2026-11-04 22:58 自动合并**：以 squash 方式合入 main（[e4991c1](https://github.com/vllm-project/vllm/commit/e4991c1feb8ce6a11c3fa7e9d63974ee3fe25968)，合并人显示为开启自动合并的 DarkLight1337）。从发布（11-01 08:13）到合并约 3.6 天，从批准到合并约 2 天。
+- 经验：
+  - 维护者开启自动合并后，作者不要往分支推送，否则 GitHub 会关闭自动合并。
+  - CI 因无关失败卡住时，先查失败用例在 main 上是否已修复。若已修复，说明原因并请有写权限的人更新分支后重跑，比单纯说明“与本 PR 无关”更容易推进。
+- 后续：PR 已合并，没有待办。fork 上的 `fix/batch-chat-reasoning-tokens` 分支可在用户确认后删除。

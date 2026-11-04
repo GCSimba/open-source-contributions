@@ -3,7 +3,8 @@
 ## 状态与来源
 
 - [上游 PR #856](https://github.com/google/adk-kotlin/pull/856)：`fix(firebase): send the response schema and penalties to Firebase`，Open、非草稿、无冲突。
-- 状态核验：2026-11-04 11:45（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。CLA 与 `check-changes` 在新提交上通过；validation、标题、提交和安全工作流显示 `action_required`，等待维护者批准运行。
+- 状态核验：2026-11-04 14:00（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
+- CI：CLA 与 `check-changes` 在新提交上通过。11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过；validation 在 JDK 17、25 上通过，`build-modules (21)` 失败在 core 的 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`：`getTools()` 时 MCP `initialize` 握手超过了 3 秒的超时。测试注释自己写明，CI 上子 JVM 冷启动可能超过这个时间。同一天另外两次运行（[41742439664](https://github.com/google/adk-kotlin/actions/runs/41742439664)、[41703641478](https://github.com/google/adk-kotlin/actions/runs/41703641478)）也挂在这个测试上，与本 PR 无关。重跑需要仓库写权限；用户决定暂不评论，等维护者处理。
 - 基线：`e863facc7faa6ec0b91b2d9080e68bd5d22fda2f`，即 11-04 时最新的 main。按审阅要求变基过两次：首次提交基于 `db97db5`，第 1 轮审阅后基于 `b961c9e`；期间 main 新增的提交都没有改 `Conversions.kt` 和 `ConversionsTest.kt`。
 - 修复提交：[fc2216574ea7b1a9e5732992fb65a251986dd0be](https://github.com/GCSimba/adk-kotlin/commit/fc2216574ea7b1a9e5732992fb65a251986dd0be)。提交历史：
   - 首次推送 `8e5e303`，带 `Co-authored-by: Copilot`，CLA 检查因 Copilot 没有签 CLA 而失败；

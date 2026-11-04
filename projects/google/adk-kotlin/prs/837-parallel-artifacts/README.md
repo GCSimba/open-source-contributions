@@ -3,8 +3,8 @@
 ## 状态与来源
 
 - [上游 PR #837](https://github.com/google/adk-kotlin/pull/837)：Open、非草稿、无冲突。
-- 状态核验：2026-11-04 11:35（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
-- CLA 与 `check-changes` 在新提交上通过；validation、标题、提交和安全工作流显示 `action_required`，等待维护者批准运行。
+- 状态核验：2026-11-04 14:00（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
+- CI：CLA 与 `check-changes` 在新提交上通过。11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过；validation 的 `build-modules (25)` 失败在 `integrations/openai` 的 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`（收到 `SocketTimeoutException`，而不是预期的 `HttpRequestTimeoutException`），JDK 17/21 两个 job 随即被取消。这是 main 上已有的不稳定超时测试：客户端把请求超时和 socket 超时设成同一个值（测试里是 200 ms），哪个先触发取决于调度。同一天 [#807](https://github.com/google/adk-kotlin/actions/runs/41750333197) 和 [#869](https://github.com/google/adk-kotlin/actions/runs/41667694659) 的运行也挂在这个测试上。重跑需要仓库写权限；用户决定暂不评论，等维护者处理。
 - 基线：`e863facc7faa6ec0b91b2d9080e68bd5d22fda2f`，即 11-04 时最新的 main。按审阅要求变基过两次：首次提交基于 `2809a83`，第 1 轮审阅后基于 `b961c9e`。
 - 修复提交：[54a710809ac0aefb11aae3246caaaecdd2744f42](https://github.com/GCSimba/adk-kotlin/commit/54a710809ac0aefb11aae3246caaaecdd2744f42)。此前依次为 `433fbd2`（首次提交）、`b4d321b`（第 1 轮审阅后）；`b4d321b` 与 `54a7108` 的 diff 逐字节相同。
 - 分支：`codex/fix-parallel-artifact-loading`。

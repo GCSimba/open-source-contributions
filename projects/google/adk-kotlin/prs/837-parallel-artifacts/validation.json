@@ -194,6 +194,6 @@
     "JDK17/25 matrix",
     "Dokka (KDoc unchanged)"
   ],
-  "official_ci": "CLA and check-changes pass on 54a7108; validation/title/commit/security workflows action_required (checked 2026-11-04 11:35 Asia/Shanghai)",
+  "official_ci": "CLA and check-changes pass on 54a7108. After maintainer approval (2026-11-04T04:58Z) the PR title, commit and security checks pass; validation build-modules (25) failed in KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls (integrations/openai, SocketTimeoutException before the expected HttpRequestTimeoutException; request and socket timeouts are both 200 ms there), and the JDK 17/21 jobs were cancelled. Pre-existing flaky test: it also failed on runs 41750333197 (#807) and 41667694659 (#869) the same day. Re-running needs write access; the user chose not to comment and to wait for the maintainers (checked 2026-11-04 14:00 Asia/Shanghai)",
   "patch_sha256": "e6bb27c3171698f8ec48b0267f944c970d3b055d4363db18c877c043f888faf0"
 }

@@ -170,6 +170,6 @@
     "JDK17/25 matrix",
     "Dokka (Conversions is internal; no public KDoc changed)"
   ],
-  "official_ci": "CLA and check-changes pass on fc22165; validation/title/commit/security workflows action_required (checked 2026-11-04 11:45 Asia/Shanghai)",
+  "official_ci": "CLA and check-changes pass on fc22165. After maintainer approval (2026-11-04T04:58Z) the PR title, commit and security checks pass; validation passed on JDK 17 and 25, and build-modules (21) failed in McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries (MCP initialize handshake exceeded the 3 s request timeout during getTools(), a risk the test's own comment notes for cold child JVMs on CI). Pre-existing flaky test: it also failed on runs 41742439664 and 41703641478 the same day. Re-running needs write access; the user chose not to comment and to wait for the maintainers (checked 2026-11-04 14:00 Asia/Shanghai)",
   "patch_sha256": "e6b7b846d64303048f7962e6a361a8555f3454584ae508f4e98abc2616500a9f"
 }

@@ -2,40 +2,108 @@
   "pr": 65697,
   "title": "[Bugfix][Frontend] Count prompts over max_model_len in Anthropic count_tokens",
   "base": "7663a8c524c056493e4924fdd851025de84ac91e",
-  "commit": "981c6d6dab32ee01857afc02c5f7aced18d53b4c",
+  "commit": "f0e34b5cee7e17971878b5a9f9d2f37e0237c9bd",
+  "commits": [
+    {
+      "commit": "981c6d6dab32ee01857afc02c5f7aced18d53b4c",
+      "note": "Initial submission: optional tok_params on render_chat_request / OnlineRenderer.render_chat / OnlineRenderer.preprocess_chat"
+    },
+    {
+      "commit": "f0e34b5cee7e17971878b5a9f9d2f37e0237c9bd",
+      "note": "Review round 1: count-only ChatCompletionRequest subclass with TokenizeChatRequest-style build_tok_params; shared signatures restored"
+    }
+  ],
   "branch": "fix/anthropic-count-tokens-over-limit",
   "created": "2026-11-04T16:43:10Z",
   "files": {
-    "vllm/entrypoints/anthropic/serving.py": "+9/-1",
-    "vllm/entrypoints/openai/chat_completion/serving.py": "+4/-1",
-    "vllm/renderers/online_renderer.py": "+5/-1",
+    "vllm/entrypoints/anthropic/serving.py": "+15/-2",
     "tests/entrypoints/anthropic/test_messages.py": "+27/-0"
   },
   "root_cause": "count_tokens renders through render_chat_request with ChatCompletionRequest.build_tok_params (max_total_tokens=max_model_len): tokenization stops at max_model_len + 1 tokens and _token_len_check raises a 400, while /tokenize renders with max_total_tokens=None",
-  "fix": "Optional tok_params on render_chat_request / OnlineRenderer.render_chat / OnlineRenderer.preprocess_chat; count_tokens passes the chat request's params with max_total_tokens=None. Generation keeps the check; Harmony chat rendering never applied tok params",
+  "fix": "The count branch of _build_base_request builds _CountTokensChatRequest, a ChatCompletionRequest whose build_tok_params matches TokenizeChatRequest.build_tok_params (max_total_tokens=None, max_output_tokens=0, add_special_tokens from the request). count_tokens still renders through render_chat_request, so templating, tools, thinking and the tool/reasoning parsers (isinstance ChatCompletionRequest check) are unchanged; no shared signatures change. Generation keeps the check; Harmony chat rendering never applied tok params",
+  "review_round_1": {
+    "comment": "https://github.com/vllm-project/vllm/pull/65697#discussion_r4477177615",
+    "reviewer": "DarkLight1337",
+    "at": "2026-11-05T06:08:06Z",
+    "text": "Perhaps it would be better to define a separate function to do this just like for `/tokenize`? cc @chaunceyjiang",
+    "interpretation": "Own the uncapped tokenization params in a request type's build_tok_params, as TokenizeChatRequest (and decisions' ReadPromptRequest) do, instead of passing tok_params through shared render functions",
+    "pushed": "2026-11-05T17:33Z",
+    "reply": "https://github.com/vllm-project/vllm/pull/65697#discussion_r4483802780",
+    "reply_offer": "Switch to a fully separate render path like create_tokenize if preferred",
+    "pr_description_updated": true
+  },
   "environment": "Ubuntu 24.04 / WSL2, Python 3.12, CPU only (Intel i5-11300H), --enforce-eager; Python sources from the branch, compiled CPU extensions from nightly CPU wheel 0.33.0rc1.dev711+gdd4e40142 (31 commits before the base, no CPU kernel or custom-op changes in between)",
   "regression_test": {
     "test": "tests/entrypoints/anthropic/test_messages.py::test_count_tokens_over_max_model_len",
-    "server": "Qwen/Qwen3-0.6B --max-model-len 2048 (module fixture, RemoteOpenAIServer)",
-    "before_fix": "1 failed: anthropic.BadRequestError 400, 'at least 2049 input tokens' (three source files from the base, new test kept)",
+    "server": "Qwen/Qwen3-0.6B --max-model-len 2048 --enable-auto-tool-choice --tool-call-parser hermes (module fixture, RemoteOpenAIServer)",
+    "before_fix": "1 failed: anthropic.BadRequestError 400, 'at least 2049 input tokens' (vllm/entrypoints/anthropic/serving.py from the base, new test kept; re-run in review round 1)",
     "after_fix": "1 passed",
     "ci_step": "existing entrypoints/anthropic step in .buildkite/test_areas/entrypoints.yaml; the Rust frontend steps do not run this directory"
   },
   "http_probe": {
-    "server": "Qwen/Qwen3-0.6B --max-model-len 2048 --enforce-eager",
-    "rows": [
-      {"words": 300, "tokenize": 309, "count_tokens_before": 309, "count_tokens_after": 309},
-      {"words": 1900, "tokenize": 1909, "count_tokens_before": 1909, "count_tokens_after": 1909},
-      {"words": 2100, "tokenize": 2109, "count_tokens_before": "400", "count_tokens_after": 2109},
-      {"words": 4000, "tokenize": 4009, "count_tokens_before": "400", "count_tokens_after": 4009}
+    "server": "Qwen/Qwen3-0.6B --max-model-len 2048 --enforce-eager --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser qwen3 (review round 1; every count request goes through the parser's adjust_request path)",
+    "length_rows": [
+      {
+        "words": 300,
+        "tokenize": 309,
+        "count_tokens_before": 309,
+        "count_tokens_after": 309
+      },
+      {
+        "words": 1900,
+        "tokenize": 1909,
+        "count_tokens_before": 1909,
+        "count_tokens_after": 1909
+      },
+      {
+        "words": 2100,
+        "tokenize": 2109,
+        "count_tokens_before": "400",
+        "count_tokens_after": 2109
+      },
+      {
+        "words": 4000,
+        "tokenize": 4009,
+        "count_tokens_before": "400",
+        "count_tokens_after": 4009
+      },
+      {
+        "words": "2100 + one tool",
+        "tokenize": null,
+        "count_tokens_before": "400",
+        "count_tokens_after": 2248
+      }
     ],
-    "generation_with_2100_words": "/v1/messages and /v1/chat/completions return 400 before and after"
+    "parity_rows_same_before_and_after": [
+      {
+        "request": "one short user message",
+        "count_tokens": 15,
+        "messages_input_tokens": 15
+      },
+      {
+        "request": "+ system",
+        "count_tokens": 24,
+        "messages_input_tokens": 24
+      },
+      {
+        "request": "+ one tool",
+        "count_tokens": 154,
+        "messages_input_tokens": 154
+      },
+      {
+        "request": "+ thinking disabled",
+        "count_tokens": 19,
+        "messages_input_tokens": 19
+      }
+    ],
+    "generation_with_2100_words": "/v1/messages and /v1/chat/completions return 400 before and after",
+    "initial_submission_probe": "Without parsers, same length rows (300/1900/2100/4000 words) at 981c6d6"
   },
   "other_checks": {
-    "test_messages.py": "10 passed",
-    "unit_tests": "test_anthropic_messages_conversion.py, test_error_type_mapping.py, openai/chat_completion/test_chat_error.py, openai/test_render_parity.py: 198 passed, 3 failed (TestDetectMergeInlineSystem::test_probes_non_jinja_renderer[deepseek-ai/*] need DeepSeek configs from the Hugging Face Hub, unreachable here; same failures on the base)",
-    "cohere_api_router": "tests/entrypoints/cohere/test_api_router.py: 33 passed",
-    "pre_commit": "passed on the changed files (shellcheck skipped)"
+    "test_messages.py": "10 passed (review round 1)",
+    "unit_tests": "tests/entrypoints/anthropic/test_anthropic_messages_conversion.py, test_error_type_mapping.py, test_protocol_exports.py: 151 passed, 3 failed (TestDetectMergeInlineSystem::test_probes_non_jinja_renderer[deepseek-ai/*] need DeepSeek configs from the Hugging Face Hub, unreachable here; same failures on the base)",
+    "pre_commit": "passed on the changed files, including ruff, mypy and typos (shellcheck skipped)",
+    "initial_submission": "981c6d6 also passed openai/chat_completion/test_chat_error.py, openai/test_render_parity.py and cohere/test_api_router.py, which exercised the shared signatures that round 1 restored"
   },
   "not_run": [
     "GPU CI",
@@ -43,10 +111,16 @@
   ],
   "duplicate_search": "Titles containing count_tokens (#63573, #61063, #59180, #52896, #47753, #44725, #35588) and searches for count_tokens max_model_len / maximum context length / count tokens context length; #59616/#59617 change /v1/messages overflow errors, not counting",
   "related": {
-    "61063": "open; also adds a keyword argument to render_chat_request / render_chat (skip tool-parser validation when counting); independent, trivial rebase for whichever lands second",
-    "64050": "open; new OpenAI Responses input_tokens endpoint that mirrors the generation request's validation"
+    "61063": "open; adds a keyword argument to render_chat_request / render_chat (skip tool-parser validation when counting); no overlap since review round 1",
+    "64050": "open; new OpenAI Responses input_tokens endpoint that mirrors the generation request's validation",
+    "zkawfanx/vllm#67": "PR inside a fork (not upstream) that referenced this PR on 2026-11-05; passes skip_mm_cache for Anthropic counting so image counts do not pollute the multimodal cache, as /tokenize does"
   },
-  "official_ci": "DCO passed; pre-run-check failed on the new-contributor gate (needs the ready or verified label, or 4 merged PRs; author has 1), so pre-commit and Buildkite have not run (checked 2026-11-05 00:46 Asia/Shanghai)",
-  "requested_reviewers": ["mgoin", "njhill", "chaunceyjiang", "DarkLight1337"],
-  "patch_sha256": "9327e292dc8703e396aef43dc926da304ff3d3a63ef780c91d787dfce87c3567"
+  "official_ci": "f0e34b5: DCO passed; pre-run-check still fails on the new-contributor gate (needs the ready or verified label, or 4 merged PRs; author has 1), so pre-commit and Buildkite have not run; docs build passed (checked 2026-11-06 01:35 Asia/Shanghai)",
+  "requested_reviewers": [
+    "mgoin",
+    "njhill",
+    "chaunceyjiang",
+    "DarkLight1337"
+  ],
+  "patch_sha256": "446c7efe6214271a3e6b7c3d43d4927d27df944c5d68ce3a6a04745f03c80800"
 }

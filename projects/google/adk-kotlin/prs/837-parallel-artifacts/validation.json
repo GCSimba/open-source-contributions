@@ -1,7 +1,7 @@
 {
   "pr": 837,
-  "base": "e863facc7faa6ec0b91b2d9080e68bd5d22fda2f",
-  "commit": "54a710809ac0aefb11aae3246caaaecdd2744f42",
+  "base": "e66579634f6a12630e1ac1e31ef6953aff4f5a01",
+  "commit": "a96345005e6b14173167c31dda966d88035bb6da",
   "commit_history": [
     {
       "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
@@ -17,6 +17,11 @@
       "commit": "54a710809ac0aefb11aae3246caaaecdd2744f42",
       "base": "e863facc7faa6ec0b91b2d9080e68bd5d22fda2f",
       "note": "Rebased again at the reviewer's request; diff byte-identical to b4d321b"
+    },
+    {
+      "commit": "a96345005e6b14173167c31dda966d88035bb6da",
+      "base": "e66579634f6a12630e1ac1e31ef6953aff4f5a01",
+      "note": "Rebased a third time (reviewer: resolve failing checks, keep rebased until merge); diff byte-identical to 54a7108"
     }
   ],
   "rebase_2026_11_04": {
@@ -57,6 +62,49 @@
     "pushed": "2026-11-04T03:33:45Z",
     "pr_description_updated": true,
     "comment": "https://github.com/google/adk-kotlin/pull/837#issuecomment-6621822896"
+  },
+  "rebase_2026_11_06": {
+    "request": "https://github.com/google/adk-kotlin/pull/837#issuecomment-6638485323",
+    "requested": "2026-11-04T18:18:44Z",
+    "request_text": "Resolve the failing GitHub Actions checks; keep the branch rebased against main until merge",
+    "upstream_commits": 14,
+    "overlap_with_pr_files": false,
+    "upstream_touched_flaky_tests": false,
+    "conflicts": false,
+    "diff_sha256": "f294a37e87e6c080b9e104e8b168be18f20462244ac18da21e3686850ba2241b",
+    "diff_identical_to_previous": true,
+    "checkout": "Same Linux checkout, detached at the new commit; clean tree and parent verified; test tasks forced with --rerun",
+    "focused": {
+      "jvm": {
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "android_host": {
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration": "11m 25s"
+    },
+    "negative_control": {
+      "change": "LoadArtifactsTool.kt taken from e665796; tests from the commit",
+      "platform": "jvm",
+      "tests": 19,
+      "failures": 4,
+      "failed": "same 4 tests as before",
+      "duration": "3m 57s",
+      "working_tree_clean_after_restore": true
+    },
+    "diff_check": "passed",
+    "repository_build": "not re-run; the diff is unchanged and passed at b4d321b on b961c9e",
+    "pushed": "2026-11-05T17:53:02Z",
+    "pr_description_updated": false,
+    "comment": "https://github.com/google/adk-kotlin/pull/837#issuecomment-6665207041",
+    "comment_summary": "Rebase and re-run results; the previous validation failure was the flaky Ktor timeout test; repository-wide flaky-test counts with run links; asked for a re-run of the failed job if a new run hits one of them",
+    "flaky_ci_scan": "Of the 85 completed validation runs in google/adk-kotlin from 2026-11-04T00:00Z to 2026-11-05T17:06Z, the 21 failures all came from four timing-sensitive tests, 19 of them on other PRs: LiveRoutesTest.runLive_underTheAppsOwnWebSockets_closesAnOversizedFrameWithTooBig x7, KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls x6, McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries x4, WorkflowHitlTest.runNode_waitingCallCancelledWithTheFirst_doesNotRunTheChild x4"
   },
   "round_1_validation_commit": "b4d321ba988a4348bcbdee75728b475d9d4a99bb",
   "round_1_validation_note": "The blocks below (focused, negative_control, repository_build, ktfmt) ran at b4d321b on b961c9e",
@@ -194,6 +242,6 @@
     "JDK17/25 matrix",
     "Dokka (KDoc unchanged)"
   ],
-  "official_ci": "CLA and check-changes pass on 54a7108. After maintainer approval (2026-11-04T04:58Z) the PR title, commit and security checks pass; validation build-modules (25) failed in KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls (integrations/openai, SocketTimeoutException before the expected HttpRequestTimeoutException; request and socket timeouts are both 200 ms there), and the JDK 17/21 jobs were cancelled. Pre-existing flaky test: it also failed on runs 41750333197 (#807) and 41667694659 (#869) the same day. Re-running needs write access; the user chose not to comment and to wait for the maintainers (checked 2026-11-04 14:00 Asia/Shanghai)",
+  "official_ci": "a963450 (pushed 2026-11-05T17:53Z): CLA scan passed; PR title, commit, security and validation workflows await maintainer approval (action_required). Previous head 54a7108: validation build-modules (25) failed in KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls (integrations/openai, SocketTimeoutException before the expected HttpRequestTimeoutException; request and socket timeouts are both 200 ms there) and the JDK 17/21 jobs were cancelled. Of the 85 completed validation runs in google/adk-kotlin from 2026-11-04T00:00Z to 2026-11-05T17:06Z, the 21 failures all came from four timing-sensitive tests, 19 of them on other PRs: LiveRoutesTest.runLive_underTheAppsOwnWebSockets_closesAnOversizedFrameWithTooBig x7, KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls x6, McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries x4, WorkflowHitlTest.runNode_waitingCallCancelledWithTheFirst_doesNotRunTheChild x4. Re-running needs write access (checked 2026-11-06 02:00 Asia/Shanghai)",
   "patch_sha256": "e6bb27c3171698f8ec48b0267f944c970d3b055d4363db18c877c043f888faf0"
 }

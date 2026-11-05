@@ -3,10 +3,10 @@
 ## 状态与来源
 
 - [上游 PR #837](https://github.com/google/adk-kotlin/pull/837)：Open、非草稿、无冲突。
-- 状态核验：2026-11-04 14:00（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
-- CI：CLA 与 `check-changes` 在新提交上通过。11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过；validation 的 `build-modules (25)` 失败在 `integrations/openai` 的 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`（收到 `SocketTimeoutException`，而不是预期的 `HttpRequestTimeoutException`），JDK 17/21 两个 job 随即被取消。这是 main 上已有的不稳定超时测试：客户端把请求超时和 socket 超时设成同一个值（测试里是 200 ms），哪个先触发取决于调度。同一天 [#807](https://github.com/google/adk-kotlin/actions/runs/41750333197) 和 [#869](https://github.com/google/adk-kotlin/actions/runs/41667694659) 的运行也挂在这个测试上。重跑需要仓库写权限；用户决定暂不评论，等维护者处理。
-- 基线：`e863facc7faa6ec0b91b2d9080e68bd5d22fda2f`，即 11-04 时最新的 main。按审阅要求变基过两次：首次提交基于 `2809a83`，第 1 轮审阅后基于 `b961c9e`。
-- 修复提交：[54a710809ac0aefb11aae3246caaaecdd2744f42](https://github.com/GCSimba/adk-kotlin/commit/54a710809ac0aefb11aae3246caaaecdd2744f42)。此前依次为 `433fbd2`（首次提交）、`b4d321b`（第 1 轮审阅后）；`b4d321b` 与 `54a7108` 的 diff 逐字节相同。
+- 状态核验：2026-11-06 02:00（Asia/Shanghai）。第 1 轮审阅意见已处理；维护者 11-04、11-05 两次要求变基，均已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
+- CI：11-06 推送 `a963450` 后，标题、提交、安全检查和 validation 工作流都在等维护者批准（`action_required`）。上一轮（`54a7108`）CLA 与 `check-changes` 通过；11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过，validation 的 `build-modules (25)` 失败在 `integrations/openai` 的 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`（收到 `SocketTimeoutException`，而不是预期的 `HttpRequestTimeoutException`），JDK 17/21 两个 job 随即被取消。这是 main 上已有的不稳定超时测试：客户端把请求超时和 socket 超时设成同一个值（测试里是 200 ms），哪个先触发取决于调度。11-04 00:00 至 11-05 17:06（UTC），仓库 85 次跑完的 validation 中 21 次失败，全部来自四个不稳定测试（`LiveRoutesTest` 7 次、`KtorChatCompletionsClientTest` 6 次、`McpToolsetIntegrationTest` 4 次、`WorkflowHitlTest` 4 次），其中 19 次在其他 PR 上。重跑需要仓库写权限。
+- 基线：`e66579634f6a12630e1ac1e31ef6953aff4f5a01`，即 11-06 时最新的 main。按审阅要求变基过三次：首次提交基于 `2809a83`，第 1 轮审阅后基于 `b961c9e`，11-04 基于 `e863fac`。
+- 修复提交：[a96345005e6b14173167c31dda966d88035bb6da](https://github.com/GCSimba/adk-kotlin/commit/a96345005e6b14173167c31dda966d88035bb6da)。此前依次为 `433fbd2`（首次提交）、`b4d321b`（第 1 轮审阅后）、`54a7108`（11-04 变基）；`b4d321b`、`54a7108`、`a963450` 的 diff 逐字节相同。
 - 分支：`codex/fix-parallel-artifact-loading`。
 - 行为参考：[Python LoadArtifactsTool](https://github.com/google/adk-python/blob/e9e8f6156fb73cdfe799af0a0a57786e807732df/src/google/adk/tools/load_artifacts_tool.py#L530-L539)。
 - [修复补丁](change.patch) · [验证摘要](validation.json) · [Linux 全量测试计数](test-results.json) · [基线复现](../../research/repros/README.md)。
@@ -44,8 +44,20 @@ Runner 场景断言下一次模型请求的最后一条内容正好是 `Content(
 - 外部贡献者不能重新请求审阅：REST 返回 404，GraphQL 返回 FORBIDDEN。
 - 2026-11-04 03:01（Asia/Shanghai），aravindmurali22 [请求再次变基到最新 main](https://github.com/google/adk-kotlin/pull/837#issuecomment-6612882270)，并把 `waiting on author` 换成 `google support`。main 新增 13 个提交（e863fac），都不涉及本 PR 的两个文件，变基没有冲突。
 - 经用户确认，11:33 用 `--force-with-lease` 推送 `54a7108`（远端旧值 `b4d321b`），在 PR 描述的验证部分补了一段变基后的重跑结果，并发了[回复](https://github.com/google/adk-kotlin/pull/837#issuecomment-6621822896)。
+- 2026-11-05 02:18（Asia/Shanghai），aravindmurali22 [要求](https://github.com/google/adk-kotlin/pull/837#issuecomment-6638485323)处理失败的 GitHub Actions 检查，并在合并前持续把分支变基到最新 main（仓库每天都有提交）。
+- 经用户确认，11-06 01:53 用 `--force-with-lease` 推送 `a963450`（远端旧值 `54a7108`），并发了[评论](https://github.com/google/adk-kotlin/pull/837#issuecomment-6665207041)：说明变基与重跑结果；上一轮失败的是不稳定的 Ktor 超时测试；附上仓库内四个不稳定测试的失败次数和运行链接；如果新一轮再撞上，请维护者重跑失败的 job。PR 描述未改，其中“After rebasing onto e863fac (now 54a7108, same diff)”一句已过时。
 
 ## 验证
+
+### 第 3 次变基后（`a963450`，基线 `e665796`）
+
+diff 与 `54a7108` 逐字节相同（SHA-256 一致）；main 新增的 14 个提交既没有改本 PR 的文件，也没有改上面的不稳定测试。复用同一 Linux 副本，检出新提交并确认工作区干净、父提交为 `e665796`，测试用 `--rerun` 强制重跑。
+
+| 检查 | 结果 |
+| --- | --- |
+| LoadArtifactsToolTest 定向测试 | JVM 19/19、Android host 19/19，无跳过（11 分 25 秒） |
+| 反证：`LoadArtifactsTool.kt` 换回新 main 的版本 | 19 个测试 4 个失败，与前两次相同；还原后工作区干净 |
+| `git diff --check` | 通过 |
 
 ### 第 2 次变基后（`54a7108`，基线 `e863fac`）
 
@@ -92,6 +104,6 @@ diff 与 `b4d321b` 逐字节相同（SHA-256 一致），所以只在新基线�
 
 ## 审核与后续
 
-- 等待 Google 内部处理（`google support`）和 aravindmurali22 复审，以及维护者批准工作流。原计划的“11-05 @damianmomotgoogle”已不需要。
-- 维护者可能在导入前再次要求变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑定向测试。
+- 等待维护者批准 `a963450` 的工作流、Google 内部处理（`google support`）和 aravindmurali22 复审。新一轮 validation 若再撞上不稳定测试，评论已请维护者重跑。原计划的“11-05 @damianmomotgoogle”已不需要。
+- 维护者要求合并前持续变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑定向测试和反证，推送和回复前经用户确认。
 - 后续修改仍保持单提交（amend + `--force-with-lease`），**不要加 `Co-authored-by` trailer**。只改与审阅相关的行，不要让本地 ktfmt 改动无关的行。

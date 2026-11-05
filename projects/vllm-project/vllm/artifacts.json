@@ -15,8 +15,8 @@
     },
     {
       "path": "prs/65697-count-tokens-over-limit/change.patch",
-      "bytes": 5570,
-      "sha256": "9327e292dc8703e396aef43dc926da304ff3d3a63ef780c91d787dfce87c3567"
+      "bytes": 3485,
+      "sha256": "446c7efe6214271a3e6b7c3d43d4927d27df944c5d68ce3a6a04745f03c80800"
     },
     {
       "path": "research/repros/batch_usage_probe.py",

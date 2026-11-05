@@ -41,98 +41,51 @@ index 937d922..7b7444e 100644
 +            model="claude-3-7-sonnet-latest", max_tokens=16, messages=messages
 +        )
 diff --git a/vllm/entrypoints/anthropic/serving.py b/vllm/entrypoints/anthropic/serving.py
-index a9ba6df..bd132e3 100644
+index a9ba6df..03b1bfb 100644
 --- a/vllm/entrypoints/anthropic/serving.py
 +++ b/vllm/entrypoints/anthropic/serving.py
-@@ -10,6 +10,7 @@ import logging
- import time
- import uuid
- from collections.abc import AsyncGenerator
-+from dataclasses import replace
- from typing import Any, Literal, get_args
- 
+@@ -15,6 +15,7 @@ from typing import Any, Literal, get_args
  import jinja2
-@@ -1321,7 +1322,14 @@ class AnthropicServingMessages(OpenAIServingChat):
-             merge_inline_system=self._merge_inline_system,
-             disabled_thinking_effort=disabled_thinking_effort,
-         )
--        result = await self.render_chat_request(chat_req)
-+        # Count prompts longer than max_model_len instead of rejecting them,
-+        # as /tokenize does.
-+        result = await self.render_chat_request(
-+            chat_req,
-+            tok_params=replace(
-+                chat_req.build_tok_params(self.model_config), max_total_tokens=None
-+            ),
-+        )
-         if isinstance(result, ErrorResponse):
-             return result
+ from fastapi import Request
  
-diff --git a/vllm/entrypoints/openai/chat_completion/serving.py b/vllm/entrypoints/openai/chat_completion/serving.py
-index 90f5af4..8007027 100644
---- a/vllm/entrypoints/openai/chat_completion/serving.py
-+++ b/vllm/entrypoints/openai/chat_completion/serving.py
-@@ -67,6 +67,7 @@ from vllm.renderers.chat_utils import (
-     ConversationMessage,
++from vllm.config import ModelConfig
+ from vllm.engine.protocol import EngineClient
+ from vllm.entrypoints.anthropic.protocol import (
+     AnthropicContentBlock,
+@@ -61,7 +62,7 @@ from vllm.renderers.inputs.preprocess import (
+     parse_dec_only_prompt,
  )
  from vllm.renderers.online_renderer import OnlineRenderer
-+from vllm.renderers.params import TokenizeParams
- from vllm.sampling_params import BeamSearchParams, SamplingParams
- from vllm.tokenizers import TokenizerLike
- from vllm.utils.collection_utils import as_list
-@@ -265,6 +266,8 @@ class OpenAIServingChat(GenerateBaseServing):
-     async def render_chat_request(
-         self,
-         request: ChatCompletionRequest,
-+        *,
-+        tok_params: TokenizeParams | None = None,
-     ) -> tuple[list[ConversationMessage], list[EngineInput]] | ErrorResponse:
-         """Validate the model and preprocess a chat completion request.
+-from vllm.renderers.params import ChatParams
++from vllm.renderers.params import ChatParams, TokenizeParams
  
-@@ -283,7 +286,7 @@ class OpenAIServingChat(GenerateBaseServing):
+ logger = init_logger(__name__)
  
-         self._preflight(request.n or 1)
+@@ -76,6 +77,18 @@ class _StreamError(Exception):
+         self.error_info = error_info
  
--        return await self.online_renderer.render_chat(request)
-+        return await self.online_renderer.render_chat(request, tok_params=tok_params)
  
-     async def create_chat_completion(
-         self,
-diff --git a/vllm/renderers/online_renderer.py b/vllm/renderers/online_renderer.py
-index ad8c841..3f3d12e 100644
---- a/vllm/renderers/online_renderer.py
-+++ b/vllm/renderers/online_renderer.py
-@@ -237,6 +237,7 @@ class OnlineRenderer:
-         request: ChatCompletionRequest,
-         *,
-         skip_mm_cache: bool = False,
-+        tok_params: TokenizeParams | None = None,
-     ) -> tuple[list[ConversationMessage], list[EngineInput]] | ErrorResponse:
-         """Core preprocessing logic for chat requests (no model/engine check).
- 
-@@ -317,6 +318,7 @@ class OnlineRenderer:
-                 tool_dicts=tool_dicts,
-                 parser=self.parser,
-                 skip_mm_cache=skip_mm_cache,
-+                tok_params=tok_params,
-             )
-         else:
-             # For GPT-OSS.
-@@ -787,6 +789,7 @@ class OnlineRenderer:
-         parser: type[Parser] | None = None,
-         *,
-         skip_mm_cache: bool = False,
-+        tok_params: TokenizeParams | None = None,
-     ) -> tuple[list[ConversationMessage], list[EngineInput]]:
-         """Copied from GenerateBaseServing._preprocess_chat."""
-         renderer = self.renderer
-@@ -808,7 +811,8 @@ class OnlineRenderer:
-             ),
-         )
- 
--        tok_params = request.build_tok_params(self.model_config)
-+        if tok_params is None:
-+            tok_params = request.build_tok_params(self.model_config)
-         build_kwargs: dict[str, Any] = {}
-         if isinstance(request, (ChatCompletionRequest, ResponsesRequest)):
-             build_kwargs["reasoning_effort_map"] = self.reasoning_effort_map
++class _CountTokensChatRequest(ChatCompletionRequest):
++    """Chat request rendered by count_tokens, which counts prompts longer than
++    max_model_len instead of rejecting them, like /tokenize."""
++
++    def build_tok_params(self, model_config: ModelConfig) -> TokenizeParams:
++        return TokenizeParams(
++            max_total_tokens=None,
++            max_output_tokens=0,
++            add_special_tokens=self.add_special_tokens,
++        )
++
++
+ def _build_anthropic_usage(
+     usage: UsageInfo | None,
+ ) -> AnthropicUsage:
+@@ -691,7 +704,7 @@ class AnthropicServingMessages(OpenAIServingChat):
+     ) -> ChatCompletionRequest:
+         """Build base ChatCompletionRequest."""
+         if isinstance(anthropic_request, AnthropicCountTokensRequest):
+-            return ChatCompletionRequest(
++            return _CountTokensChatRequest(
+                 model=anthropic_request.model,
+                 messages=openai_messages,
+                 chat_template_kwargs=anthropic_request.chat_template_kwargs,

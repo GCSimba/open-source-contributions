@@ -3,14 +3,15 @@
 ## 状态与来源
 
 - [上游 PR #856](https://github.com/google/adk-kotlin/pull/856)：`fix(firebase): send the response schema and penalties to Firebase`，Open、非草稿、无冲突。
-- 状态核验：2026-11-04 14:00（Asia/Shanghai）。第 1 轮审阅意见已处理；11-04 维护者要求再次变基，已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
-- CI：CLA 与 `check-changes` 在新提交上通过。11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过；validation 在 JDK 17、25 上通过，`build-modules (21)` 失败在 core 的 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`：`getTools()` 时 MCP `initialize` 握手超过了 3 秒的超时。测试注释自己写明，CI 上子 JVM 冷启动可能超过这个时间。同一天另外两次运行（[41742439664](https://github.com/google/adk-kotlin/actions/runs/41742439664)、[41703641478](https://github.com/google/adk-kotlin/actions/runs/41703641478)）也挂在这个测试上，与本 PR 无关。重跑需要仓库写权限；用户决定暂不评论，等维护者处理。
-- 基线：`e863facc7faa6ec0b91b2d9080e68bd5d22fda2f`，即 11-04 时最新的 main。按审阅要求变基过两次：首次提交基于 `db97db5`，第 1 轮审阅后基于 `b961c9e`；期间 main 新增的提交都没有改 `Conversions.kt` 和 `ConversionsTest.kt`。
-- 修复提交：[fc2216574ea7b1a9e5732992fb65a251986dd0be](https://github.com/GCSimba/adk-kotlin/commit/fc2216574ea7b1a9e5732992fb65a251986dd0be)。提交历史：
+- 状态核验：2026-11-06 02:00（Asia/Shanghai）。第 1 轮审阅意见已处理；维护者 11-04、11-05 两次要求变基，均已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
+- CI：11-06 推送 `3ee76e1` 后，标题、提交、安全检查和 validation 工作流都在等维护者批准（`action_required`）。上一轮（`fc22165`）CLA 与 `check-changes` 通过；11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过，validation 在 JDK 17、25 上通过，`build-modules (21)` 失败在 core 的 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`：`getTools()` 时 MCP `initialize` 握手超过了 3 秒的超时。测试注释自己写明，CI 上子 JVM 冷启动可能超过这个时间。11-04 00:00 至 11-05 17:06（UTC），仓库 85 次跑完的 validation 中 21 次失败，全部来自四个不稳定测试（`LiveRoutesTest` 7 次、`KtorChatCompletionsClientTest` 6 次、`McpToolsetIntegrationTest` 4 次、`WorkflowHitlTest` 4 次），其中 19 次在其他 PR 上。重跑需要仓库写权限。
+- 基线：`e66579634f6a12630e1ac1e31ef6953aff4f5a01`，即 11-06 时最新的 main。按审阅要求变基过三次：首次提交基于 `db97db5`，第 1 轮审阅后基于 `b961c9e`，11-04 基于 `e863fac`；期间 main 新增的提交都没有改 `Conversions.kt` 和 `ConversionsTest.kt`。
+- 修复提交：[3ee76e18c2fb3cfb64b233b37eb7192bd31d1ba9](https://github.com/GCSimba/adk-kotlin/commit/3ee76e18c2fb3cfb64b233b37eb7192bd31d1ba9)。提交历史：
   - 首次推送 `8e5e303`，带 `Co-authored-by: Copilot`，CLA 检查因 Copilot 没有签 CLA 而失败；
   - 经用户确认，amend 去掉这一行得到 `a1cdb25`（tree 不变）；
   - 第 1 轮审阅后变基、修改，得到 `5ddf267`；
-  - 11-04 按要求再次变基，得到 `fc22165`，diff 与 `5ddf267` 逐字节相同。
+  - 11-04 按要求再次变基，得到 `fc22165`，diff 与 `5ddf267` 逐字节相同；
+  - 11-06 第三次变基，得到 `3ee76e1`，diff 仍逐字节相同。
   
   PR 描述末尾注明了 AI 辅助。
 - 分支：`fix/firebase-response-schema`。
@@ -50,8 +51,14 @@
 - 外部贡献者不能重新请求审阅：REST `requested_reviewers` 返回 404，GraphQL `requestReviews` 返回 FORBIDDEN。
 - 2026-11-04 03:03（Asia/Shanghai），aravindmurali22 [请求再次变基到最新 main](https://github.com/google/adk-kotlin/pull/856#issuecomment-6612909000)，并把 `waiting on author` 换成 `google support`。main 新增 13 个提交（e863fac），其中 `11d6139` 改了 Firebase 集成测试和示例，但没有碰本 PR 的两个文件，变基没有冲突。
 - 经用户确认，11:39 用 `--force-with-lease` 推送 `fc22165`（远端旧值 `5ddf267`），在 PR 描述的验证部分补了一句变基后的重跑结果，并发了[回复](https://github.com/google/adk-kotlin/pull/856#issuecomment-6621904397)。
+- 2026-11-05 02:18（Asia/Shanghai），aravindmurali22 [要求](https://github.com/google/adk-kotlin/pull/856#issuecomment-6638476521)处理失败的 GitHub Actions 检查，并在合并前持续把分支变基到最新 main（仓库每天都有提交）。
+- 经用户确认，11-06 01:53 用 `--force-with-lease` 推送 `3ee76e1`（远端旧值 `fc22165`），并发了[评论](https://github.com/google/adk-kotlin/pull/856#issuecomment-6665208111)：说明变基与重跑结果；上一轮失败的是 JDK 21 上不稳定的 McpToolset 超时测试；附上仓库内四个不稳定测试的失败次数和运行链接；如果新一轮再撞上，请维护者重跑失败的 job。PR 描述未改，其中“After rebasing onto e863fac (now fc22165, same diff)”一句已过时。
 
 ## 验证
+
+### 第 3 次变基后（`3ee76e1`，基线 `e665796`）
+
+diff 与 `fc22165` 逐字节相同（SHA-256 一致）；main 新增的 14 个提交既没有改本 PR 的文件，也没有改上面的不稳定测试。复用同一 Linux 副本，检出新提交并确认工作区干净、父提交为 `e665796`，用 `--rerun` 强制重跑 `ConversionsTest`：78/78 通过（4 分 50 秒）。`git diff --check` 通过，运行后工作区干净。模块构建和反证没有重跑，理由同下。
 
 ### 第 2 次变基后（`fc22165`，基线 `e863fac`）
 
@@ -90,6 +97,6 @@ diff 与 `5ddf267` 逐字节相同（SHA-256 一致），`Conversions.kt` 在新
 
 ## 审核与后续
 
-- 等待 Google 内部处理（`google support`）和 aravindmurali22 复审，以及维护者批准工作流。
-- 维护者可能在导入前再次要求变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑 `ConversionsTest`。
+- 等待维护者批准 `3ee76e1` 的工作流、Google 内部处理（`google support`）和 aravindmurali22 复审。新一轮 validation 若再撞上不稳定测试，评论已请维护者重跑。
+- 维护者要求合并前持续变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑 `ConversionsTest`，推送和回复前经用户确认。
 - 后续修改仍在 `fix/firebase-response-schema` 上进行，保持单提交（amend + `--force-with-lease`），**不要加 `Co-authored-by` trailer**，否则 CLA 检查会失败。

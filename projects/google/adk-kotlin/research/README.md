@@ -23,6 +23,7 @@
 | MLKit TRACE 媒体内容 | 两项断言观察到原始图片字段及文件 URI 进入 TRACE | 日志策略待确认；方法文档将字段视为非敏感，不能据此断言已确认安全漏洞 |
 | AgentTool 中间状态传播 | 存在相关历史 [PR #573](https://github.com/google/adk-kotlin/pull/573) | 重复候选，暂不另提；本地混合草稿初始化失败，不能作为状态丢失的执行证据 |
 | MLKit 非流式 errorCode | 源码阅读中发现候选 | 尚无执行复现，保持待验证 |
+| CI 不稳定测试 | 11-04 00:00 至 11-05 17:06（UTC），仓库 85 次跑完的 validation 中 21 次失败，全部来自四个时序敏感的测试，大多在 Google 内部导出分支和 release-please 上：`LiveRoutesTest.runLive_underTheAppsOwnWebSockets_closesAnOversizedFrameWithTooBig` 7 次（该测试 11-04 由 01fa7ad 引入，作者在持续开发 live 功能）、`KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls` 6 次（请求超时和 socket 超时都是 200 ms，谁先触发取决于调度；11-04 13:07 后未再出现）、`McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries` 4 次（3 秒请求超时同时限制 MCP initialize，冷启动的子 JVM 可能超时）、`WorkflowHitlTest.runNode_waitingCallCancelledWithTheFirst_doesNotRunTheChild` 4 次。截至 11-06 没有相关 issue 或 PR | 首选 McpToolset：原因清楚、持续时间较长。LiveRoutesTest 刚由内部作者引入，很可能自己修，暂不碰（#838 的教训）。动手前再查一次有没有人在修，并征求用户意见 |
 
 有效选定复现和三个探索性复现的来源、适用基线及命令见 [repros/README.md](repros/README.md)。
 

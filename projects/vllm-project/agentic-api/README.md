@@ -12,7 +12,8 @@ vLLM 组织下的有状态 Agent API 网关，部署在 vLLM 前面，提供以�
 主体用 Rust 编写（workspace 在 `crates/`），另有 Python 绑定和测试。vLLM 主仓库 5 月把 `previous_response_id` 等有状态功能的开发暂停，交给这个项目承接（见 vLLM issue [#43244](https://github.com/vllm-project/vllm/issues/43244)）。
 
 - 上游：[vllm-project/agentic-api](https://github.com/vllm-project/agentic-api)
-- Fork：尚未创建，首次提交 PR 前创建 `GCSimba/agentic-api`。
+- Fork：[GCSimba/agentic-api](https://github.com/GCSimba/agentic-api)
+- 代码材料许可：[Apache 2.0](LICENSE)
 - 贡献规范：
   - [AGENTS.md](https://github.com/vllm-project/agentic-api/blob/main/AGENTS.md)：写给 AI 编码代理看，要求先读 `.agents/skills/` 下的 engineering skill 和 Rust skill。
   - [CONTRIBUTING.md](https://github.com/vllm-project/agentic-api/blob/main/CONTRIBUTING.md)
@@ -40,11 +41,19 @@ vLLM 组织下的有状态 Agent API 网关，部署在 vLLM 前面，提供以�
   - 外部 PR 首次审阅的中位数约 12.7 小时，合并的中位数约 3.7 天。
 - **规模**：29 位贡献者，约 54 个开放 issue、32 个开放 PR。约三分之二的开放 issue 已有人认领、已指派、带 RFC 标签或有关联 PR。
 
+## PR 记录
+
+| PR | 主题 | 状态 | 档案 |
+| --- | --- | --- | --- |
+| [#511](https://github.com/vllm-project/agentic-api/pull/511) | 把 `agentic_process` 中启动 harness 的函数移到独立模块（#312） | 2026-11-07 创建，等待维护者批准工作流并审阅 | [改动与验证](prs/511-split-agentic-process/README.md) |
+
+各 PR 的 `change.patch` 是基线到最新提交的累计差异，SHA 见 [artifacts.json](artifacts.json)。
+
 ## 进展
 
 | issue | 主题 | 状态 |
 | --- | --- | --- |
-| [#312](https://github.com/vllm-project/agentic-api/issues/312) | 拆分超过 500 行的 Rust 文件（good first issue） | 2026-11-06 [留言认领](https://github.com/vllm-project/agentic-api/issues/312#issuecomment-6687570907) `crates/agentic-server/src/agentic_process.rs`（基线 557 行，没有例外）。计划把 harness 命令和环境构建函数移到子模块 `agentic_process/harness.rs`，不改变行为，并删除这个文件的基线条目 |
+| [#312](https://github.com/vllm-project/agentic-api/issues/312) | 拆分超过 500 行的 Rust 文件（good first issue） | 2026-11-06 [留言认领](https://github.com/vllm-project/agentic-api/issues/312#issuecomment-6687570907) `crates/agentic-server/src/agentic_process.rs`（基线 557 行，没有例外）。11-07 已开 [PR #511](https://github.com/vllm-project/agentic-api/pull/511) |
 | [#482](https://github.com/vllm-project/agentic-api/issues/482) | 用 `previous_response_id` 续接时，网关执行的工具调用被排到它前面的推理之前 | 由维护者 haoshan98 报告，issue 里已写明修复方向。Than0316 在 11-01 问过能否贡献，没有得到回复。2026-11-06 [留言询问](https://github.com/vllm-project/agentic-api/issues/482#issuecomment-6687571904)：如果没人在做，就按 issue 中的方向修复，并补一个"推理位于 hosted tool search 之前"的续接测试 |
 
 ## 其他候选

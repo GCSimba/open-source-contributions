@@ -125,7 +125,7 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 | issue | 状态 | 下一步 |
 | --- | --- | --- |
-| [#312](https://github.com/vllm-project/agentic-api/issues/312) | 11-06 留言认领 `crates/agentic-server/src/agentic_process.rs` 的拆分（good first issue，基线 557 行） | 把 harness 函数移到 `agentic_process/harness.rs`，并删除这个文件的基线条目。跑通 `cargo test`、`cargo clippy --all-targets -- -D warnings`、`cargo fmt -- --check` 和 pre-commit 后，先给用户看，再建 fork 并提 PR（DCO `-s`，conventional 标题） |
+| [#312](https://github.com/vllm-project/agentic-api/issues/312) → [PR #511](https://github.com/vllm-project/agentic-api/pull/511) | 11-07 00:12 开 PR（`0535c6a`，DCO 已通过），把 `agentic_process.rs` 中启动 harness 的函数移到 `agentic_process/harness.rs`，生产代码 557 行降到 390 行。本地 fmt、clippy、`agentic-server` 包 801 个测试、CLI E2E 的 `agentic run` 部分和 pre-commit 都通过 | 等维护者批准 6 个工作流并审阅。如需修改，在同一分支追加提交，带 `-s`，推送前经用户确认 |
 | [#482](https://github.com/vllm-project/agentic-api/issues/482) | 11-06 留言询问 Than0316 和维护者 haoshan98 能否由我们接手 | 等回复。如果可以接手，按 issue 中的方向修复，并补续接测试 |
 
 源码克隆在 WSL，工具链和本机路径见本机交接。

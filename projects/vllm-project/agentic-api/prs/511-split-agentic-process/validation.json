@@ -1,0 +1,50 @@
+{
+  "pr": 511,
+  "repository": "vllm-project/agentic-api",
+  "issue": 312,
+  "title": "chore: move agentic_process harness launch helpers into their own module",
+  "base": "d89621f70d3480ad0428a1521eaa97de2761e1ac",
+  "commit": "0535c6a42a4c80cd731fdf56dfda150a2563cbed",
+  "branch": "chore/split-agentic-process-harness",
+  "created": "2026-11-06T16:12:41Z",
+  "files": {
+    ".rust-file-sizes.json": "+0/-1",
+    "crates/agentic-server/src/agentic_process.rs": "+5/-170",
+    "crates/agentic-server/src/agentic_process/catalog.rs": "+1/-1",
+    "crates/agentic-server/src/agentic_process/harness.rs": "+178/-0 (new)"
+  },
+  "production_lines": {
+    "agentic_process.rs_before": 557,
+    "agentic_process.rs_after": 390,
+    "harness.rs": 178
+  },
+  "environment": "Ubuntu 24.04 / WSL2, Rust 1.98.1 (rustup, clippy, rustfmt); tests built with CARGO_PROFILE_DEV_DEBUG=0, CARGO_INCREMENTAL=0, CARGO_BUILD_JOBS=3",
+  "checks": {
+    "fmt": "cargo fmt --all -- --check: passed",
+    "clippy": "cargo clippy --workspace --all-targets -- -D warnings: passed",
+    "focused": "cargo test -p agentic-server --lib agentic_process: 42 passed",
+    "package": "cargo test -p agentic-server --no-fail-fast: 49 test binaries, 801 passed, 0 failed, 0 ignored",
+    "file_sizes": "scripts/check_rust_file_sizes.py (tree-sitter 0.25.2, tree-sitter-rust 0.24.2): passed, 356 production files",
+    "pre_commit": "pre-commit run --all-files: passed (check-symlinks skipped, no symlinks)",
+    "cli_e2e": "agentic run part of scripts/tests/agentic-cli-e2e-test.py with a mock vLLM and a fake Codex/Claude harness, original assertions: passed; Python source-install step not run"
+  },
+  "not_run": [
+    "agentic-server-core tests (crate unchanged)",
+    "CLI E2E Python source install (needs a release build)",
+    "PostgreSQL and feature-specific CI jobs"
+  ],
+  "environment_incident": "The first full-debuginfo test build (about 430 MB per test binary) filled drive C:, and the WSL VM crashed twice (rustc SIGBUS, I/O errors); after removing the 9.4 GB target directory the tests were rebuilt without debug info",
+  "official_ci": "DCO passed; Python, Rust, Pre-commit, Release Python, Harness CLI E2E and Container workflows await maintainer approval (action_required); checked 2026-11-07 00:15 Asia/Shanghai",
+  "requested_reviewers": [
+    "bbrowning",
+    "leseb",
+    "qandrew",
+    "franciscojavierarceo",
+    "jiahuei",
+    "tjtanaa",
+    "haoshan98",
+    "maralbahari",
+    "noobHappylife"
+  ],
+  "patch_sha256": "bbb5fffa7743741b30fd3a911843e59e2df7ca977c76ef447db6ac11188a3842"
+}

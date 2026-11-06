@@ -1,0 +1,16 @@
+{
+  "source_repository": "https://github.com/vllm-project/agentic-api",
+  "archive_date": "2026-11-07",
+  "artifacts": [
+    {
+      "path": "LICENSE",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "prs/511-split-agentic-process/change.patch",
+      "bytes": 15192,
+      "sha256": "bbb5fffa7743741b30fd3a911843e59e2df7ca977c76ef447db6ac11188a3842"
+    }
+  ]
+}

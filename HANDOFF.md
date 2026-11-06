@@ -97,12 +97,12 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## vLLM
 
-2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-06 01:35（Asia/Shanghai）**：
+2026-11-01 新增 [vLLM 项目档案](projects/vllm-project/vllm/README.md)。以下状态核验于 **2026-11-06 22:50（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 最新提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#64935](https://github.com/vllm-project/vllm/pull/64935) | **2026-11-04 22:58 已合并**：DarkLight1337 批准、开启自动合并，squash 进 main 的提交为 `e4991c1`，内容与档案补丁一致 | `fix/batch-chat-reasoning-tokens` / `b068fa3`（维护者合入 main） | [批量 reasoning tokens](projects/vllm-project/vllm/prs/64935-batch-reasoning-tokens/README.md) |
-| [#65697](https://github.com/vllm-project/vllm/pull/65697) | 2026-11-05 00:43 创建，Open。11-05 DarkLight1337 建议像 `/tokenize` 那样单独定义（cc chaunceyjiang）；11-06 01:33 经用户确认推送修改、更新描述并回复，等待复审。DCO 通过，`pre-run-check` 仍卡在新贡献者门禁（需维护者加 `ready`/`verified`，不要请求） | `fix/anthropic-count-tokens-over-limit` / `f0e34b5` | [count_tokens 超长计数](projects/vllm-project/vllm/prs/65697-count-tokens-over-limit/README.md) |
+| [#65697](https://github.com/vllm-project/vllm/pull/65697) | **2026-11-06 15:05 已合并**：第 1 轮审阅后改为计数专用请求类型；DarkLight1337 先用 `@claude review` 审过（没有问题），再批准、加 `ready`、开启自动合并并 `/ci run`。Buildkite #100475 通过后，squash 进 main，提交为 `fd77011`，内容与档案补丁一致 | `fix/anthropic-count-tokens-over-limit` / `f0e34b5`（机器人合并 main 后为 `9868368`） | [count_tokens 超长计数](projects/vllm-project/vllm/prs/65697-count-tokens-over-limit/README.md) |
 
 - 11-02 审阅者要求不改 Buildkite YAML，改为在测试中按 `VLLM_USE_RUST_FRONTEND` 跳过。已在 `f062ee2` 中加 `skipif` 并撤回两处 YAML 改动，回复后审阅者于 21:09 批准，并评论 `/ci run`。
 - 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU。最终回归测试修复前失败、修复后通过；审核修改后 `test_include_reasoning.py` 7 通过，设置 `VLLM_USE_RUST_FRONTEND=1` 时新测试被跳过，pre-commit 通过。GPU/ROCm CI 由 Buildkite 覆盖。
@@ -110,6 +110,22 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 - 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。验证使用 WSL Linux 文件系统中的源码镜像加 nightly CPU wheel 的编译扩展；修改源码后需重新同步镜像，具体命令见本机交接。
 - CI 卡住与合并经过：第一次完整 CI（Buildkite #99182）只有一个 AMD MI355 分片失败，原因是 main 上的测试缓存泄漏，在机器人同步我们分支 8 分钟后由 #65140 修复；Read the Docs 的警告也在同一时段由 #65157 修复。自动合并只差 `buildkite/ci/pr` 变绿，而作者不能在同一提交上重跑 CI，自己推送又会让 GitHub 关闭自动合并。11-04 22:02 经用户确认评论说明原因；22:26 DarkLight1337 更新分支并 `/ci retry`，Buildkite #99937 通过后于 22:58 自动合并。经验已写进 [vLLM 项目档案](projects/vllm-project/vllm/README.md) 的贡献要点。
 - 后续：#64935 没有待办。fork 上的分支可在用户确认后删除。
-- 11-04 第三轮筛选后提交 #65697（Anthropic `count_tokens` 对超过 `max_model_len` 的提示词返回 400，现改为与 `/tokenize` 一样计数）。第 1 轮审阅后（`f0e34b5`）不再改公共渲染函数签名，改为计数专用的 `ChatCompletionRequest` 子类，自带与 `TokenizeChatRequest` 相同的 `build_tok_params`；回复中表示如果审阅者想要完全独立的渲染路径（类似 `create_tokenize`），可以再改。下一步：等复审和 `ready` 标签；后续修改继续追加提交，带 `-s`，推送和回复先经用户确认。筛选记录见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。
+- 11-04 第三轮筛选后提交 #65697：Anthropic `count_tokens` 原先对超过 `max_model_len` 的提示词返回 400，改为与 `/tokenize` 一样计数。11-06 按第 1 轮审阅改为计数专用请求类型后合并（`fd77011`），没有待办。两个已合并 PR 在 fork 上的分支是否删除，由用户决定。
+- 11-06 第四轮筛选（nightly `a2bcb56`）：
+  - 一致性探针发现的 5 个问题都已有人处理，研究代理给出的 2 个候选都不成立。
+  - 最有价值的是 `previous_response_id` 续接时丢工具调用（#43244），但被维护者搁置。11-06 经用户确认在 issue 中[留言](https://github.com/vllm-project/vllm/issues/43244#issuecomment-6687572944)，询问现在是否接受最小修复，正在等回复。
+  - 如果维护者同意，先问原作者 ashwing 是否重开 #43247，他不接再由我们接手并注明他的贡献。
+  - 详见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。
 - 11-02 第二轮找题暂停：找到的真实问题都已有 PR，详见 [vLLM 研究记录](projects/vllm-project/vllm/research/README.md)。`/v1/completions` 缺少 `created_cache_tokens` 可等 #58116 合并后再提。
 - 11-03 另一位贡献者的 [#65383](https://github.com/vllm-project/vllm/pull/65383) 引用了本 PR：它给 `/inference/v1/generate` 的 derender 模式补 `reasoning_tokens`，是不同接口的同类修复，不冲突。
+
+## vLLM agentic-api
+
+2026-11-06 新增 [agentic-api 项目档案](projects/vllm-project/agentic-api/README.md)。这是 vLLM 组织下的有状态 Agent 网关，Rust 为主，对外部贡献者友好：近 30 天合并的 PR 中 61% 来自外部，合并中位数约 3.7 天。以下状态核验于 **2026-11-06 22:50（Asia/Shanghai）**：
+
+| issue | 状态 | 下一步 |
+| --- | --- | --- |
+| [#312](https://github.com/vllm-project/agentic-api/issues/312) | 11-06 留言认领 `crates/agentic-server/src/agentic_process.rs` 的拆分（good first issue，基线 557 行） | 把 harness 函数移到 `agentic_process/harness.rs`，并删除这个文件的基线条目。跑通 `cargo test`、`cargo clippy --all-targets -- -D warnings`、`cargo fmt -- --check` 和 pre-commit 后，先给用户看，再建 fork 并提 PR（DCO `-s`，conventional 标题） |
+| [#482](https://github.com/vllm-project/agentic-api/issues/482) | 11-06 留言询问 Than0316 和维护者 haoshan98 能否由我们接手 | 等回复。如果可以接手，按 issue 中的方向修复，并补续接测试 |
+
+源码克隆在 WSL，工具链和本机路径见本机交接。

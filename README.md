@@ -11,6 +11,7 @@
 | Google ADK Kotlin | [google/adk-kotlin](https://github.com/google/adk-kotlin) | [项目说明与 PR 索引](projects/google/adk-kotlin/README.md) |
 | SGLang | [sgl-project/sglang](https://github.com/sgl-project/sglang) | [项目说明与 PR 索引](projects/sgl-project/sglang/README.md) |
 | vLLM | [vllm-project/vllm](https://github.com/vllm-project/vllm) | [项目说明与 PR 索引](projects/vllm-project/vllm/README.md) |
+| vLLM agentic-api | [vllm-project/agentic-api](https://github.com/vllm-project/agentic-api) | [项目说明与进展](projects/vllm-project/agentic-api/README.md) |
 
 ## 目录约定
 

@@ -57,6 +57,30 @@
 
 注意：RFC #58647 的作者在 10-04 明确表示不欢迎未经人工审查的 AI 生成 PR。在 Anthropic 接口方向提交时，正文需要写清人工审阅和验证。
 
+## 2026-11-06 第四轮筛选
+
+基于 nightly `a2bcb56`，CPU wheel 为 `0.33.0rc1.dev806`，本机仅 CPU。方法：
+
+- 36 个流式与非流式一致性探针，模型为 Qwen3-0.6B，开启 hermes 工具解析器和 qwen3 推理解析器：
+  - 覆盖 chat、Anthropic、Responses、completions；
+  - 组合工具调用（auto、required、指定工具、并行、截断）、推理、stop、logprobs、n=2；
+  - 另外开启 `VLLM_ENABLE_RESPONSES_API_STORE`，测试 Responses 的链式调用。
+- 后台研究代理扫描 10-29 以来的开放 bug，看了约 150 个标题、细读约 45 个，并检查近期合并修复的兄弟路径。
+- 顺带查看 Rust 前端对齐路线图 [#44280](https://github.com/vllm-project/vllm/issues/44280)：未勾选的条目大多已在评论中认领，或要求先做设计讨论。
+
+| 候选 | 结论 | 依据 |
+| --- | --- | --- |
+| 工具调用被 max_tokens 截断时，hermes 非流式把 `<tool_call>` 原文放进 content，流式则返回参数为空的工具调用。Anthropic 同理：一边是 text 块，一边是 `input: {}` 的 tool_use | 已有 issue 和 PR | issue [#47903](https://github.com/vllm-project/vllm/issues/47903)，PR [#30481](https://github.com/vllm-project/vllm/pull/30481)。解析引擎上的同类问题已由 #47562 修复 |
+| 开启 thinking 后接工具调用，流式多出 `"\n\n"` 的 content，Anthropic 流式多出一个只有换行的 text 块 | 已认领 | issue [#61972](https://github.com/vllm-project/vllm/issues/61972) 有人 `/assign`，PR [#62125](https://github.com/vllm-project/vllm/pull/62125) |
+| `/v1/messages` 请求体校验失败时返回 OpenAI 的错误格式 | 已有 PR | RFC #58647 第 12 条，PR [#58023](https://github.com/vllm-project/vllm/pull/58023) |
+| 服务正常关停时打印 `EngineDeadError` traceback | 已有 PR | issue [#48745](https://github.com/vllm-project/vllm/issues/48745)，PR [#49000](https://github.com/vllm-project/vllm/pull/49000) |
+| Responses 用 `previous_response_id` 续接时丢掉上一轮的 `function_call`：续接时 prompt 为 177 token，手动拼接同样的历史为 201 token | 维护者搁置 | issue [#43244](https://github.com/vllm-project/vllm/issues/43244)。PR #43247 曾获一位审阅者批准，但 chaunceyjiang 认为 `previous_response_id` 属于有状态功能，相关开发暂停，等 [agentic-api](../../agentic-api/README.md)；之后该 PR 过期关闭。11-06 经用户确认在 issue 中[留言](https://github.com/vllm-project/vllm/issues/43244#issuecomment-6687572944)，询问现在是否接受最小修复 |
+| 研究代理：Anthropic 指定不存在的工具时不报错 | 不成立 | 第三轮边界探针已确认返回 400 |
+| 研究代理：慢速 tokenizer 下 `/score`、`/rerank` 截断时返回 500 | 不成立 | transformers 5.22.1 下指定 `use_fast=False` 仍得到 fast tokenizer，触发不到 |
+| `store: true` 但未开启存储时，`previous_response_id` 只返回 404 "not found" | 价值低，未提交 | 未开启存储时静默关闭 store 是有意的设计（代码注释有说明），而且有状态功能正在迁往 agentic-api |
+
+结论：直接报告的前端 bug 几乎都在数小时内被认领；本轮一致性探针发现的真实问题，也都已有人在处理。下一步转向 vLLM 组织下的 [agentic-api](../../agentic-api/README.md)。探针脚本保存在本地工具目录。
+
 ## #64935 的相关 PR
 
 状态核验于 2026-11-01（Asia/Shanghai）。

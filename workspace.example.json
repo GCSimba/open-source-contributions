@@ -18,6 +18,12 @@
       "linux_mirror": null,
       "linux_venv": null,
       "wsl_distribution": null
+    },
+    "vllm-project/agentic-api": {
+      "checkout": null,
+      "linux_checkout": null,
+      "linux_tools": null,
+      "wsl_distribution": null
     }
   }
 }

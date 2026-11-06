@@ -115,12 +115,21 @@
     "64050": "open; new OpenAI Responses input_tokens endpoint that mirrors the generation request's validation",
     "zkawfanx/vllm#67": "PR inside a fork (not upstream) that referenced this PR on 2026-11-05; passes skip_mm_cache for Anthropic counting so image counts do not pollute the multimodal cache, as /tokenize does"
   },
-  "official_ci": "f0e34b5: DCO passed; pre-run-check still fails on the new-contributor gate (needs the ready or verified label, or 4 merged PRs; author has 1), so pre-commit and Buildkite have not run; docs build passed (checked 2026-11-06 01:35 Asia/Shanghai)",
+  "official_ci": "f0e34b5 + bot merge 9868368: DCO, pre-run-check (after the ready label), pre-commit and buildkite/ci/pr #100475 passed; merged 2026-11-06T07:05:37Z",
   "requested_reviewers": [
     "mgoin",
     "njhill",
     "chaunceyjiang",
     "DarkLight1337"
   ],
-  "patch_sha256": "446c7efe6214271a3e6b7c3d43d4927d27df944c5d68ce3a6a04745f03c80800"
+  "patch_sha256": "446c7efe6214271a3e6b7c3d43d4927d27df944c5d68ce3a6a04745f03c80800",
+  "merged": {
+    "at": "2026-11-06T07:05:37Z",
+    "merge_commit": "fd770114241036e500f531a78a3ec668fadcebfd",
+    "method": "auto-merge (squash) enabled by DarkLight1337",
+    "approved": "DarkLight1337, 2026-11-06T06:08:19Z",
+    "claude_review": "requested with @claude review; no high-confidence issues (2026-11-06T06:05:20Z)",
+    "buildkite": "#100475 passed in 54m38s on 9868368, the bot merge of main into the branch",
+    "content_check": "added/removed lines identical to the archived patch; context differs because main moved"
+  }
 }

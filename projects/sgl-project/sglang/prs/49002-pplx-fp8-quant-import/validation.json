@@ -57,6 +57,6 @@
     "multi-GPU pplx test (test/manual/ep/test_pplx_small.py; needs pplx-kernels on sm_90 with attention DP >= 2)",
     "GPU CI"
   ],
-  "official_ci": "pr-gate fails until a maintainer adds the run-ci label; title check and check-changes passed (checked 2026-11-07 10:04 Asia/Shanghai)",
+  "official_ci": "upstream lint (full pre-commit) passed; test jobs skipped because pr-gate fails until a maintainer adds the run-ci label; title check and check-changes passed (checked 2026-11-07 10:07 Asia/Shanghai)",
   "patch_sha256": "2a6ec28f98c5c8a3d80bcef6ef80a2eacddb3093d5c0332e1dca35cc12263528"
 }

@@ -4,7 +4,7 @@
 
 - [上游 PR #49002](https://github.com/sgl-project/sglang/pull/49002)：2026-11-07 10:02（Asia/Shanghai）创建，Open、非草稿、无冲突；GitHub 自动加上 `quant` 标签。
 - 状态核验：2026-11-07 10:04。审核状态为 `REVIEW_REQUIRED`，CODEOWNERS 自动请求 merrymercy、Ying1123、Fridge003、ispobock、HaiShaw、ch-wan、BBuf、Edwardf0t1 审核；没有分配 Merge Oncall。
-- 官方 CI：未运行。18 个失败都是门禁：11 个 `pr-gate`/`call-gate` 因缺少 `run-ci` 标签失败，7 个 `*-finish` 汇总任务随之失败；PR 标题检查、`check-changes` 等通过，`lint` 当时仍在运行。
+- 官方 CI：测试未运行。18 个失败都是门禁：11 个 `pr-gate`/`call-gate` 因缺少 `run-ci` 标签失败，7 个 `*-finish` 汇总任务随之失败；PR 标题检查、`check-changes` 通过，上游 `lint`（完整 pre-commit）10:07 核验通过。
 - 基线：`5e1774d137c6560e375632ba8594c04aeb510e11`（发布前从 `0afb736d` 变基，变基前提交 `59b8065`，patch-id 相同）。
 - 修复提交：[9fdcee947fca0cf0f734ae1d4714f60c18af22d9](https://github.com/GCSimba/sglang/commit/9fdcee947fca0cf0f734ae1d4714f60c18af22d9)。
 - 分支：`fix/pplx-fp8-quant-import`。
@@ -42,7 +42,7 @@ Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU；torch 2.14.1+cpu，依赖为 `pyth
 | 修复前运行新测试 | 1 失败（FP8，`ModuleNotFoundError`）、1 通过（BF16 对照） |
 | 修复后：新测试及 3 个相邻分发器测试文件 | 32 通过、53 子测试通过 |
 | 格式与静态检查 | isort、ruff check/format、codespell 及仓库 5 个 lint 脚本通过 |
-| 官方 CI | 未运行，等待 `run-ci` 标签 |
+| 官方 CI | 上游 `lint`（完整 pre-commit）通过；测试任务未运行，等待 `run-ci` 标签 |
 
 测试在变基前的 `59b8065` 上运行；变基后 patch-id 相同，`pplx.py`、量化函数模块和分发 dtype 选择在两个基线之间均未变化，未重跑。
 

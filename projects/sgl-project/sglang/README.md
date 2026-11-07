@@ -21,6 +21,7 @@ SGLang 是面向大语言模型和多模态模型的高性能推理与服务框�
 | PR | 主题 | 档案 |
 | --- | --- | --- |
 | [#47649](https://github.com/sgl-project/sglang/pull/47649) | setwise 评分返回 token_logprobs | [问题、回归与验证](prs/47649-setwise-token-logprobs/README.md) |
+| [#49002](https://github.com/sgl-project/sglang/pull/49002) | pplx FP8 分发导入已迁移的量化函数 | [问题、回归与验证](prs/49002-pplx-fp8-quant-import/README.md) |
 
 ## 研究与复现
 

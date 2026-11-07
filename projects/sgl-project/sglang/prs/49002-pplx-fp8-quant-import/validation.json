@@ -1,0 +1,62 @@
+{
+  "pr": 49002,
+  "base": "5e1774d137c6560e375632ba8594c04aeb510e11",
+  "commit": "9fdcee947fca0cf0f734ae1d4714f60c18af22d9",
+  "pre_rebase_commit": "59b80658875dfefcd494f01aaa849ea41954ba7f",
+  "pre_rebase_base": "0afb736d0aab96e3ab80b4c54a376213a1db67a6",
+  "rebase_patch_identical": true,
+  "validation_date": "2026-11-07",
+  "environment": "Ubuntu24.04/WSL2, Python3.12, CPU only, torch2.14.1+cpu",
+  "dependencies": "CPU subset of python/pyproject.toml pins plus blake3 (required by newer main); not the full python[dev] install",
+  "reproduction": {
+    "commit": "0afb736d0aab96e3ab80b4c54a376213a1db67a6",
+    "old_import": "ModuleNotFoundError: No module named 'sglang.srt.layers.quantization.fp8_kernel'",
+    "new_import": "sglang.kernels.ops.quantization.fp8_kernel exports sglang_per_token_group_quant_fp8",
+    "direct_call": "_PplxDispatcherImpl._quantize with use_fp8=True raises the same ModuleNotFoundError"
+  },
+  "regression_test_before_fix": {
+    "file": "test/registered/unit/layers/moe/test_pplx_quantize.py",
+    "passed": 1,
+    "failed": 1,
+    "failed_test": "test_fp8_dispatch_quantizes_per_token_group (ModuleNotFoundError)"
+  },
+  "focused": {
+    "files": [
+      "test/registered/unit/layers/moe/test_pplx_quantize.py",
+      "test/registered/unit/layers/moe/test_deepep_v2_wire_dtype.py",
+      "test/registered/unit/layers/moe/test_standard_dispatcher.py",
+      "test/registered/unit/layers/moe/test_deepep_import_guard.py"
+    ],
+    "passed": 32,
+    "subtests_passed": 53,
+    "failed": 0,
+    "commit": "59b80658875dfefcd494f01aaa849ea41954ba7f",
+    "note": "Run before the rebase; the rebased patch has the same patch-id, and pplx.py, the FP8 quantizer module and the dispatch-dtype selection are unchanged between the two bases."
+  },
+  "lint": {
+    "status": "passed",
+    "tools": [
+      "isort 7.0.0",
+      "ruff 0.15.1 check",
+      "ruff 0.15.1 format --check",
+      "codespell 2.4.1",
+      "scripts/lint/check_no_bare_pytest_main.py",
+      "scripts/lint/check_indirect_imports.py",
+      "scripts/lint/check_registered_tests.py",
+      "scripts/lint/check_no_registered_tests_in_package.py",
+      "scripts/lint/check_srt_utils_imports.py",
+      "trailing whitespace",
+      "py_compile"
+    ],
+    "scope": "changed files, versions pinned in .pre-commit-config.yaml; the CRLF warning came only from the Windows working tree (index stores LF)",
+    "commit": "59b80658875dfefcd494f01aaa849ea41954ba7f"
+  },
+  "not_run": [
+    "full pre-commit suite",
+    "full CPU unit suite (base-a-test-cpu)",
+    "multi-GPU pplx test (test/manual/ep/test_pplx_small.py; needs pplx-kernels on sm_90 with attention DP >= 2)",
+    "GPU CI"
+  ],
+  "official_ci": "pr-gate fails until a maintainer adds the run-ci label; title check and check-changes passed (checked 2026-11-07 10:04 Asia/Shanghai)",
+  "patch_sha256": "2a6ec28f98c5c8a3d80bcef6ef80a2eacddb3093d5c0332e1dca35cc12263528"
+}

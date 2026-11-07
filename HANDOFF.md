@@ -83,17 +83,25 @@ Gradle 默认堆设置很大，本地验证采用3GB堆、1GB metaspace、2 work
 
 ## SGLang
 
-2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-11-04 10:57（Asia/Shanghai）**：
+2026-10-31 新增 [SGLang 项目档案](projects/sgl-project/sglang/README.md)。以下状态核验于 **2026-11-07 10:05（Asia/Shanghai）**：
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
-| [#47649](https://github.com/sgl-project/sglang/pull/47649) | Open，等待审核；11-02 已 @ 评分模块负责人 sundar24295s，暂无回应 | `fix/setwise-token-logprobs` / `6d97319` | [setwise token_logprobs](projects/sgl-project/sglang/prs/47649-setwise-token-logprobs/README.md) |
+| [#47649](https://github.com/sgl-project/sglang/pull/47649) | Open，等待审核；11-02 已 @ 评分模块负责人 sundar24295s，至今无回应 | `fix/setwise-token-logprobs` / `6d97319` | [setwise token_logprobs](projects/sgl-project/sglang/prs/47649-setwise-token-logprobs/README.md) |
+| [#49002](https://github.com/sgl-project/sglang/pull/49002) | 11-07 10:02 创建，Open，等待审核；CODEOWNERS 自动请求 8 人（含 pplx 后端合并者 ch-wan） | `fix/pplx-fp8-quant-import` / `9fdcee9` | [pplx FP8 量化导入](projects/sgl-project/sglang/prs/49002-pplx-fp8-quant-import/README.md) |
 
-- 官方 CI 未运行：门禁因缺少 `run-ci` 标签失败（17 个红叉都是门禁及其汇总任务，测试任务全部跳过）；这不是代码失败。只有 `CI_PERMISSIONS.json` 中的人能加标签，外部贡献者不能自己添加审阅者或标签。
-- 本地验证：Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU，两个评分测试文件 62 通过，下游相关测试 75 通过，改动文件的格式与静态检查通过。完整 pre-commit、完整 CPU 套件、真实模型端到端和 GPU CI 未运行。
+- 官方 CI 未运行：两个 PR 的门禁都因缺少 `run-ci` 标签失败（红叉都是门禁及其汇总任务，测试任务全部跳过）；这不是代码失败。只有 `CI_PERMISSIONS.json` 中的人能加标签，外部贡献者不能自己添加审阅者或标签。
+- 本地验证（Ubuntu 24.04 / WSL2、Python 3.12、仅 CPU）：
+  - #47649：两个评分测试文件 62 通过，下游相关测试 75 通过。
+  - #49002：新回归测试修复前 FP8 用例失败、修复后连同 3 个相邻分发器测试文件 32 通过。
+  - 两者改动文件的格式与静态检查通过；完整 pre-commit、完整 CPU 套件、真实模型端到端和 GPU CI 未运行。
 - SGLang 源码的 `origin` 是上游、`fork` 是 GCSimba 的 fork。测试必须在 Linux 中运行；Windows 本机缺少 `resource` 模块且 Python 版本不足。
 - 不要在 WSL 中对 Windows checkout 直接运行 `pre-commit run`：换行符差异会让 Git 把全仓库视为已修改。按 PR 记录，直接对改动文件运行同版本工具。
-- 下一步：等待 sundar24295s（评分模块 Codeowner、#41188 作者、可加 `run-ci`）回应。若 11-05 前仍无回应，可 @ 相关 Merge Oncall，或由用户在 Slack `#pull-request` 询问；发言先经用户确认。收到审核意见后在源码分支修改并推送到同一分支。
+- 下一步：
+  - #47649：sundar24295s 已超过原定 11-05 的等待期。可 @ 其他活跃审阅者或相关 Merge Oncall，或由用户在 Slack `#pull-request` 询问；发言先经用户确认。
+  - #49002：等待审阅和 `run-ci` 标签，同样先不主动 @。
+  - 收到审核意见后在对应源码分支修改并推送到同一分支。
+- 第二轮候选筛选（11-06 至 11-07）的结论见[研究记录](projects/sgl-project/sglang/research/README.md)：CPU 可测的接口和解析器问题几乎都已有人提交，#49002 来自对失效延迟导入的 AST 扫描。
 
 ## vLLM
 

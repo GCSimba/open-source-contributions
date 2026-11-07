@@ -14,6 +14,11 @@
       "sha256": "96005cdf4c86e504b06cf2c099e68ac133153de23a71fbfe127ef308e3d67c2f"
     },
     {
+      "path": "prs/49002-pplx-fp8-quant-import/change.patch",
+      "bytes": 2699,
+      "sha256": "2a6ec28f98c5c8a3d80bcef6ef80a2eacddb3093d5c0332e1dca35cc12263528"
+    },
+    {
       "path": "research/repros/reproduce_setwise_logprobs.py",
       "bytes": 4241,
       "sha256": "6d9b23b3f288f85a8219c1e2561fd1c14626487f1f84c96f2badf99864dbc983"

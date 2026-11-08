@@ -6,7 +6,7 @@
 
 以下为本次只读核验的远端状态，覆盖下文较早的状态快照：
 
-- **Google ADK Kotlin**：[#837](https://github.com/google/adk-kotlin/pull/837) 和 [#856](https://github.com/google/adk-kotlin/pull/856) 仍开放，11-05 后没有新的人工评论或审阅。#837 最新可见的 JDK 17/21/25 检查均通过；#856 的 JDK 21 检查失败，JDK 17/25 通过。维护者此前要求持续 rebase；当前上游 `main` 已前进，后续需先核对基线，再经用户确认后操作。
+- **Google ADK Kotlin**：[#837](https://github.com/google/adk-kotlin/pull/837) 和 [#856](https://github.com/google/adk-kotlin/pull/856) 仍开放，11-05 后没有新的人工评论或审阅。#837 的 JDK 21 检查失败，JDK 17/25 通过；失败仅为已知不稳定测试 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`，与本 PR 改动无关。#856 的 JDK 17/21/25 检查均通过。维护者此前要求持续 rebase；截至 11-08 22:10，上游 `main` 比两个分支领先 15 个提交，但这些提交未触及两个 PR 的改动文件，也未修复该 Ktor 测试。后续需经用户确认后再 rebase 并重新验证。
 - **SGLang**：[#47649](https://github.com/sgl-project/sglang/pull/47649) 和 [#49002](https://github.com/sgl-project/sglang/pull/49002) 仍开放，没有新的维护者回复；两个 PR 都还没有 `run-ci` 标签。
 - **vLLM**：[#64935](https://github.com/vllm-project/vllm/pull/64935) 和 [#65697](https://github.com/vllm-project/vllm/pull/65697) 已合并。[Issue #43244](https://github.com/vllm-project/vllm/issues/43244) 仍开放，11-06 留言后没有新回复。
 - **vLLM agentic-api**：[#511](https://github.com/vllm-project/agentic-api/pull/511) 仍开放，没有 review 或评论；DCO 已通过，六个工作流仍待维护者批准（`action_required`）。[Issue #482](https://github.com/vllm-project/agentic-api/issues/482) 仍开放，11-06 留言后没有新回复。

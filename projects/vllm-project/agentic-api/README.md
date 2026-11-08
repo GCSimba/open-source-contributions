@@ -45,7 +45,7 @@ vLLM 组织下的有状态 Agent API 网关，部署在 vLLM 前面，提供以�
 
 | PR | 主题 | 状态 | 档案 |
 | --- | --- | --- | --- |
-| [#511](https://github.com/vllm-project/agentic-api/pull/511) | 把 `agentic_process` 中启动 harness 的函数移到独立模块（#312） | 2026-11-07 创建，等待维护者批准工作流并审阅 | [改动与验证](prs/511-split-agentic-process/README.md) |
+| [#511](https://github.com/vllm-project/agentic-api/pull/511) | 把 `agentic_process` 中启动 harness 的函数移到独立模块（#312） | 2026-11-08 核验：仍开放，暂无 review/评论；DCO 通过，6 个工作流待维护者批准（`action_required`） | [改动与验证](prs/511-split-agentic-process/README.md) |
 
 各 PR 的 `change.patch` 是基线到最新提交的累计差异，SHA 见 [artifacts.json](artifacts.json)。
 
@@ -54,7 +54,7 @@ vLLM 组织下的有状态 Agent API 网关，部署在 vLLM 前面，提供以�
 | issue | 主题 | 状态 |
 | --- | --- | --- |
 | [#312](https://github.com/vllm-project/agentic-api/issues/312) | 拆分超过 500 行的 Rust 文件（good first issue） | 2026-11-06 [留言认领](https://github.com/vllm-project/agentic-api/issues/312#issuecomment-6687570907) `crates/agentic-server/src/agentic_process.rs`（基线 557 行，没有例外）。11-07 已开 [PR #511](https://github.com/vllm-project/agentic-api/pull/511) |
-| [#482](https://github.com/vllm-project/agentic-api/issues/482) | 用 `previous_response_id` 续接时，网关执行的工具调用被排到它前面的推理之前 | 由维护者 haoshan98 报告，issue 里已写明修复方向。Than0316 在 11-01 问过能否贡献，没有得到回复。2026-11-06 [留言询问](https://github.com/vllm-project/agentic-api/issues/482#issuecomment-6687571904)：如果没人在做，就按 issue 中的方向修复，并补一个"推理位于 hosted tool search 之前"的续接测试 |
+| [#482](https://github.com/vllm-project/agentic-api/issues/482) | 用 `previous_response_id` 续接时，网关执行的工具调用被排到它前面的推理之前 | 由维护者 haoshan98 报告，issue 里已写明修复方向。Than0316 在 11-01 问过能否贡献，没有得到回复。2026-11-06 [留言询问](https://github.com/vllm-project/agentic-api/issues/482#issuecomment-6687571904)：如果没人在做，就按 issue 中的方向修复，并补一个"推理位于 hosted tool search 之前"的续接测试；截至 11-08 无新回复 |
 
 ## 其他候选
 

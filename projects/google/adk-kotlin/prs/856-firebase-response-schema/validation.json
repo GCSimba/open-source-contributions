@@ -1,7 +1,7 @@
 {
   "pr": 856,
-  "base": "e66579634f6a12630e1ac1e31ef6953aff4f5a01",
-  "commit": "3ee76e18c2fb3cfb64b233b37eb7192bd31d1ba9",
+  "base": "024c8ff170fce7a0280607938fd40e675628f00f",
+  "commit": "c62438270bb0af068c8fbbf5214defa3b88f8e62",
   "commit_history": [
     {
       "commit": "8e5e303d2dc42ecf90ad12ea5e1e08bbec0aeda9",
@@ -27,6 +27,11 @@
       "commit": "3ee76e18c2fb3cfb64b233b37eb7192bd31d1ba9",
       "base": "e66579634f6a12630e1ac1e31ef6953aff4f5a01",
       "note": "Rebased a third time (reviewer: resolve failing checks, keep rebased until merge); diff byte-identical to fc22165"
+    },
+    {
+      "commit": "c62438270bb0af068c8fbbf5214defa3b88f8e62",
+      "base": "024c8ff170fce7a0280607938fd40e675628f00f",
+      "note": "Review round 2 (damianmomotgoogle): leave the response schema out when any nested schema is a free-form object (containsFreeFormObject), nested tests, commit message paragraph; rebased onto 024c8ff"
     }
   ],
   "rebase_2026_11_04": {
@@ -202,6 +207,83 @@
     "JDK17/25 matrix",
     "Dokka (Conversions is internal; no public KDoc changed)"
   ],
-  "official_ci": "3ee76e1 (pushed 2026-11-05T17:53Z): CLA scan passed; PR title, commit, security and validation workflows await maintainer approval (action_required). Previous head fc22165: validation passed on JDK 17 and 25, and build-modules (21) failed in McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries (MCP initialize handshake exceeded the 3 s request timeout during getTools(), a risk the test's own comment notes for cold child JVMs on CI). Of the 85 completed validation runs in google/adk-kotlin from 2026-11-04T00:00Z to 2026-11-05T17:06Z, the 21 failures all came from four timing-sensitive tests, 19 of them on other PRs: LiveRoutesTest.runLive_underTheAppsOwnWebSockets_closesAnOversizedFrameWithTooBig x7, KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls x6, McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries x4, WorkflowHitlTest.runNode_waitingCallCancelledWithTheFirst_doesNotRunTheChild x4. Re-running needs write access (checked 2026-11-06 02:00 Asia/Shanghai)",
-  "patch_sha256": "e6b7b846d64303048f7962e6a361a8555f3454584ae508f4e98abc2616500a9f"
+  "official_ci": "c624382 (pushed 2026-11-10T03:15:49Z): GitHub Actions Scan passed; PR title, commit, security and validation workflows await maintainer approval (action_required). Previous head 3ee76e1: validation passed on JDK 17, 21 and 25.",
+  "patch_sha256": "071ec6a12d394ed8e6b6a8235b833e1a4df3c89c4a0bb51b38f79b3fcbdc0c51",
+  "review_round_2": {
+    "review": {
+      "reviewer": "damianmomotgoogle",
+      "state": "CHANGES_REQUESTED",
+      "submitted": "2026-11-09T17:37:11Z",
+      "label_change": "google support -> waiting on author",
+      "comments": [
+        {
+          "id": 4515874805,
+          "severity": "MEDIUM",
+          "summary": "Only a top-level free-form object was left out; a nested one (e.g. counts: OBJECT) still became the freeFormObject string, gemini-3.8-flash returned it as a JSON string, and outputSchema validation failed. Leave the schema out when any subschema is free-form and add a nested test.",
+          "reply": "https://github.com/google/adk-kotlin/pull/856#discussion_r4520729179"
+        }
+      ]
+    },
+    "change": "toFirebaseResponseSchema checks containsFreeFormObject(): convertsToFreeFormObject() on the schema or, recursively, on its properties, items and anyOf alternatives (the reviewer's suggestion). Slightly broader than the conversion in rare cases (a typed schema's dropped anyOf), where it falls back to sending no schema, the pre-PR behaviour",
+    "upstream_commits": 25,
+    "overlap_with_pr_files": false,
+    "conflicts": false,
+    "validation_date": "2026-11-10",
+    "checkout": "Review-round-1 Linux checkout, fetched from the local repository and detached at the new commit; clean tree and parent verified",
+    "diff_sha256": "92c897a4ce112c1a99d5a8589a2088565c75b8add152e6697d201b9ad56a9641",
+    "diff_sha256_matches_pushed_commit": true,
+    "conversions_test": {
+      "tests": 80,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration": "6m 59s"
+    },
+    "negative_control_round1": {
+      "change": "Conversions.kt from 3ee76e1 (top-level check only); tests from the commit",
+      "tests": 80,
+      "failures": 1,
+      "failed": [
+        "requestConverter_generationConfigBuilder_nestedFreeFormResponseSchema_isLeftOut"
+      ],
+      "note": "Fails on its first case (the reviewer's counts example); the loop stops at the first failing schema"
+    },
+    "negative_control_main": {
+      "change": "Conversions.kt from 024c8ff; tests from the commit",
+      "tests": 80,
+      "failures": 4,
+      "failed": [
+        "requestConverter_generationConfigBuilder_mapsResponseSchema",
+        "requestConverter_generationConfigBuilder_returnsBuilder",
+        "requestConverter_generationConfigBuilder_nestedObjectWithProperties_isKept",
+        "requestConverter_generationConfigBuilder_untypedUnionAndEnumResponseSchemas_areKept"
+      ],
+      "working_tree_clean_after_restore": true
+    },
+    "module_build": {
+      "command": ":google-adk-kotlin-firebase:build :google-adk-kotlin-examples-android:build",
+      "status": "passed",
+      "duration": "21m 20s",
+      "tasks": "345 actionable, 301 executed, 44 up to date",
+      "firebase_unit_tests": {
+        "tests": 115,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8
+      },
+      "skipped_note": "Live Firebase integration tests without credentials",
+      "working_tree_clean_after_build": true
+    },
+    "ktfmt": {
+      "Conversions.kt": "0 raw regions in added lines",
+      "ConversionsTest.kt": "7 raw regions, 0 ignoring trailing commas",
+      "base_calibration": "Conversions.kt 4 raw / 0; ConversionsTest.kt 43 raw / 2 (existing long lines 407, 664)"
+    },
+    "diff_check": "passed",
+    "pushed": "2026-11-10T03:15:49Z",
+    "push": "--force-with-lease=fix/firebase-response-schema:3ee76e1",
+    "commit_message": "Added a paragraph: a schema that is, or nests, an object without properties is still left out",
+    "pr_description_updated": "exception paragraph, test list and validation section rewritten for c624382",
+    "comment": "https://github.com/google/adk-kotlin/pull/856#issuecomment-6757970119"
+  }
 }

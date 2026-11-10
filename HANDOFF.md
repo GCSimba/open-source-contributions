@@ -1,12 +1,12 @@
 # VS Code 工作交接
 
-交接日期：2026-10-31，最近更新 2026-11-08（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
+交接日期：2026-10-31，最近更新 2026-11-10（Asia/Shanghai）。本文提供接手入口和工作顺序；各 PR 的详细事实集中在自己的记录中，实时状态以 GitHub 为准。
 
-## 状态同步（2026-11-08 21:02，Asia/Shanghai）
+## 状态同步（2026-11-10 11:20，Asia/Shanghai）
 
-以下为本次只读核验的远端状态，覆盖下文较早的状态快照：
+以下状态覆盖下文较早的快照。除 ADK 外各项于 11-10 10:12 复核，与 11-08 相比没有新的评论、审阅或 CI 变化：
 
-- **Google ADK Kotlin**：[#837](https://github.com/google/adk-kotlin/pull/837) 和 [#856](https://github.com/google/adk-kotlin/pull/856) 仍开放，11-05 后没有新的人工评论或审阅。#837 的 JDK 21 检查失败，JDK 17/25 通过；失败仅为已知不稳定测试 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`，与本 PR 改动无关。#856 的 JDK 17/21/25 检查均通过。维护者此前要求持续 rebase；截至 11-08 22:10，上游 `main` 比两个分支领先 15 个提交，但这些提交未触及两个 PR 的改动文件，也未修复该 Ktor 测试。后续需经用户确认后再 rebase 并重新验证。
+- **Google ADK Kotlin**：11-09 damianmomotgoogle 对 [#837](https://github.com/google/adk-kotlin/pull/837)、[#856](https://github.com/google/adk-kotlin/pull/856) 给出 CHANGES_REQUESTED，标签换回 `waiting on author`；aravindmurali22 请 #837 修失败的 JDK 21 job（只挂在无关的不稳定 Ktor 超时测试上）。经用户确认，11-10 两个 PR 都变基到 `024c8ff` 并按意见修改：#837 推送 `61b471d`（5 条意见），#856 推送 `c624382`（嵌套 free-form 对象也不发送 schema，补嵌套测试）。均已逐条回复、更新 PR 描述并发顶层评论；新提交的工作流等维护者批准（`action_required`），等待复审。
 - **SGLang**：[#47649](https://github.com/sgl-project/sglang/pull/47649) 和 [#49002](https://github.com/sgl-project/sglang/pull/49002) 仍开放，没有新的维护者回复；两个 PR 都还没有 `run-ci` 标签。
 - **vLLM**：[#64935](https://github.com/vllm-project/vllm/pull/64935) 和 [#65697](https://github.com/vllm-project/vllm/pull/65697) 已合并。[Issue #43244](https://github.com/vllm-project/vllm/issues/43244) 仍开放，11-06 留言后没有新回复。
 - **vLLM agentic-api**：[#511](https://github.com/vllm-project/agentic-api/pull/511) 仍开放，没有 review 或评论；DCO 已通过，六个工作流仍待维护者批准（`action_required`）。[Issue #482](https://github.com/vllm-project/agentic-api/issues/482) 仍开放，11-06 留言后没有新回复。
@@ -42,34 +42,34 @@ git -C $adkProject.checkout remote -v
 
 ## PR 快照
 
-以下状态核验于 **2026-11-06 02:00（Asia/Shanghai）**。
+以下状态核验于 **2026-11-10 11:20（Asia/Shanghai）**。
 
 | PR | 状态 | 分支 / 修复提交 | 详细记录 |
 | --- | --- | --- | --- |
 | [#774](https://github.com/google/adk-kotlin/pull/774) | 已于 10 月 29 日合并 | `codex/reject-metadata-artifact-filenames` / `2bd0480` | [保留路径校验](projects/google/adk-kotlin/prs/774-metadata-path/README.md) |
-| [#837](https://github.com/google/adk-kotlin/pull/837) | Open，标签 `google support`（已升级给 Google 内部团队）。第 1 轮意见已处理；11-05 维护者要求处理失败的检查并持续变基，11-06 变基到 `e665796`、推送并评论，新工作流等维护者批准 | `codex/fix-parallel-artifact-loading` / `a963450` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
+| [#837](https://github.com/google/adk-kotlin/pull/837) | Open，`waiting on author`。第 2 轮意见（damianmomotgoogle，1 HIGH + 4 LOW）11-10 已处理并回复，变基到 `024c8ff`；新工作流等维护者批准，等待复审 | `codex/fix-parallel-artifact-loading` / `61b471d` | [并行 artifact 加载](projects/google/adk-kotlin/prs/837-parallel-artifacts/README.md) |
 | [#838](https://github.com/google/adk-kotlin/pull/838) | 11-02 已关闭，未合并：Google 内部的 #825 包含相同修复 | `codex/inherit-agent-tool-run-config` / `5a24148` | [RunConfig 继承](projects/google/adk-kotlin/prs/838-agent-tool-config/README.md) |
-| [#856](https://github.com/google/adk-kotlin/pull/856) | Open，标签 `google support`。第 1 轮意见已处理；11-05 维护者要求处理失败的检查并持续变基，11-06 变基到 `e665796`、推送并评论，新工作流等维护者批准 | `fix/firebase-response-schema` / `3ee76e1` | [Firebase response schema](projects/google/adk-kotlin/prs/856-firebase-response-schema/README.md) |
+| [#856](https://github.com/google/adk-kotlin/pull/856) | Open，`waiting on author`。第 2 轮意见（damianmomotgoogle，1 MEDIUM：嵌套 free-form 对象）11-10 已处理并回复，变基到 `024c8ff`；新工作流等维护者批准，等待复审 | `fix/firebase-response-schema` / `c624382` | [Firebase response schema](projects/google/adk-kotlin/prs/856-firebase-response-schema/README.md) |
 
-11-04 的 validation 两个 PR 各有一个 job 失败（#837 JDK 25，JDK 17/21 随即被取消；#856 JDK 21，JDK 17/25 通过），都挂在 main 上已有的不稳定超时测试：`KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls` 和 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`。11-05 02:18 aravindmurali22 在两个 PR 上要求处理失败的检查，并在合并前持续变基。11-04 00:00 至 11-05 17:06（UTC），仓库 85 次跑完的 validation 中 21 次失败，全部来自四个不稳定测试（另外两个是 `LiveRoutesTest` 和 `WorkflowHitlTest`），其中 19 次在其他 PR 上。11-06 01:53 经用户确认，两个 PR 变基推送并各发一条评论，附上统计和运行链接，请维护者在新一轮再撞上时重跑；两个 PR 描述里“After rebasing onto e863fac”一句未更新，已过时。重跑需要仓库写权限。个人 CLA 已完成，但 CLA 检查覆盖所有共同作者：ADK 提交不要加 `Co-authored-by` trailer（#856 首次推送因此失败，amend 去掉后通过），AI 辅助写在 PR 描述里（两个 PR 都已写明）。外部贡献者不能重新请求审阅（REST 404、GraphQL FORBIDDEN），处理完意见后在讨论串逐条回复，并发一条顶层评论说明。
+两个 PR 此前的失败 job 都挂在 main 上已有的不稳定超时测试：`KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`（#837 的 `54a7108`、`a963450`）和 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`（#856 的 `fc22165`）；#856 的 `3ee76e1` 三个 JDK 全部通过。维护者要求合并前持续变基；重跑失败 job 需要仓库写权限，评论里已请维护者在再撞上时重跑。个人 CLA 已完成，但 CLA 检查覆盖所有共同作者：ADK 提交不要加 `Co-authored-by` trailer（#856 首次推送因此失败，amend 去掉后通过），AI 辅助写在 PR 描述里（两个 PR 都已写明）。Google 内部导入时会对测试运行 CheckReturnValue 检查：调用有返回值的函数要接收结果（`val unused =`），这是 #837 第 2 轮的 HIGH 意见。外部贡献者不能重新请求审阅（REST 404、GraphQL FORBIDDEN），处理完意见后在讨论串逐条回复，并发一条顶层评论说明。
 
-读取时，实际 ADK checkout 位于 #837 分支 `codex/fix-parallel-artifact-loading`、HEAD 为 `a96345005e6b14173167c31dda966d88035bb6da`，跟踪 `fork/codex/fix-parallel-artifact-loading`，工作区干净；#856 分支 `fix/firebase-response-schema` 与 fork 同步于 `3ee76e18`。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
+读取时，实际 ADK checkout 位于 #856 分支 `fix/firebase-response-schema`、HEAD 为 `c62438270bb0af068c8fbbf5214defa3b88f8e62`，与 fork 同步，工作区干净；#837 分支 `codex/fix-parallel-artifact-loading` 与 fork 同步于 `61b471d5`。源码仓库的 `origin` 是 Google 上游、`fork` 是 GCSimba 的 fork；档案仓库的 `origin` 则是本档案仓库。
 
-#838 已关闭，不要重新打开或重复提交同一修复。#838 的基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`；#837、#856 已按审阅要求变基到 `e66579634f6a12630e1ac1e31ef6953aff4f5a01`，各分支互不包含对方补丁。Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后；选题和查重时要检查这些 PR 的最新版本。
+#838 已关闭，不要重新打开或重复提交同一修复。#838 的基线为 `2809a837752644f3720eaa759d2cb5144ba1a84e`；#837、#856 已按审阅要求变基到 `024c8ff170fce7a0280607938fd40e675628f00f`，各分支互不包含对方补丁。Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能落后；选题和查重时要检查这些 PR 的最新版本。
 
 ## 验证结论与限制
 
 - #774：最终 JVM44/44、Android host44/44、Dokka 和格式/差异检查通过；Windows 全仓库构建未完成。早期孤立 harness 的40项检查是另一组历史证据。
-- #837：11-06 变基到 `e665796` 后（`a963450`，diff 与 `54a7108`、`b4d321b` 逐字节相同），LoadArtifactsToolTest JVM 19/19、Android host 19/19，反证仍是同样 4 个失败。11-04 变基到 `e863fac` 后（`54a7108`）结果相同。第 1 轮审阅后（`b4d321b`），独立 Linux 副本中 LoadArtifactsToolTest JVM 19/19、Android host 19/19；把 `LoadArtifactsTool.kt` 换回 main 版本后 4 个新/旧回归失败、首位场景仍通过。全仓库构建（在 `b4d321b` 上）通过：500 个任务，458 个执行、42 个复用同一副本定向测试的结果，10584 通过、0 失败、18 条原始 XML 跳过记录。首次提交 `433fbd2` 的 Linux 全量结果（10529 通过）见 PR 记录。
+- #837：第 2 轮审阅后（`61b471d`，基线 `024c8ff`），LoadArtifactsToolTest JVM 19/19、Android host 19/19，反证仍是同样 4 个失败，ktfmt（忽略尾逗号）与 `git diff --check` 通过。11-06（`a963450`）、11-04（`54a7108`）的变基结果相同。第 1 轮审阅后（`b4d321b`），独立 Linux 副本中 LoadArtifactsToolTest JVM 19/19、Android host 19/19；把 `LoadArtifactsTool.kt` 换回 main 版本后 4 个新/旧回归失败、首位场景仍通过。全仓库构建（在 `b4d321b` 上）通过：500 个任务，458 个执行、42 个复用同一副本定向测试的结果，10584 通过、0 失败、18 条原始 XML 跳过记录；第 2 轮只改私有函数的循环写法和新增测试，没有重跑全仓库构建。首次提交 `433fbd2` 的 Linux 全量结果（10529 通过）见 PR 记录。
 - #838：JVM/Android host 的 AgentToolTest 均31/31；Ubuntu24.04/WSL2、JDK21的完整 core 与仓库构建通过。完整仓库汇总10531通过、0失败、18条原始XML跳过记录，包含已完成 core 结果的复用。
-- #856：11-06 变基到 `e665796` 后（`3ee76e1`，diff 与 `fc22165`、`5ddf267` 逐字节相同），`ConversionsTest` 78/78；11-04 变基到 `e863fac` 后（`fc22165`）结果相同。第 1 轮审阅后（`5ddf267`），独立 Linux 副本中 `ConversionsTest` 78/78；把 `Conversions.kt` 换回 main 版本后 3 个失败（schema、penalty、union/enum）。`firebase` 与唯一依赖它的 `examples-android` 模块构建（在 `5ddf267` 上）通过（Firebase 单元测试 113 个、0 失败，8 个集成测试缺少凭据而跳过）。
+- #856：第 2 轮审阅后（`c624382`，基线 `024c8ff`），`ConversionsTest` 80/80；`Conversions.kt` 换回第 1 轮只检查顶层的版本时只有新的嵌套测试失败，换回 main 时 4 个失败；`firebase` 与唯一依赖它的 `examples-android` 模块构建通过（Firebase 单元测试 115 个、0 失败，8 个集成测试缺少凭据而跳过）；ktfmt（忽略尾逗号）与 `git diff --check` 通过。第 1 轮审阅后（`5ddf267`）及之后两次变基的结果见 PR 记录。
 - 格式：上游格式化器不给“单个多行参数”加尾逗号，ktfmt 0.65 会加，基线文件本身就不通过 ktfmt 0.65。两个 PR 都按“忽略右括号前尾逗号后，新增行无差异”核对，并先用基线文件校准；不要让本地 ktfmt 改动无关的行（这正是 #837 第 1 轮意见之一）。
 
 两个分支各有自己的 Linux 全量结果，不能互相替代。外部凭据/本地模型相关跳过、设备测试及 JDK17/25矩阵等未验证范围详见各 PR 的 validation.json。本地通过也不表示官方 CI 已运行。
 
 ## 下一步顺序
 
-1. 先刷新 #837、#856 的审核与 CI：等维护者批准 11-06 推送后的工作流、Google 内部处理和 aravindmurali22 复审；目前没有正在执行的本地构建。新一轮 validation 若又挂在不稳定测试上，评论里已请维护者重跑，不必再催。维护者要求合并前持续变基：main 有新提交时，变基后先确认 diff 哈希不变，在新基线上重跑定向测试（#837 加反证），推送和回复前经用户确认（本机交接有现成脚本）。两个 PR 描述里“After rebasing onto e863fac”一句已过时，下次变基时可一并更新（经用户确认）。
+1. 先刷新 #837、#856 的审核与 CI：等维护者批准 11-10 推送后的工作流，以及 damianmomotgoogle / aravindmurali22 复审；目前没有正在执行的本地构建。新一轮 validation 若又挂在不稳定测试上，评论里已请维护者重跑，不必再催。维护者要求合并前持续变基：main 有新提交时，变基后先确认 diff 哈希不变，在新基线上重跑定向测试（#837 加反证），推送和回复前经用户确认（本机交接有现成脚本）。
 2. #838 已关闭，无后续操作。若 #825 合入后仍想补“空配置仍为空”“子运行独立计数”两个测试，先征求用户意见，作为新的只含测试的 PR。下一个候选是 ML Kit seed（一行修复），见[研究记录](projects/google/adk-kotlin/research/README.md)。另一个候选是修 CI 的不稳定测试（研究记录里有 11-04 至 11-05 的统计），首选 `McpToolsetIntegrationTest`；`LiveRoutesTest` 刚由内部作者引入，很可能自己修，暂不碰。动手前先确认没有人在修，并征求用户意见。
 3. 收到审核意见后，在对应源码分支修复，运行受影响检查，再按项目规则更新同一个 PR；ADK 要求一个提交，改历史使用 `--force-with-lease`，发现远端移动先停下来核对。
 4. 每次状态或验证变化更新目标 PR 的 README/验证摘要，再提交到档案仓库。

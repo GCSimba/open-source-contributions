@@ -3,10 +3,10 @@
 ## 状态与来源
 
 - [上游 PR #837](https://github.com/google/adk-kotlin/pull/837)：Open、非草稿、无冲突。
-- 状态核验：2026-11-06 02:00（Asia/Shanghai）。第 1 轮审阅意见已处理；维护者 11-04、11-05 两次要求变基，均已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
-- CI：11-06 推送 `a963450` 后，标题、提交、安全检查和 validation 工作流都在等维护者批准（`action_required`）。上一轮（`54a7108`）CLA 与 `check-changes` 通过；11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过，validation 的 `build-modules (25)` 失败在 `integrations/openai` 的 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`（收到 `SocketTimeoutException`，而不是预期的 `HttpRequestTimeoutException`），JDK 17/21 两个 job 随即被取消。这是 main 上已有的不稳定超时测试：客户端把请求超时和 socket 超时设成同一个值（测试里是 200 ms），哪个先触发取决于调度。11-04 00:00 至 11-05 17:06（UTC），仓库 85 次跑完的 validation 中 21 次失败，全部来自四个不稳定测试（`LiveRoutesTest` 7 次、`KtorChatCompletionsClientTest` 6 次、`McpToolsetIntegrationTest` 4 次、`WorkflowHitlTest` 4 次），其中 19 次在其他 PR 上。重跑需要仓库写权限。
-- 基线：`e66579634f6a12630e1ac1e31ef6953aff4f5a01`，即 11-06 时最新的 main。按审阅要求变基过三次：首次提交基于 `2809a83`，第 1 轮审阅后基于 `b961c9e`，11-04 基于 `e863fac`。
-- 修复提交：[a96345005e6b14173167c31dda966d88035bb6da](https://github.com/GCSimba/adk-kotlin/commit/a96345005e6b14173167c31dda966d88035bb6da)。此前依次为 `433fbd2`（首次提交）、`b4d321b`（第 1 轮审阅后）、`54a7108`（11-04 变基）；`b4d321b`、`54a7108`、`a963450` 的 diff 逐字节相同。
+- 状态核验：2026-11-10 10:45（Asia/Shanghai）。第 2 轮审阅（damianmomotgoogle，CHANGES_REQUESTED，1 条 HIGH、4 条 LOW）和 aravindmurali22 关于失败检查的提问都已处理并回复；标签为 `waiting on author`，等待复审。
+- CI：11-10 推送 `61b471d` 后，GitHub Actions Scan 通过，标题、提交、安全检查和 validation 工作流等待维护者批准（`action_required`）。上一轮（`a963450`）validation 在 JDK 17、25 上通过，`build-modules (21)` 只失败在 `integrations/openai` 的不稳定测试 `KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls`，与本 PR 无关；该测试在 11-07 以后的 40 次 validation 中没有再失败，main 也没有改它。再早的 `54a7108` 在 JDK 25 上撞到同一个测试（`SocketTimeoutException` 先于预期的 `HttpRequestTimeoutException`）：客户端把请求超时和 socket 超时设成同一个值，哪个先触发取决于调度。重跑需要仓库写权限。
+- 基线：`024c8ff170fce7a0280607938fd40e675628f00f`，即 11-10 时最新的 main。按审阅要求变基过四次：首次提交基于 `2809a83`，第 1 轮审阅后基于 `b961c9e`，11-04 基于 `e863fac`，11-06 基于 `e665796`。
+- 修复提交：[61b471d5429fa44c85c7a36a858e4c216b79b428](https://github.com/GCSimba/adk-kotlin/commit/61b471d5429fa44c85c7a36a858e4c216b79b428)。此前依次为 `433fbd2`（首次提交）、`b4d321b`（第 1 轮审阅后）、`54a7108`（11-04 变基）、`a963450`（11-06 变基）；后三者 diff 逐字节相同。
 - 分支：`codex/fix-parallel-artifact-loading`。
 - 行为参考：[Python LoadArtifactsTool](https://github.com/google/adk-python/blob/e9e8f6156fb73cdfe799af0a0a57786e807732df/src/google/adk/tools/load_artifacts_tool.py#L530-L539)。
 - [修复补丁](change.patch) · [验证摘要](validation.json) · [Linux 全量测试计数](test-results.json) · [基线复现](../../research/repros/README.md)。
@@ -19,15 +19,15 @@
 
 ## 修复与回归覆盖
 
-遍历原始最后一条消息的全部 part，处理所有匹配的 function response：保留响应和文件顺序，跳过无关 part 和缺失的文件，并保持原请求不变。重新缩进的代码块保持原来的 `Content(...)` 写法。
+先从原始最后一条消息的全部 part 中收集所有 `load_artifacts` 响应里的文件名，再用原来的循环逐个加载：保留响应和文件顺序，跳过无关 part 和缺失的文件，原请求不变。第 2 轮审阅后改成这种“先收集、单循环”的写法，原循环体保持原来的缩进，主文件 diff 从 34 行缩到 20 行。
 
 在 `LoadArtifactsToolTest` 原有 14 个测试的基础上新增 5 个：
 
 - Runner 中 `load_artifacts` 排在另一个工具之前、之后两种顺序；
 - 两个批量响应场景，读取在另一个 session 中保存为 `user:invoice.txt` 的 artifact：一个直接请求 `user:invoice.txt`，另一个请求 `invoice.txt`，走 `loadArtifact` 的 `user:` 回退；
-- 文本、其他工具响应、多个加载响应和缺失文件混在一起的请求处理测试，同时检查原请求不变。
+- 文本、其他工具响应、多个加载响应和缺失文件混在一起的请求处理测试。
 
-Runner 场景断言下一次模型请求的最后一条内容正好是 `Content(USER, ["Artifact <name> is:", 文件内容])`。
+Runner 场景断言下一次模型请求的最后一条内容正好是 `Content(USER, ["Artifact <name> is:", 文件内容])`。第 2 轮审阅指出“原请求不变”的断言不可能失败（`LlmRequest` 是不可变 data class），已删除。
 
 ## 审阅记录
 
@@ -45,9 +45,30 @@ Runner 场景断言下一次模型请求的最后一条内容正好是 `Content(
 - 2026-11-04 03:01（Asia/Shanghai），aravindmurali22 [请求再次变基到最新 main](https://github.com/google/adk-kotlin/pull/837#issuecomment-6612882270)，并把 `waiting on author` 换成 `google support`。main 新增 13 个提交（e863fac），都不涉及本 PR 的两个文件，变基没有冲突。
 - 经用户确认，11:33 用 `--force-with-lease` 推送 `54a7108`（远端旧值 `b4d321b`），在 PR 描述的验证部分补了一段变基后的重跑结果，并发了[回复](https://github.com/google/adk-kotlin/pull/837#issuecomment-6621822896)。
 - 2026-11-05 02:18（Asia/Shanghai），aravindmurali22 [要求](https://github.com/google/adk-kotlin/pull/837#issuecomment-6638485323)处理失败的 GitHub Actions 检查，并在合并前持续把分支变基到最新 main（仓库每天都有提交）。
-- 经用户确认，11-06 01:53 用 `--force-with-lease` 推送 `a963450`（远端旧值 `54a7108`），并发了[评论](https://github.com/google/adk-kotlin/pull/837#issuecomment-6665207041)：说明变基与重跑结果；上一轮失败的是不稳定的 Ktor 超时测试；附上仓库内四个不稳定测试的失败次数和运行链接；如果新一轮再撞上，请维护者重跑失败的 job。PR 描述未改，其中“After rebasing onto e863fac (now 54a7108, same diff)”一句已过时。
+- 经用户确认，11-06 01:53 用 `--force-with-lease` 推送 `a963450`（远端旧值 `54a7108`），并发了[评论](https://github.com/google/adk-kotlin/pull/837#issuecomment-6665207041)：说明变基与重跑结果；上一轮失败的是不稳定的 Ktor 超时测试；附上仓库内四个不稳定测试的失败次数和运行链接；如果新一轮再撞上，请维护者重跑失败的 job。
+- 2026-11-10 01:43（Asia/Shanghai），aravindmurali22 [请](https://github.com/google/adk-kotlin/pull/837#issuecomment-6747151157)修复失败的 `build-modules (21)`。日志显示唯一失败是不稳定的 Ktor 超时测试，JDK 17、25 通过。
+- 01:52–01:57，damianmomotgoogle 给出 CHANGES_REQUESTED，标签由 `google support` 换回 `waiting on author`：
+  1. **HIGH**：测试里 `artifacts.saveArtifact(...)` 的返回值被忽略。仓库导入 Google 内部构建时对测试运行 CheckReturnValue 检查，会导致导入失败。按 `InMemoryArtifactServiceTest` 的写法改成 `val unused = ...`（文件里只有这一处）。
+  2. LOW：先用 `mapNotNull`/`filter`/`flatMap` 收集文件名，再单循环加载，`?: continue`，原循环体不再缩进。
+  3. LOW：用 `TestContent.kt` 的 `modelParallelFunctionCallsResponse(...)` 构造并行调用响应，去掉 `!!`。
+  4. LOW：`Runner` 是 `AutoCloseable`，用 `use {}` 代替 `try`/`finally`。保留 `val runner =` 一行，因为 `InMemoryRunner(...).use { runner ->` 超过 100 列。
+  5. LOW：“原请求不变”的断言不可能失败，删除断言和 PR 描述里对应的一句。
+- 经用户确认，11-10 10:42 变基到 `024c8ff`（main 新增 25 个提交，没有改本 PR 的文件）并全部按意见修改，amend 后用 `--force-with-lease`（期望远端为 `a963450`）推送 `61b471d`。随后在 5 个讨论串逐条回复（[1](https://github.com/google/adk-kotlin/pull/837#discussion_r4520552300)、[2](https://github.com/google/adk-kotlin/pull/837#discussion_r4520552660)、[3](https://github.com/google/adk-kotlin/pull/837#discussion_r4520553027)、[4](https://github.com/google/adk-kotlin/pull/837#discussion_r4520553324)、[5](https://github.com/google/adk-kotlin/pull/837#discussion_r4520553611)），重写 PR 描述的验证部分并删去那句话，再发[顶层评论](https://github.com/google/adk-kotlin/pull/837#issuecomment-6757505672)：说明失败的 job 来自无关的 Ktor 测试、新推送需要再次批准工作流、如再撞上请重跑；并告知五条意见均已处理。
 
 ## 验证
+
+### 第 2 轮审阅后（`61b471d`，基线 `024c8ff`）
+
+复用第 1 轮的 Linux 副本，从本地仓库 fetch 后检出新提交，确认工作区干净、父提交为 `024c8ff`。Linux 上计算的 diff SHA-256（`e6be1399…`）与 Windows 上推送的提交一致。
+
+| 检查 | 结果 |
+| --- | --- |
+| LoadArtifactsToolTest 定向测试 | JVM 19/19、Android host 19/19，无跳过（16 分 1 秒） |
+| 反证：`LoadArtifactsTool.kt` 换回 `024c8ff` 的版本 | 19 个测试 4 个失败，与前几轮相同；排在首位的场景仍通过。还原后工作区干净 |
+| ktfmt 0.65（忽略尾逗号） | `LoadArtifactsTool.kt` 新增行原始比较就没有差异；测试文件原始 4 处，全是尾逗号 |
+| `git diff --check` | 通过；运行结束没有残留 Gradle 进程 |
+
+全仓库构建没有重跑：这一轮只改了私有函数里的循环写法和新增测试，两个平台的测试源码都已编译并运行；上一次全仓库构建在 `b4d321b`（基线 `b961c9e`）上通过。
 
 ### 第 3 次变基后（`a963450`，基线 `e665796`）
 
@@ -104,6 +125,6 @@ diff 与 `b4d321b` 逐字节相同（SHA-256 一致），所以只在新基线�
 
 ## 审核与后续
 
-- 等待维护者批准 `a963450` 的工作流、Google 内部处理（`google support`）和 aravindmurali22 复审。新一轮 validation 若再撞上不稳定测试，评论已请维护者重跑。原计划的“11-05 @damianmomotgoogle”已不需要。
+- 等待维护者批准 `61b471d` 的工作流，以及 damianmomotgoogle / aravindmurali22 复审。外部贡献者不能重新请求审阅，只能等对方查看讨论串。新一轮 validation 若再撞上不稳定测试，顶层评论已请维护者重跑。
 - 维护者要求合并前持续变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑定向测试和反证，推送和回复前经用户确认。
-- 后续修改仍保持单提交（amend + `--force-with-lease`），**不要加 `Co-authored-by` trailer**。只改与审阅相关的行，不要让本地 ktfmt 改动无关的行。
+- 后续修改仍保持单提交（amend + `--force-with-lease`），**不要加 `Co-authored-by` trailer**。只改与审阅相关的行，不要让本地 ktfmt 改动无关的行。测试里调用有返回值的函数（如 `saveArtifact`）要接收结果（`val unused =`），否则 Google 内部导入时 CheckReturnValue 检查会失败。

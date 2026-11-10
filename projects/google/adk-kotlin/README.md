@@ -28,6 +28,8 @@ Google 内部变更由 copybara-service 导出为 PR，GitHub 上的版本可能
 - Google CLA 检查覆盖提交中的所有作者，包括 `Co-authored-by` trailer。Copilot 等机器人账号没有签 CLA，加上 trailer 会让 CLA 失败（#856 首次推送即如此）。AI 辅助在 PR 描述里说明。
 - 选题避开“Python 版已修、Kotlin 尚未移植”的差异，Google 团队会自己移植（#838 对应的 Python 修复早在 8 月）；优先 Firebase、ML Kit、LiteRT-LM、Room、Java 互操作等只在 Kotlin 中存在的部分。
 - 外部 PR 的 validation 等工作流需要维护者批准后才会运行。
+- 仓库导入 Google 内部时会对测试运行 CheckReturnValue 检查：调用有返回值的函数（如 `saveArtifact`）要接收结果，写成 `val unused = ...`，否则内部导入构建失败（#837 第 2 轮的 HIGH 意见）。
+- 测试优先用 `testing` 模块现成的辅助函数（如 `modelParallelFunctionCallsResponse`），`Runner` 用 `use {}` 关闭；不要写不可能失败的断言（例如对不可变 `LlmRequest` 断言“原请求不变”）。
 
 ## 研究与复现
 

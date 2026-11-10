@@ -1,8 +1,8 @@
 diff --git a/core/src/commonMain/kotlin/com/google/adk/kt/tools/LoadArtifactsTool.kt b/core/src/commonMain/kotlin/com/google/adk/kt/tools/LoadArtifactsTool.kt
-index cf82756..94824a4 100644
+index cf82756..b567c1f 100644
 --- a/core/src/commonMain/kotlin/com/google/adk/kt/tools/LoadArtifactsTool.kt
 +++ b/core/src/commonMain/kotlin/com/google/adk/kt/tools/LoadArtifactsTool.kt
-@@ -98,29 +98,27 @@ class LoadArtifactsTool :
+@@ -98,21 +98,15 @@ class LoadArtifactsTool :
    ): LlmRequest {
      // Attach the content of the artifacts if the model requests them.
      val lastContent = llmRequest.contents.lastOrNull() ?: return llmRequest
@@ -14,46 +14,28 @@ index cf82756..94824a4 100644
 -    if (functionResponse.name != "load_artifacts") {
 -      return llmRequest
 -    }
--
++    val artifactNames =
++      lastContent.parts
++        .mapNotNull { it.functionResponse }
++        .filter { it.name == "load_artifacts" }
++        .flatMap { it.response.getArtifactNamesList() }
+ 
      var newRequest = llmRequest
 -    for (artifactName in functionResponse.response.getArtifactNamesList()) {
 -      val artifact = loadArtifact(toolContext, artifactName)
 -      if (artifact == null) {
-+    for (part in lastContent.parts) {
-+      val functionResponse = part.functionResponse ?: continue
-+      if (functionResponse.name != "load_artifacts") {
-         continue
-       }
--      // TODO: Convert artifacts with unsupported MIME types to text, as Python ADK does.
--      newRequest =
--        newRequest.appendContent(
--          Content(
--            role = Role.USER,
--            parts = listOf(Part(text = "Artifact $artifactName is:"), artifact),
-+
-+      for (artifactName in functionResponse.response.getArtifactNamesList()) {
-+        val artifact = loadArtifact(toolContext, artifactName)
-+        if (artifact == null) {
-+          continue
-+        }
-+        // TODO: Convert artifacts with unsupported MIME types to text, as Python ADK does.
-+        newRequest =
-+          newRequest.appendContent(
-+            Content(
-+              role = Role.USER,
-+              parts = listOf(Part(text = "Artifact $artifactName is:"), artifact),
-+            )
-           )
--        )
-+      }
-     }
-     return newRequest
-   }
+-        continue
+-      }
++    for (artifactName in artifactNames) {
++      val artifact = loadArtifact(toolContext, artifactName) ?: continue
+       // TODO: Convert artifacts with unsupported MIME types to text, as Python ADK does.
+       newRequest =
+         newRequest.appendContent(
 diff --git a/core/src/commonTest/kotlin/com/google/adk/kt/tools/LoadArtifactsToolTest.kt b/core/src/commonTest/kotlin/com/google/adk/kt/tools/LoadArtifactsToolTest.kt
-index d7adda9..30ca257 100644
+index d7adda9..f03e9cf 100644
 --- a/core/src/commonTest/kotlin/com/google/adk/kt/tools/LoadArtifactsToolTest.kt
 +++ b/core/src/commonTest/kotlin/com/google/adk/kt/tools/LoadArtifactsToolTest.kt
-@@ -16,15 +16,25 @@
+@@ -16,15 +16,26 @@
  
  package com.google.adk.kt.tools
  
@@ -68,6 +50,7 @@ index d7adda9..30ca257 100644
 +import com.google.adk.kt.testing.DummyTool
  import com.google.adk.kt.testing.modelFunctionCall
 +import com.google.adk.kt.testing.modelMessage
++import com.google.adk.kt.testing.modelParallelFunctionCallsResponse
  import com.google.adk.kt.testing.testInvocationContext
  import com.google.adk.kt.testing.testToolContext
  import com.google.adk.kt.testing.userFunctionResponse
@@ -79,7 +62,7 @@ index d7adda9..30ca257 100644
  import com.google.adk.kt.types.Part
  import com.google.adk.kt.types.Role
  import com.google.adk.kt.types.Type
-@@ -33,6 +43,9 @@ import kotlin.test.assertEquals
+@@ -33,6 +44,9 @@ import kotlin.test.assertEquals
  import kotlin.test.assertNotNull
  import kotlin.test.assertNull
  import kotlin.test.assertTrue
@@ -89,7 +72,7 @@ index d7adda9..30ca257 100644
  import kotlinx.coroutines.test.runTest
  
  class LoadArtifactsToolTest {
-@@ -375,4 +388,173 @@ class LoadArtifactsToolTest {
+@@ -375,4 +389,168 @@ class LoadArtifactsToolTest {
      // Original contents (model func call, user func response). No new content should be added.
      assertEquals(2, request.contents.size)
    }
@@ -153,7 +136,6 @@ index d7adda9..30ca257 100644
 +        ),
 +        result.contents,
 +      )
-+      assertEquals(listOf(responses), request.contents)
 +    }
 +
 +  @Test
@@ -196,20 +178,18 @@ index d7adda9..30ca257 100644
 +  ) {
 +    val artifacts = InMemoryArtifactService()
 +    val payload = "Invoice total is 1234.56 USD"
-+    artifacts.saveArtifact(
-+      SessionKey("artifact_app", "user1", savedInSession),
-+      savedAs,
-+      Part(text = payload),
-+    )
-+    val currencyCall = Part(functionCall = FunctionCall("get_currency", id = "currency-1"))
++    val unused =
++      artifacts.saveArtifact(
++        SessionKey("artifact_app", "user1", savedInSession),
++        savedAs,
++        Part(text = payload),
++      )
++    val currencyCall = FunctionCall("get_currency", id = "currency-1")
 +    val artifactCall =
-+      Part(
-+        functionCall =
-+          FunctionCall(
-+            "load_artifacts",
-+            args = mapOf("artifact_names" to listOf(filename)),
-+            id = "artifact-1",
-+          )
++      FunctionCall(
++        "load_artifacts",
++        args = mapOf("artifact_names" to listOf(filename)),
++        id = "artifact-1",
 +      )
 +    val orderedCalls =
 +      if (loadArtifactsFirst) listOf(artifactCall, currencyCall)
@@ -220,7 +200,7 @@ index d7adda9..30ca257 100644
 +      DummyModel("artifact-model") { request ->
 +        calls++
 +        if (calls == 1) {
-+          flowOf(LlmResponse(content = Content(role = Role.MODEL, parts = orderedCalls)))
++          flowOf(modelParallelFunctionCallsResponse(*orderedCalls.toTypedArray()))
 +        } else {
 +          answerRequest = request
 +          flowOf(LlmResponse(content = modelMessage("Finished")))
@@ -240,11 +220,11 @@ index d7adda9..30ca257 100644
 +      )
 +    val runner =
 +      InMemoryRunner(agent = agent, appName = "artifact_app", artifactService = artifacts)
-+    try {
++    runner.use {
 +      val events =
 +        runner.runAsync("user1", "session1", newMessage = userMessage("Read the invoice")).toList()
 +      val responses = events.flatMap { it.functionResponses() }
-+      assertEquals(orderedCalls.map { it.functionCall!!.name }, responses.map { it.name })
++      assertEquals(orderedCalls.map { it.name }, responses.map { it.name })
 +      val artifactResponse = responses.single { it.name == "load_artifacts" }
 +      assertEquals(listOf(filename), artifactResponse.response["artifact_names"])
 +      val nextRequest = assertNotNull(answerRequest)
@@ -258,8 +238,6 @@ index d7adda9..30ca257 100644
 +        "A successful load_artifacts response must supply the file to the answering model; " +
 +          "loadArtifactsFirst=$loadArtifactsFirst",
 +      )
-+    } finally {
-+      runner.close()
 +    }
 +  }
  }

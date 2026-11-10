@@ -3,15 +3,16 @@
 ## 状态与来源
 
 - [上游 PR #856](https://github.com/google/adk-kotlin/pull/856)：`fix(firebase): send the response schema and penalties to Firebase`，Open、非草稿、无冲突。
-- 状态核验：2026-11-06 02:00（Asia/Shanghai）。第 1 轮审阅意见已处理；维护者 11-04、11-05 两次要求变基，均已完成并回复。标签已由 `waiting on author` 换成 `google support`（“已升级给 Google 内部支持或工程团队”），等待内部处理。
-- CI：11-06 推送 `3ee76e1` 后，标题、提交、安全检查和 validation 工作流都在等维护者批准（`action_required`）。上一轮（`fc22165`）CLA 与 `check-changes` 通过；11-04 12:58 维护者批准工作流后，标题、提交和安全检查通过，validation 在 JDK 17、25 上通过，`build-modules (21)` 失败在 core 的 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`：`getTools()` 时 MCP `initialize` 握手超过了 3 秒的超时。测试注释自己写明，CI 上子 JVM 冷启动可能超过这个时间。11-04 00:00 至 11-05 17:06（UTC），仓库 85 次跑完的 validation 中 21 次失败，全部来自四个不稳定测试（`LiveRoutesTest` 7 次、`KtorChatCompletionsClientTest` 6 次、`McpToolsetIntegrationTest` 4 次、`WorkflowHitlTest` 4 次），其中 19 次在其他 PR 上。重跑需要仓库写权限。
-- 基线：`e66579634f6a12630e1ac1e31ef6953aff4f5a01`，即 11-06 时最新的 main。按审阅要求变基过三次：首次提交基于 `db97db5`，第 1 轮审阅后基于 `b961c9e`，11-04 基于 `e863fac`；期间 main 新增的提交都没有改 `Conversions.kt` 和 `ConversionsTest.kt`。
-- 修复提交：[3ee76e18c2fb3cfb64b233b37eb7192bd31d1ba9](https://github.com/GCSimba/adk-kotlin/commit/3ee76e18c2fb3cfb64b233b37eb7192bd31d1ba9)。提交历史：
+- 状态核验：2026-11-10 11:17（Asia/Shanghai）。第 2 轮审阅（damianmomotgoogle，CHANGES_REQUESTED，1 条 MEDIUM）已处理并回复；标签为 `waiting on author`，等待复审。
+- CI：11-10 推送 `c624382` 后，GitHub Actions Scan 通过，标题、提交、安全检查和 validation 工作流等待维护者批准（`action_required`）。上一轮（`3ee76e1`）validation 在 JDK 17、21、25 上全部通过。更早的 `fc22165` 在 JDK 21 上撞到 core 的不稳定测试 `McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries`（CI 上子 JVM 冷启动可能超过 3 秒的 MCP 握手超时），与本 PR 无关。重跑需要仓库写权限。
+- 基线：`024c8ff170fce7a0280607938fd40e675628f00f`，即 11-10 时最新的 main。按审阅要求变基过四次：首次提交基于 `db97db5`，第 1 轮审阅后基于 `b961c9e`，11-04 基于 `e863fac`，11-06 基于 `e665796`；期间 main 新增的提交都没有改 `Conversions.kt` 和 `ConversionsTest.kt`。
+- 修复提交：[c62438270bb0af068c8fbbf5214defa3b88f8e62](https://github.com/GCSimba/adk-kotlin/commit/c62438270bb0af068c8fbbf5214defa3b88f8e62)。提交历史：
   - 首次推送 `8e5e303`，带 `Co-authored-by: Copilot`，CLA 检查因 Copilot 没有签 CLA 而失败；
   - 经用户确认，amend 去掉这一行得到 `a1cdb25`（tree 不变）；
   - 第 1 轮审阅后变基、修改，得到 `5ddf267`；
   - 11-04 按要求再次变基，得到 `fc22165`，diff 与 `5ddf267` 逐字节相同；
-  - 11-06 第三次变基，得到 `3ee76e1`，diff 仍逐字节相同。
+  - 11-06 第三次变基，得到 `3ee76e1`，diff 仍逐字节相同；
+  - 11-10 第 2 轮审阅后变基到 `024c8ff` 并修改，得到 `c624382`；提交信息补了一段说明嵌套 free-form 对象的例外。
   
   PR 描述末尾注明了 AI 辅助。
 - 分支：`fix/firebase-response-schema`。
@@ -30,15 +31,17 @@
 ## 修复与回归覆盖
 
 - 直接设置两个 penalty。`responseSchema` 通过新增的 `toFirebaseResponseSchema` 复用现有的 `toFirebaseSchema` 转换：`required` 通过 `optionalProperties` 保留，不支持的约束照常给出警告。
-- 例外：没有属性的对象不设置 schema。`toFirebaseSchema` 会把它转换成“装着 JSON 的字符串”，适合工具参数；但用作响应 schema 时，模型会返回带引号的字符串。不设置 schema 时，JSON MIME type 仍会要求返回对象。
-- 判断条件 `convertsToFreeFormObject()` 现在也被 `toFirebaseSchema` 的 `OBJECT` / `TYPE_UNSPECIFIED` / `null` 分支调用，两处共用一个定义（审阅意见 1）。
+- 例外：如果 schema 本身或其中嵌套的任何 schema 是没有属性的对象，就不设置 schema。`toFirebaseSchema` 会把这种对象转换成“装着 JSON 的字符串”，适合工具参数；但用作响应 schema 时，模型会把该字段答成带引号的字符串，agent 的 `outputSchema` 校验随之失败（审阅人用 `gemini-3.8-flash` 实测：`"counts":"{\"apples\":3,\"pears\":2}"`）。不设置 schema 时，JSON MIME type 仍会要求返回 JSON。
+- 判断条件 `convertsToFreeFormObject()` 现在也被 `toFirebaseSchema` 的 `OBJECT` / `TYPE_UNSPECIFIED` / `null` 分支调用，两处共用一个定义（第 1 轮审阅意见 1）。第 2 轮按审阅人的写法新增 `containsFreeFormObject()`，递归检查属性、数组 items 和 `anyOf` 备选项。它比实际转换略宽：极少数情况下（例如带类型的 schema 旁被丢弃的 `anyOf`）也会让整个 schema 不发送，结果等同于修复前的行为。
 - 测试（`ConversionsTest`）：
   - 已有的 generation config 测试加上两个 penalty；
   - `mapsResponseSchema`：映射含 required 字段的对象 schema；
   - `freeFormResponseSchema_isLeftOut`：覆盖四种情况，`OBJECT`、`OBJECT` 加空 `properties`、`TYPE_UNSPECIFIED`、没有类型；
-  - `untypedUnionAndEnumResponseSchemas_areKept`：确认没有类型的 `anyOf` 联合与 `enum` 仍作为 response schema 发送（审阅意见 2）。
+  - `nestedFreeFormResponseSchema_isLeftOut`：free-form 对象出现在属性里、更深一层的属性里、数组 items 里、`anyOf` 备选项里时都不发送 schema（第 2 轮）；
+  - `nestedObjectWithProperties_isKept`：声明了属性的嵌套对象照常发送（第 2 轮）；
+  - `untypedUnionAndEnumResponseSchemas_areKept`：确认没有类型的 `anyOf` 联合与 `enum` 仍作为 response schema 发送（第 1 轮审阅意见 2）。
   
-  除 free-form 测试外，其余三个在修复前失败。
+  换回 main 的 `Conversions.kt` 时，`mapsResponseSchema`、`returnsBuilder`、`nestedObjectWithProperties_isKept`、`untypedUnionAndEnumResponseSchemas_areKept` 失败；换回第 1 轮只检查顶层的版本时，只有 `nestedFreeFormResponseSchema_isLeftOut` 失败。
 
 ## 审阅记录
 
@@ -52,9 +55,24 @@
 - 2026-11-04 03:03（Asia/Shanghai），aravindmurali22 [请求再次变基到最新 main](https://github.com/google/adk-kotlin/pull/856#issuecomment-6612909000)，并把 `waiting on author` 换成 `google support`。main 新增 13 个提交（e863fac），其中 `11d6139` 改了 Firebase 集成测试和示例，但没有碰本 PR 的两个文件，变基没有冲突。
 - 经用户确认，11:39 用 `--force-with-lease` 推送 `fc22165`（远端旧值 `5ddf267`），在 PR 描述的验证部分补了一句变基后的重跑结果，并发了[回复](https://github.com/google/adk-kotlin/pull/856#issuecomment-6621904397)。
 - 2026-11-05 02:18（Asia/Shanghai），aravindmurali22 [要求](https://github.com/google/adk-kotlin/pull/856#issuecomment-6638476521)处理失败的 GitHub Actions 检查，并在合并前持续把分支变基到最新 main（仓库每天都有提交）。
-- 经用户确认，11-06 01:53 用 `--force-with-lease` 推送 `3ee76e1`（远端旧值 `fc22165`），并发了[评论](https://github.com/google/adk-kotlin/pull/856#issuecomment-6665208111)：说明变基与重跑结果；上一轮失败的是 JDK 21 上不稳定的 McpToolset 超时测试；附上仓库内四个不稳定测试的失败次数和运行链接；如果新一轮再撞上，请维护者重跑失败的 job。PR 描述未改，其中“After rebasing onto e863fac (now fc22165, same diff)”一句已过时。
+- 经用户确认，11-06 01:53 用 `--force-with-lease` 推送 `3ee76e1`（远端旧值 `fc22165`），并发了[评论](https://github.com/google/adk-kotlin/pull/856#issuecomment-6665208111)：说明变基与重跑结果；上一轮失败的是 JDK 21 上不稳定的 McpToolset 超时测试；附上仓库内四个不稳定测试的失败次数和运行链接；如果新一轮再撞上，请维护者重跑失败的 job。
+- 2026-11-10 01:35–01:37（Asia/Shanghai），damianmomotgoogle 给出 CHANGES_REQUESTED，标签由 `google support` 换回 `waiting on author`。[MEDIUM 意见](https://github.com/google/adk-kotlin/pull/856#discussion_r4515874805)：只有顶层是 free-form 对象时才不发送 schema；嵌套的（如 `"counts" to Schema(type = Type.OBJECT)`）仍被转换成字符串，`gemini-3.8-flash` 把该字段答成 JSON 字符串，`outputSchema` 校验失败，`outputKey` 拿到原始文本、workflow 节点失败。要求任何子 schema 是 free-form 时都不发送，并补嵌套测试；附了 `containsFreeFormObject` 的写法。核对代码属实：`toFirebaseSchema` 递归转换属性时会把嵌套的 free-form 对象变成字符串。
+- 经用户确认，11-10 变基到 `024c8ff`（main 新增 25 个提交，没有改本 PR 的文件），按审阅人的写法修改并补测试，amend 后 11:15 用 `--force-with-lease`（期望远端为 `3ee76e1`）推送 `c624382`。随后在讨论串[回复](https://github.com/google/adk-kotlin/pull/856#discussion_r4520729179)，重写 PR 描述的例外说明、测试列表和验证部分，并发[顶层评论](https://github.com/google/adk-kotlin/pull/856#issuecomment-6757970119)说明已处理、新提交需要再次批准工作流。
 
 ## 验证
+
+### 第 2 轮审阅后（`c624382`，基线 `024c8ff`）
+
+复用第 1 轮的 Linux 副本，从本地仓库 fetch 后检出新提交，确认工作区干净、父提交为 `024c8ff`。Linux 上计算的 diff SHA-256（`92c897a4…`）与 Windows 上推送的提交一致。
+
+| 检查 | 结果 |
+| --- | --- |
+| `ConversionsTest` | 80/80 通过（新增 2 个测试，6 分 59 秒） |
+| 反证 1：`Conversions.kt` 换回第 1 轮的 `3ee76e1`（只检查顶层） | 80 个测试 1 个失败：`nestedFreeFormResponseSchema_isLeftOut`，在第一个用例（审阅人的 `counts` 例子）上失败 |
+| 反证 2：`Conversions.kt` 换回 `024c8ff` | 80 个测试 4 个失败：`mapsResponseSchema`、`returnsBuilder`、`nestedObjectWithProperties_isKept`、`untypedUnionAndEnumResponseSchemas_areKept`；两个 free-form 测试本来就通过（main 从不发送 schema） |
+| `:google-adk-kotlin-firebase:build` 与 `:google-adk-kotlin-examples-android:build` | 通过，21 分 20 秒；Firebase 单元测试 115 个、0 失败，跳过的 8 个是缺少 Firebase 凭据的集成测试 |
+| ktfmt 0.65（忽略尾逗号） | `Conversions.kt` 新增行原始比较就没有差异；测试文件原始 7 处，全是尾逗号 |
+| 构建后检查 | 每次反证还原后、构建后工作区都干净；`git diff --check` 通过；没有残留 Gradle 进程 |
 
 ### 第 3 次变基后（`3ee76e1`，基线 `e665796`）
 
@@ -97,6 +115,6 @@ diff 与 `5ddf267` 逐字节相同（SHA-256 一致），`Conversions.kt` 在新
 
 ## 审核与后续
 
-- 等待维护者批准 `3ee76e1` 的工作流、Google 内部处理（`google support`）和 aravindmurali22 复审。新一轮 validation 若再撞上不稳定测试，评论已请维护者重跑。
+- 等待维护者批准 `c624382` 的工作流，以及 damianmomotgoogle 复审。外部贡献者不能重新请求审阅，只能等对方查看讨论串。
 - 维护者要求合并前持续变基：main 一有新提交，PR 就会落后。变基后先确认 diff 哈希不变，再在新基线上重跑 `ConversionsTest`，推送和回复前经用户确认。
 - 后续修改仍在 `fix/firebase-response-schema` 上进行，保持单提交（amend + `--force-with-lease`），**不要加 `Co-authored-by` trailer**，否则 CLA 检查会失败。

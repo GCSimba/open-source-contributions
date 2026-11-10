@@ -1,7 +1,7 @@
 {
   "pr": 837,
-  "base": "e66579634f6a12630e1ac1e31ef6953aff4f5a01",
-  "commit": "a96345005e6b14173167c31dda966d88035bb6da",
+  "base": "024c8ff170fce7a0280607938fd40e675628f00f",
+  "commit": "61b471d5429fa44c85c7a36a858e4c216b79b428",
   "commit_history": [
     {
       "commit": "433fbd2bdbe250ee9d19da73e2be7da92f19e0f7",
@@ -22,6 +22,11 @@
       "commit": "a96345005e6b14173167c31dda966d88035bb6da",
       "base": "e66579634f6a12630e1ac1e31ef6953aff4f5a01",
       "note": "Rebased a third time (reviewer: resolve failing checks, keep rebased until merge); diff byte-identical to 54a7108"
+    },
+    {
+      "commit": "61b471d5429fa44c85c7a36a858e4c216b79b428",
+      "base": "024c8ff170fce7a0280607938fd40e675628f00f",
+      "note": "Review round 2 (damianmomotgoogle): val unused for saveArtifact, names collected before a single loop, modelParallelFunctionCallsResponse, Runner.use, immutable-request assertion dropped; rebased onto 024c8ff"
     }
   ],
   "rebase_2026_11_04": {
@@ -242,6 +247,95 @@
     "JDK17/25 matrix",
     "Dokka (KDoc unchanged)"
   ],
-  "official_ci": "a963450 (pushed 2026-11-05T17:53Z): CLA scan passed; PR title, commit, security and validation workflows await maintainer approval (action_required). Previous head 54a7108: validation build-modules (25) failed in KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls (integrations/openai, SocketTimeoutException before the expected HttpRequestTimeoutException; request and socket timeouts are both 200 ms there) and the JDK 17/21 jobs were cancelled. Of the 85 completed validation runs in google/adk-kotlin from 2026-11-04T00:00Z to 2026-11-05T17:06Z, the 21 failures all came from four timing-sensitive tests, 19 of them on other PRs: LiveRoutesTest.runLive_underTheAppsOwnWebSockets_closesAnOversizedFrameWithTooBig x7, KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls x6, McpToolsetIntegrationTest.run_unresponsiveServer_timesOutThenThrowsAfterRetries x4, WorkflowHitlTest.runNode_waitingCallCancelledWithTheFirst_doesNotRunTheChild x4. Re-running needs write access (checked 2026-11-06 02:00 Asia/Shanghai)",
-  "patch_sha256": "e6bb27c3171698f8ec48b0267f944c970d3b055d4363db18c877c043f888faf0"
+  "official_ci": "61b471d (pushed 2026-11-10T02:42:56Z): GitHub Actions Scan passed; PR title, commit, security and validation workflows await maintainer approval (action_required). Previous head a963450: validation passed on JDK 17 and 25; build-modules (21) failed only in the flaky KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls.",
+  "patch_sha256": "8e29d218623701801899fdd56b379fbeaca4ccbb4dadb1c470f66138fb88299e",
+  "review_round_2": {
+    "ci_request": {
+      "url": "https://github.com/google/adk-kotlin/pull/837#issuecomment-6747151157",
+      "author": "aravindmurali22",
+      "created": "2026-11-09T17:43:41Z",
+      "job": "https://github.com/google/adk-kotlin/actions/runs/42078939715/job/127441274922",
+      "finding": "Only failure in build-modules (21) at a963450 was KtorChatCompletionsClientTest.create_timeoutClosesTheConnectionWhileTheResponseStalls (integrations/openai), untouched by this PR; JDK 17 and 25 passed. Not seen in the 40 validation runs since 2026-11-07, and main did not change the test."
+    },
+    "review": {
+      "reviewer": "damianmomotgoogle",
+      "state": "CHANGES_REQUESTED",
+      "submitted": "2026-11-09T17:56:42Z",
+      "label_change": "google support -> waiting on author",
+      "comments": [
+        {
+          "id": 4516048044,
+          "severity": "HIGH",
+          "summary": "saveArtifact result ignored; the internal CheckReturnValue lint fails the import build",
+          "reply": "https://github.com/google/adk-kotlin/pull/837#discussion_r4520552300"
+        },
+        {
+          "id": 4516048058,
+          "severity": "LOW",
+          "summary": "collect the artifact names first, single loop, ?: continue",
+          "reply": "https://github.com/google/adk-kotlin/pull/837#discussion_r4520552660"
+        },
+        {
+          "id": 4516048068,
+          "severity": "LOW",
+          "summary": "use modelParallelFunctionCallsResponse; drop !!",
+          "reply": "https://github.com/google/adk-kotlin/pull/837#discussion_r4520553027"
+        },
+        {
+          "id": 4516048076,
+          "severity": "LOW",
+          "summary": "Runner.use {} instead of try/finally",
+          "reply": "https://github.com/google/adk-kotlin/pull/837#discussion_r4520553324"
+        },
+        {
+          "id": 4516048083,
+          "severity": "LOW",
+          "summary": "immutable-request assertion cannot fail; drop it and the description sentence",
+          "reply": "https://github.com/google/adk-kotlin/pull/837#discussion_r4520553611"
+        }
+      ]
+    },
+    "upstream_commits": 25,
+    "overlap_with_pr_files": false,
+    "conflicts": false,
+    "validation_date": "2026-11-10",
+    "checkout": "Review-round-1 Linux checkout, fetched from the local repository and detached at the new commit; clean tree and parent verified",
+    "diff_sha256": "e6be1399486414db8950523f232fd208b5d233ab152cdd6e70d7e3aeccdd5efc",
+    "diff_sha256_matches_pushed_commit": true,
+    "focused": {
+      "jvm": {
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "android_host": {
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration": "16m 1s"
+    },
+    "negative_control": {
+      "change": "LoadArtifactsTool.kt taken from 024c8ff; tests from the commit",
+      "platform": "jvm",
+      "tests": 19,
+      "failures": 4,
+      "failed": "same 4 tests as in review round 1; the before-another-tool flow still passes",
+      "duration": "5m 53s",
+      "working_tree_clean_after_restore": true
+    },
+    "ktfmt": {
+      "LoadArtifactsTool.kt": "0 raw regions in added lines",
+      "LoadArtifactsToolTest.kt": "4 raw regions, 0 ignoring trailing commas",
+      "base_calibration": "LoadArtifactsTool.kt 2 raw / 1 (existing long line 46); LoadArtifactsToolTest.kt 19 raw / 0"
+    },
+    "diff_check": "passed",
+    "repository_build": "not re-run; the change reshapes the loop in a private function and edits the new tests, and both test source sets compiled and ran on JVM and Android host. The last repository build passed at b4d321b on b961c9e",
+    "pushed": "2026-11-10T02:42:56Z",
+    "push": "--force-with-lease=codex/fix-parallel-artifact-loading:a963450",
+    "pr_description_updated": "validation section rewritten for 61b471d; the sentence about the unchanged original request removed",
+    "comment": "https://github.com/google/adk-kotlin/pull/837#issuecomment-6757505672"
+  }
 }
